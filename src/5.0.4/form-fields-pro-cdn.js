@@ -14,10 +14,10 @@ const URL_PATTERN_REGEX =
     'function' == typeof define && define.amd
         ? define(['jquery'], n)
         : 'object' == typeof module && module.exports
-            ? (module.exports = function (e, t) {
+          ? (module.exports = function (e, t) {
                 return void 0 === t && (t = 'undefined' != typeof window ? require('jquery') : require('jquery')(e)), n(t), t
             })
-            : n(jQuery)
+          : n(jQuery)
 })(function (t) {
     var e,
         n,
@@ -37,95 +37,95 @@ const URL_PATTERN_REGEX =
         s =
             (((u = t && t.fn && t.fn.select2 && t.fn.select2.amd ? t.fn.select2.amd : u) && u.requirejs) ||
                 (u ? (n = u) : (u = {}),
-                    (g = {}),
-                    (m = {}),
-                    (y = {}),
-                    (v = {}),
-                    (i = Object.prototype.hasOwnProperty),
-                    (a = [].slice),
-                    (_ = /\.js$/),
-                    (h = function (e, t) {
-                        var n,
-                            s,
-                            i = c(e),
-                            r = i[0],
-                            t = t[1]
-                        return (
-                            (e = i[1]),
-                            r && (n = x((r = l(r, t)))),
-                            r
-                                ? (e =
-                                    n && n.normalize
-                                        ? n.normalize(
+                (g = {}),
+                (m = {}),
+                (y = {}),
+                (v = {}),
+                (i = Object.prototype.hasOwnProperty),
+                (a = [].slice),
+                (_ = /\.js$/),
+                (h = function (e, t) {
+                    var n,
+                        s,
+                        i = c(e),
+                        r = i[0],
+                        t = t[1]
+                    return (
+                        (e = i[1]),
+                        r && (n = x((r = l(r, t)))),
+                        r
+                            ? (e =
+                                  n && n.normalize
+                                      ? n.normalize(
                                             e,
                                             ((s = t),
-                                                function (e) {
-                                                    return l(e, s)
-                                                }),
+                                            function (e) {
+                                                return l(e, s)
+                                            }),
                                         )
-                                        : l(e, t))
-                                : ((r = (i = c((e = l(e, t))))[0]), (e = i[1]), r && (n = x(r))),
-                            { f: r ? r + '!' + e : e, n: e, pr: r, p: n }
-                        )
-                    }),
-                    (f = {
-                        require: function (e) {
-                            return w(e)
-                        },
-                        exports: function (e) {
-                            var t = g[e]
-                            return void 0 !== t ? t : (g[e] = {})
-                        },
-                        module: function (e) {
-                            return {
-                                id: e,
-                                uri: '',
-                                exports: g[e],
-                                config:
-                                    ((t = e),
-                                        function () {
-                                            return (y && y.config && y.config[t]) || {}
-                                        }),
+                                      : l(e, t))
+                            : ((r = (i = c((e = l(e, t))))[0]), (e = i[1]), r && (n = x(r))),
+                        { f: r ? r + '!' + e : e, n: e, pr: r, p: n }
+                    )
+                }),
+                (f = {
+                    require: function (e) {
+                        return w(e)
+                    },
+                    exports: function (e) {
+                        var t = g[e]
+                        return void 0 !== t ? t : (g[e] = {})
+                    },
+                    module: function (e) {
+                        return {
+                            id: e,
+                            uri: '',
+                            exports: g[e],
+                            config:
+                                ((t = e),
+                                function () {
+                                    return (y && y.config && y.config[t]) || {}
+                                }),
+                        }
+                        var t
+                    },
+                }),
+                (r = function (e, t, n, s) {
+                    var i,
+                        r,
+                        o,
+                        a,
+                        l,
+                        c = [],
+                        u = typeof n,
+                        d = A((s = s || e))
+                    if ('undefined' == u || 'function' == u) {
+                        for (t = !t.length && n.length ? ['require', 'exports', 'module'] : t, a = 0; a < t.length; a += 1)
+                            if ('require' === (r = (o = h(t[a], d)).f)) c[a] = f.require(e)
+                            else if ('exports' === r) (c[a] = f.exports(e)), (l = !0)
+                            else if ('module' === r) i = c[a] = f.module(e)
+                            else if (b(g, r) || b(m, r) || b(v, r)) c[a] = x(r)
+                            else {
+                                if (!o.p) throw new Error(e + ' missing ' + r)
+                                o.p.load(
+                                    o.n,
+                                    w(s, !0),
+                                    (function (t) {
+                                        return function (e) {
+                                            g[t] = e
+                                        }
+                                    })(r),
+                                    {},
+                                ),
+                                    (c[a] = g[r])
                             }
-                            var t
-                        },
-                    }),
-                    (r = function (e, t, n, s) {
-                        var i,
-                            r,
-                            o,
-                            a,
-                            l,
-                            c = [],
-                            u = typeof n,
-                            d = A((s = s || e))
-                        if ('undefined' == u || 'function' == u) {
-                            for (t = !t.length && n.length ? ['require', 'exports', 'module'] : t, a = 0; a < t.length; a += 1)
-                                if ('require' === (r = (o = h(t[a], d)).f)) c[a] = f.require(e)
-                                else if ('exports' === r) (c[a] = f.exports(e)), (l = !0)
-                                else if ('module' === r) i = c[a] = f.module(e)
-                                else if (b(g, r) || b(m, r) || b(v, r)) c[a] = x(r)
-                                else {
-                                    if (!o.p) throw new Error(e + ' missing ' + r)
-                                    o.p.load(
-                                        o.n,
-                                        w(s, !0),
-                                        (function (t) {
-                                            return function (e) {
-                                                g[t] = e
-                                            }
-                                        })(r),
-                                        {},
-                                    ),
-                                        (c[a] = g[r])
-                                }
-                            ; (u = n ? n.apply(g[e], c) : void 0),
-                                e && (i && i.exports !== p && i.exports !== g[e] ? (g[e] = i.exports) : (u === p && l) || (g[e] = u))
-                        } else e && (g[e] = n)
-                    }),
-                    (e =
-                        n =
-                        o =
+                        ;(u = n ? n.apply(g[e], c) : void 0),
+                            e && (i && i.exports !== p && i.exports !== g[e] ? (g[e] = i.exports) : (u === p && l) || (g[e] = u))
+                    } else e && (g[e] = n)
+                }),
+                (e =
+                    n =
+                    o =
                         function (e, t, n, s, i) {
                             if ('string' == typeof e) return f[e] ? f[e](t) : x(h(e, A(t)).f)
                             if (!e.splice) {
@@ -133,385 +133,391 @@ const URL_PATTERN_REGEX =
                                 t.splice ? ((e = t), (t = n), (n = null)) : (e = p)
                             }
                             return (
-                                (t = t || function () { }),
+                                (t = t || function () {}),
                                 'function' == typeof n && ((n = s), (s = i)),
                                 s
                                     ? r(p, e, t, n)
                                     : setTimeout(function () {
-                                        r(p, e, t, n)
-                                    }, 4),
+                                          r(p, e, t, n)
+                                      }, 4),
                                 o
                             )
                         }),
-                    (o.config = function (e) {
-                        return o(e)
-                    }),
-                    (e._defined = g),
-                    ((s = function (e, t, n) {
-                        if ('string' != typeof e) throw new Error('See almond README: incorrect module build, no module name')
-                        t.splice || ((n = t), (t = [])), b(g, e) || b(m, e) || (m[e] = [e, t, n])
-                    }).amd = { jQuery: !0 }),
-                    (u.requirejs = e),
-                    (u.require = n),
-                    (u.define = s)),
-                u.define('almond', function () { }),
-                u.define('jquery', [], function () {
-                    var e = t || $
-                    return (
-                        null == e &&
+                (o.config = function (e) {
+                    return o(e)
+                }),
+                (e._defined = g),
+                ((s = function (e, t, n) {
+                    if ('string' != typeof e) throw new Error('See almond README: incorrect module build, no module name')
+                    t.splice || ((n = t), (t = [])), b(g, e) || b(m, e) || (m[e] = [e, t, n])
+                }).amd = { jQuery: !0 }),
+                (u.requirejs = e),
+                (u.require = n),
+                (u.define = s)),
+            u.define('almond', function () {}),
+            u.define('jquery', [], function () {
+                var e = t || $
+                return (
+                    null == e &&
                         console &&
                         console.error &&
                         console.error(
                             'Select2: An instance of jQuery or a jQuery-compatible library was not found. Make sure that you are including jQuery before Select2 on your web page.',
                         ),
-                        e
-                    )
+                    e
+                )
+            }),
+            u.define('select2/utils', ['jquery'], function (r) {
+                var s = {}
+
+                function c(e) {
+                    var t,
+                        n = e.prototype,
+                        s = []
+                    for (t in n) 'function' == typeof n[t] && 'constructor' !== t && s.push(t)
+                    return s
+                }
+                ;(s.Extend = function (e, t) {
+                    var n,
+                        s = {}.hasOwnProperty
+
+                    function i() {
+                        this.constructor = e
+                    }
+
+                    for (n in t) s.call(t, n) && (e[n] = t[n])
+                    return (i.prototype = t.prototype), (e.prototype = new i()), (e.__super__ = t.prototype), e
                 }),
-                u.define('select2/utils', ['jquery'], function (r) {
-                    var s = {}
-                    function c(e) {
-                        var t,
-                            n = e.prototype,
-                            s = []
-                        for (t in n) 'function' == typeof n[t] && 'constructor' !== t && s.push(t)
-                        return s
-                    }
-                    ; (s.Extend = function (e, t) {
-                        var n,
-                            s = {}.hasOwnProperty
-                        function i() {
-                            this.constructor = e
+                    (s.Decorate = function (s, i) {
+                        var e = c(i),
+                            t = c(s)
+
+                        function r() {
+                            var e = Array.prototype.unshift,
+                                t = i.prototype.constructor.length,
+                                n = s.prototype.constructor
+                            0 < t && (e.call(arguments, s.prototype.constructor), (n = i.prototype.constructor)), n.apply(this, arguments)
                         }
-                        for (n in t) s.call(t, n) && (e[n] = t[n])
-                        return (i.prototype = t.prototype), (e.prototype = new i()), (e.__super__ = t.prototype), e
-                    }),
-                        (s.Decorate = function (s, i) {
-                            var e = c(i),
-                                t = c(s)
-                            function r() {
-                                var e = Array.prototype.unshift,
-                                    t = i.prototype.constructor.length,
-                                    n = s.prototype.constructor
-                                0 < t && (e.call(arguments, s.prototype.constructor), (n = i.prototype.constructor)), n.apply(this, arguments)
-                            }
-                            ; (i.displayName = s.displayName),
-                                (r.prototype = new (function () {
-                                    this.constructor = r
-                                })())
-                            for (var n = 0; n < t.length; n++) {
-                                var o = t[n]
-                                r.prototype[o] = s.prototype[o]
-                            }
-                            for (var a = 0; a < e.length; a++) {
-                                var l = e[a]
-                                r.prototype[l] = (function (e) {
-                                    var t = function () { }
-                                    e in r.prototype && (t = r.prototype[e])
-                                    var n = i.prototype[e]
-                                    return function () {
-                                        return Array.prototype.unshift.call(arguments, t), n.apply(this, arguments)
-                                    }
-                                })(l)
-                            }
-                            return r
-                        })
-                    function e() {
-                        this.listeners = {}
-                    }
-                    ; (e.prototype.on = function (e, t) {
-                        ; (this.listeners = this.listeners || {}), e in this.listeners ? this.listeners[e].push(t) : (this.listeners[e] = [t])
-                    }),
-                        (e.prototype.trigger = function (e) {
-                            var t = Array.prototype.slice,
-                                n = t.call(arguments, 1)
-                                ; (this.listeners = this.listeners || {}),
-                                    0 === (n = null == n ? [] : n).length && n.push({}),
-                                    (n[0]._type = e) in this.listeners && this.invoke(this.listeners[e], t.call(arguments, 1)),
-                                    '*' in this.listeners && this.invoke(this.listeners['*'], arguments)
-                        }),
-                        (e.prototype.invoke = function (e, t) {
-                            for (var n = 0, s = e.length; n < s; n++) e[n].apply(this, t)
-                        }),
-                        (s.Observable = e),
-                        (s.generateChars = function (e) {
-                            for (var t = '', n = 0; n < e; n++) t += Math.floor(36 * Math.random()).toString(36)
-                            return t
-                        }),
-                        (s.bind = function (e, t) {
-                            return function () {
-                                e.apply(t, arguments)
-                            }
-                        }),
-                        (s._convertData = function (e) {
-                            for (var t in e) {
-                                var n = t.split('-'),
-                                    s = e
-                                if (1 !== n.length) {
-                                    for (var i = 0; i < n.length; i++) {
-                                        var r = n[i]
-                                            ; (r = r.substring(0, 1).toLowerCase() + r.substring(1)) in s || (s[r] = {}),
-                                                i == n.length - 1 && (s[r] = e[t]),
-                                                (s = s[r])
-                                    }
-                                    delete e[t]
+                        ;(i.displayName = s.displayName),
+                            (r.prototype = new (function () {
+                                this.constructor = r
+                            })())
+                        for (var n = 0; n < t.length; n++) {
+                            var o = t[n]
+                            r.prototype[o] = s.prototype[o]
+                        }
+                        for (var a = 0; a < e.length; a++) {
+                            var l = e[a]
+                            r.prototype[l] = (function (e) {
+                                var t = function () {}
+                                e in r.prototype && (t = r.prototype[e])
+                                var n = i.prototype[e]
+                                return function () {
+                                    return Array.prototype.unshift.call(arguments, t), n.apply(this, arguments)
                                 }
+                            })(l)
+                        }
+                        return r
+                    })
+
+                function e() {
+                    this.listeners = {}
+                }
+                ;(e.prototype.on = function (e, t) {
+                    ;(this.listeners = this.listeners || {}), e in this.listeners ? this.listeners[e].push(t) : (this.listeners[e] = [t])
+                }),
+                    (e.prototype.trigger = function (e) {
+                        var t = Array.prototype.slice,
+                            n = t.call(arguments, 1)
+                        ;(this.listeners = this.listeners || {}),
+                            0 === (n = null == n ? [] : n).length && n.push({}),
+                            (n[0]._type = e) in this.listeners && this.invoke(this.listeners[e], t.call(arguments, 1)),
+                            '*' in this.listeners && this.invoke(this.listeners['*'], arguments)
+                    }),
+                    (e.prototype.invoke = function (e, t) {
+                        for (var n = 0, s = e.length; n < s; n++) e[n].apply(this, t)
+                    }),
+                    (s.Observable = e),
+                    (s.generateChars = function (e) {
+                        for (var t = '', n = 0; n < e; n++) t += Math.floor(36 * Math.random()).toString(36)
+                        return t
+                    }),
+                    (s.bind = function (e, t) {
+                        return function () {
+                            e.apply(t, arguments)
+                        }
+                    }),
+                    (s._convertData = function (e) {
+                        for (var t in e) {
+                            var n = t.split('-'),
+                                s = e
+                            if (1 !== n.length) {
+                                for (var i = 0; i < n.length; i++) {
+                                    var r = n[i]
+                                    ;(r = r.substring(0, 1).toLowerCase() + r.substring(1)) in s || (s[r] = {}),
+                                        i == n.length - 1 && (s[r] = e[t]),
+                                        (s = s[r])
+                                }
+                                delete e[t]
                             }
-                            return e
-                        }),
-                        (s.hasScroll = function (e, t) {
-                            var n = r(t),
-                                s = t.style.overflowX,
-                                i = t.style.overflowY
-                            return (
-                                (s !== i || ('hidden' !== i && 'visible' !== i)) &&
-                                ('scroll' === s || 'scroll' === i || n.innerHeight() < t.scrollHeight || n.innerWidth() < t.scrollWidth)
-                            )
-                        }),
-                        (s.escapeMarkup = function (e) {
-                            var t = {
-                                '\\': '&#92;',
-                                '&': '&amp;',
-                                '<': '&lt;',
-                                '>': '&gt;',
-                                '"': '&quot;',
-                                "'": '&#39;',
-                                '/': '&#47;',
-                            }
-                            return 'string' != typeof e
-                                ? e
-                                : String(e).replace(/[&<>"'\/\\]/g, function (e) {
-                                    return t[e]
-                                })
-                        }),
-                        (s.__cache = {})
-                    var n = 0
-                    return (
-                        (s.GetUniqueElementId = function (e) {
-                            var t = e.getAttribute('data-select2-id')
-                            return (
-                                null != t ||
+                        }
+                        return e
+                    }),
+                    (s.hasScroll = function (e, t) {
+                        var n = r(t),
+                            s = t.style.overflowX,
+                            i = t.style.overflowY
+                        return (
+                            (s !== i || ('hidden' !== i && 'visible' !== i)) &&
+                            ('scroll' === s || 'scroll' === i || n.innerHeight() < t.scrollHeight || n.innerWidth() < t.scrollWidth)
+                        )
+                    }),
+                    (s.escapeMarkup = function (e) {
+                        var t = {
+                            '\\': '&#92;',
+                            '&': '&amp;',
+                            '<': '&lt;',
+                            '>': '&gt;',
+                            '"': '&quot;',
+                            "'": '&#39;',
+                            '/': '&#47;',
+                        }
+                        return 'string' != typeof e
+                            ? e
+                            : String(e).replace(/[&<>"'\/\\]/g, function (e) {
+                                  return t[e]
+                              })
+                    }),
+                    (s.__cache = {})
+                var n = 0
+                return (
+                    (s.GetUniqueElementId = function (e) {
+                        var t = e.getAttribute('data-select2-id')
+                        return (
+                            null != t ||
                                 ((t = e.id ? 'select2-data-' + e.id : 'select2-data-' + (++n).toString() + '-' + s.generateChars(4)),
-                                    e.setAttribute('data-select2-id', t)),
-                                t
-                            )
-                        }),
-                        (s.StoreData = function (e, t, n) {
-                            e = s.GetUniqueElementId(e)
-                            s.__cache[e] || (s.__cache[e] = {}), (s.__cache[e][t] = n)
-                        }),
-                        (s.GetData = function (e, t) {
-                            var n = s.GetUniqueElementId(e)
-                            return t ? (s.__cache[n] && null != s.__cache[n][t] ? s.__cache[n][t] : r(e).data(t)) : s.__cache[n]
-                        }),
-                        (s.RemoveData = function (e) {
-                            var t = s.GetUniqueElementId(e)
-                            null != s.__cache[t] && delete s.__cache[t], e.removeAttribute('data-select2-id')
-                        }),
-                        (s.copyNonInternalCssClasses = function (e, t) {
-                            var n = (n = e.getAttribute('class').trim().split(/\s+/)).filter(function (e) {
+                                e.setAttribute('data-select2-id', t)),
+                            t
+                        )
+                    }),
+                    (s.StoreData = function (e, t, n) {
+                        e = s.GetUniqueElementId(e)
+                        s.__cache[e] || (s.__cache[e] = {}), (s.__cache[e][t] = n)
+                    }),
+                    (s.GetData = function (e, t) {
+                        var n = s.GetUniqueElementId(e)
+                        return t ? (s.__cache[n] && null != s.__cache[n][t] ? s.__cache[n][t] : r(e).data(t)) : s.__cache[n]
+                    }),
+                    (s.RemoveData = function (e) {
+                        var t = s.GetUniqueElementId(e)
+                        null != s.__cache[t] && delete s.__cache[t], e.removeAttribute('data-select2-id')
+                    }),
+                    (s.copyNonInternalCssClasses = function (e, t) {
+                        var n = (n = e.getAttribute('class').trim().split(/\s+/)).filter(function (e) {
                                 return 0 === e.indexOf('select2-')
                             }),
-                                t = (t = t.getAttribute('class').trim().split(/\s+/)).filter(function (e) {
-                                    return 0 !== e.indexOf('select2-')
-                                }),
-                                t = n.concat(t)
-                            e.setAttribute('class', t.join(' '))
-                        }),
-                        s
-                    )
-                }),
-                u.define('select2/results', ['jquery', './utils'], function (d, p) {
-                    function s(e, t, n) {
-                        ; (this.$element = e), (this.data = n), (this.options = t), s.__super__.constructor.call(this)
-                    }
-                    return (
-                        p.Extend(s, p.Observable),
-                        (s.prototype.render = function () {
-                            var e = d('<ul class="select2-results__options" role="listbox"></ul>')
-                            return this.options.get('multiple') && e.attr('aria-multiselectable', 'true'), (this.$results = e)
-                        }),
-                        (s.prototype.clear = function () {
-                            this.$results.empty()
-                        }),
-                        (s.prototype.displayMessage = function (e) {
-                            var t = this.options.get('escapeMarkup')
-                            this.clear(), this.hideLoading()
-                            var n = d('<li role="alert" aria-live="assertive" class="select2-results__option"></li>'),
-                                s = this.options.get('translations').get(e.message)
-                            n.append(t(s(e.args))), (n[0].className += ' select2-results__message'), this.$results.append(n)
-                        }),
-                        (s.prototype.hideMessages = function () {
-                            this.$results.find('.select2-results__message').remove()
-                        }),
-                        (s.prototype.append = function (e) {
-                            this.hideLoading()
-                            var t = []
-                            if (null != e.results && 0 !== e.results.length) {
-                                e.results = this.sort(e.results)
-                                for (var n = 0; n < e.results.length; n++) {
-                                    var s = e.results[n],
-                                        s = this.option(s)
-                                    t.push(s)
-                                }
-                                this.$results.append(t)
-                            } else 0 === this.$results.children().length && this.trigger('results:message', { message: 'noResults' })
-                        }),
-                        (s.prototype.position = function (e, t) {
-                            t.find('.select2-results').append(e)
-                        }),
-                        (s.prototype.sort = function (e) {
-                            return this.options.get('sorter')(e)
-                        }),
-                        (s.prototype.highlightFirstItem = function () {
-                            var e = this.$results.find('.select2-results__option--selectable'),
-                                t = e.filter('.select2-results__option--selected')
-                                ; (0 < t.length ? t : e).first().trigger('mouseenter'), this.ensureHighlightVisible()
-                        }),
-                        (s.prototype.setClasses = function () {
-                            var t = this
-                            this.data.current(function (e) {
-                                var s = e.map(function (e) {
-                                    return e.id.toString()
-                                })
-                                t.$results.find('.select2-results__option--selectable').each(function () {
-                                    var e = d(this),
-                                        t = p.GetData(this, 'data'),
-                                        n = '' + t.id
-                                        ; (null != t.element && t.element.selected) || (null == t.element && -1 < s.indexOf(n))
-                                            ? (this.classList.add('select2-results__option--selected'), e.attr('aria-selected', 'true'))
-                                            : (this.classList.remove('select2-results__option--selected'), e.attr('aria-selected', 'false'))
-                                })
-                            })
-                        }),
-                        (s.prototype.showLoading = function (e) {
-                            this.hideLoading()
-                                ; (e = {
-                                    disabled: !0,
-                                    loading: !0,
-                                    text: this.options.get('translations').get('searching')(e),
-                                }),
-                                    (e = this.option(e))
-                                ; (e.className += ' loading-results'), this.$results.prepend(e)
-                        }),
-                        (s.prototype.hideLoading = function () {
-                            this.$results.find('.loading-results').remove()
-                        }),
-                        (s.prototype.option = function (e) {
-                            var t = document.createElement('li')
-                            t.classList.add('select2-results__option'), t.classList.add('select2-results__option--selectable')
-                            var n,
-                                s = { role: 'option' },
-                                i =
-                                    window.Element.prototype.matches ||
-                                    window.Element.prototype.msMatchesSelector ||
-                                    window.Element.prototype.webkitMatchesSelector
-                            for (n in (((null != e.element && i.call(e.element, ':disabled')) || (null == e.element && e.disabled)) &&
-                                ((s['aria-disabled'] = 'true'),
-                                    t.classList.remove('select2-results__option--selectable'),
-                                    t.classList.add('select2-results__option--disabled')),
-                                null == e.id && t.classList.remove('select2-results__option--selectable'),
-                                null != e._resultId && (t.id = e._resultId),
-                                e.title && (t.title = e.title),
-                                e.children &&
-                                ((s.role = 'group'),
-                                    (s['aria-label'] = e.text),
-                                    t.classList.remove('select2-results__option--selectable'),
-                                    t.classList.add('select2-results__option--group')),
-                                s)) {
-                                var r = s[n]
-                                t.setAttribute(n, r)
+                            t = (t = t.getAttribute('class').trim().split(/\s+/)).filter(function (e) {
+                                return 0 !== e.indexOf('select2-')
+                            }),
+                            t = n.concat(t)
+                        e.setAttribute('class', t.join(' '))
+                    }),
+                    s
+                )
+            }),
+            u.define('select2/results', ['jquery', './utils'], function (d, p) {
+                function s(e, t, n) {
+                    ;(this.$element = e), (this.data = n), (this.options = t), s.__super__.constructor.call(this)
+                }
+
+                return (
+                    p.Extend(s, p.Observable),
+                    (s.prototype.render = function () {
+                        var e = d('<ul class="select2-results__options" role="listbox"></ul>')
+                        return this.options.get('multiple') && e.attr('aria-multiselectable', 'true'), (this.$results = e)
+                    }),
+                    (s.prototype.clear = function () {
+                        this.$results.empty()
+                    }),
+                    (s.prototype.displayMessage = function (e) {
+                        var t = this.options.get('escapeMarkup')
+                        this.clear(), this.hideLoading()
+                        var n = d('<li role="alert" aria-live="assertive" class="select2-results__option"></li>'),
+                            s = this.options.get('translations').get(e.message)
+                        n.append(t(s(e.args))), (n[0].className += ' select2-results__message'), this.$results.append(n)
+                    }),
+                    (s.prototype.hideMessages = function () {
+                        this.$results.find('.select2-results__message').remove()
+                    }),
+                    (s.prototype.append = function (e) {
+                        this.hideLoading()
+                        var t = []
+                        if (null != e.results && 0 !== e.results.length) {
+                            e.results = this.sort(e.results)
+                            for (var n = 0; n < e.results.length; n++) {
+                                var s = e.results[n],
+                                    s = this.option(s)
+                                t.push(s)
                             }
-                            if (e.children) {
-                                var o = d(t),
-                                    a = document.createElement('strong')
-                                    ; (a.className = 'select2-results__group'), this.template(e, a)
-                                for (var l = [], c = 0; c < e.children.length; c++) {
-                                    var u = e.children[c],
-                                        u = this.option(u)
-                                    l.push(u)
-                                }
-                                i = d('<ul></ul>', {
-                                    class: 'select2-results__options select2-results__options--nested',
-                                    role: 'none',
-                                })
-                                i.append(l), o.append(a), o.append(i)
-                            } else this.template(e, t)
-                            return p.StoreData(t, 'data', e), t
+                            this.$results.append(t)
+                        } else 0 === this.$results.children().length && this.trigger('results:message', { message: 'noResults' })
+                    }),
+                    (s.prototype.position = function (e, t) {
+                        t.find('.select2-results').append(e)
+                    }),
+                    (s.prototype.sort = function (e) {
+                        return this.options.get('sorter')(e)
+                    }),
+                    (s.prototype.highlightFirstItem = function () {
+                        var e = this.$results.find('.select2-results__option--selectable'),
+                            t = e.filter('.select2-results__option--selected')
+                        ;(0 < t.length ? t : e).first().trigger('mouseenter'), this.ensureHighlightVisible()
+                    }),
+                    (s.prototype.setClasses = function () {
+                        var t = this
+                        this.data.current(function (e) {
+                            var s = e.map(function (e) {
+                                return e.id.toString()
+                            })
+                            t.$results.find('.select2-results__option--selectable').each(function () {
+                                var e = d(this),
+                                    t = p.GetData(this, 'data'),
+                                    n = '' + t.id
+                                ;(null != t.element && t.element.selected) || (null == t.element && -1 < s.indexOf(n))
+                                    ? (this.classList.add('select2-results__option--selected'), e.attr('aria-selected', 'true'))
+                                    : (this.classList.remove('select2-results__option--selected'), e.attr('aria-selected', 'false'))
+                            })
+                        })
+                    }),
+                    (s.prototype.showLoading = function (e) {
+                        this.hideLoading()
+                        ;(e = {
+                            disabled: !0,
+                            loading: !0,
+                            text: this.options.get('translations').get('searching')(e),
                         }),
-                        (s.prototype.bind = function (t, e) {
-                            var i = this,
-                                n = t.id + '-results'
-                            this.$results.attr('id', n),
-                                t.on('results:all', function (e) {
-                                    i.clear(), i.append(e.data), t.isOpen() && (i.setClasses(), i.highlightFirstItem())
-                                }),
-                                t.on('results:append', function (e) {
-                                    i.append(e.data), t.isOpen() && i.setClasses()
-                                }),
-                                t.on('query', function (e) {
-                                    i.hideMessages(), i.showLoading(e)
-                                }),
-                                t.on('select', function () {
-                                    t.isOpen() && (i.setClasses(), i.options.get('scrollAfterSelect') && i.highlightFirstItem())
-                                }),
-                                t.on('unselect', function () {
-                                    t.isOpen() && (i.setClasses(), i.options.get('scrollAfterSelect') && i.highlightFirstItem())
-                                }),
-                                t.on('open', function () {
-                                    i.$results.attr('aria-expanded', 'true'),
-                                        i.$results.attr('aria-hidden', 'false'),
-                                        i.setClasses(),
-                                        i.ensureHighlightVisible()
-                                }),
-                                t.on('close', function () {
-                                    i.$results.attr('aria-expanded', 'false'),
-                                        i.$results.attr('aria-hidden', 'true'),
-                                        i.$results.removeAttr('aria-activedescendant')
-                                }),
-                                t.on('results:toggle', function () {
-                                    var e = i.getHighlightedResults()
-                                    0 !== e.length && e.trigger('mouseup')
-                                }),
-                                t.on('results:select', function () {
-                                    var e,
-                                        t = i.getHighlightedResults()
-                                    0 !== t.length &&
-                                        ((e = p.GetData(t[0], 'data')),
-                                            t.hasClass('select2-results__option--selected') ? i.trigger('close', {}) : i.trigger('select', { data: e }))
-                                }),
-                                t.on('results:previous', function () {
-                                    var e,
-                                        t = i.getHighlightedResults(),
-                                        n = i.$results.find('.select2-results__option--selectable'),
-                                        s = n.index(t)
-                                    s <= 0 ||
-                                        ((e = s - 1),
-                                            0 === t.length && (e = 0),
-                                            (s = n.eq(e)).trigger('mouseenter'),
-                                            (t = i.$results.offset().top),
-                                            (n = s.offset().top),
-                                            (s = i.$results.scrollTop() + (n - t)),
-                                            0 === e ? i.$results.scrollTop(0) : n - t < 0 && i.$results.scrollTop(s))
-                                }),
-                                t.on('results:next', function () {
-                                    var e,
-                                        t = i.getHighlightedResults(),
-                                        n = i.$results.find('.select2-results__option--selectable'),
-                                        s = n.index(t) + 1
-                                    s >= n.length ||
-                                        ((e = n.eq(s)).trigger('mouseenter'),
-                                            (t = i.$results.offset().top + i.$results.outerHeight(!1)),
-                                            (n = e.offset().top + e.outerHeight(!1)),
-                                            (e = i.$results.scrollTop() + n - t),
-                                            0 === s ? i.$results.scrollTop(0) : t < n && i.$results.scrollTop(e))
-                                }),
-                                t.on('results:focus', function (e) {
-                                    e.element[0].classList.add('select2-results__option--highlighted'), e.element[0].setAttribute('aria-selected', 'true')
-                                }),
-                                t.on('results:message', function (e) {
-                                    i.displayMessage(e)
-                                }),
-                                d.fn.mousewheel &&
+                            (e = this.option(e))
+                        ;(e.className += ' loading-results'), this.$results.prepend(e)
+                    }),
+                    (s.prototype.hideLoading = function () {
+                        this.$results.find('.loading-results').remove()
+                    }),
+                    (s.prototype.option = function (e) {
+                        var t = document.createElement('li')
+                        t.classList.add('select2-results__option'), t.classList.add('select2-results__option--selectable')
+                        var n,
+                            s = { role: 'option' },
+                            i =
+                                window.Element.prototype.matches ||
+                                window.Element.prototype.msMatchesSelector ||
+                                window.Element.prototype.webkitMatchesSelector
+                        for (n in (((null != e.element && i.call(e.element, ':disabled')) || (null == e.element && e.disabled)) &&
+                            ((s['aria-disabled'] = 'true'),
+                            t.classList.remove('select2-results__option--selectable'),
+                            t.classList.add('select2-results__option--disabled')),
+                        null == e.id && t.classList.remove('select2-results__option--selectable'),
+                        null != e._resultId && (t.id = e._resultId),
+                        e.title && (t.title = e.title),
+                        e.children &&
+                            ((s.role = 'group'),
+                            (s['aria-label'] = e.text),
+                            t.classList.remove('select2-results__option--selectable'),
+                            t.classList.add('select2-results__option--group')),
+                        s)) {
+                            var r = s[n]
+                            t.setAttribute(n, r)
+                        }
+                        if (e.children) {
+                            var o = d(t),
+                                a = document.createElement('strong')
+                            ;(a.className = 'select2-results__group'), this.template(e, a)
+                            for (var l = [], c = 0; c < e.children.length; c++) {
+                                var u = e.children[c],
+                                    u = this.option(u)
+                                l.push(u)
+                            }
+                            i = d('<ul></ul>', {
+                                class: 'select2-results__options select2-results__options--nested',
+                                role: 'none',
+                            })
+                            i.append(l), o.append(a), o.append(i)
+                        } else this.template(e, t)
+                        return p.StoreData(t, 'data', e), t
+                    }),
+                    (s.prototype.bind = function (t, e) {
+                        var i = this,
+                            n = t.id + '-results'
+                        this.$results.attr('id', n),
+                            t.on('results:all', function (e) {
+                                i.clear(), i.append(e.data), t.isOpen() && (i.setClasses(), i.highlightFirstItem())
+                            }),
+                            t.on('results:append', function (e) {
+                                i.append(e.data), t.isOpen() && i.setClasses()
+                            }),
+                            t.on('query', function (e) {
+                                i.hideMessages(), i.showLoading(e)
+                            }),
+                            t.on('select', function () {
+                                t.isOpen() && (i.setClasses(), i.options.get('scrollAfterSelect') && i.highlightFirstItem())
+                            }),
+                            t.on('unselect', function () {
+                                t.isOpen() && (i.setClasses(), i.options.get('scrollAfterSelect') && i.highlightFirstItem())
+                            }),
+                            t.on('open', function () {
+                                i.$results.attr('aria-expanded', 'true'),
+                                    i.$results.attr('aria-hidden', 'false'),
+                                    i.setClasses(),
+                                    i.ensureHighlightVisible()
+                            }),
+                            t.on('close', function () {
+                                i.$results.attr('aria-expanded', 'false'),
+                                    i.$results.attr('aria-hidden', 'true'),
+                                    i.$results.removeAttr('aria-activedescendant')
+                            }),
+                            t.on('results:toggle', function () {
+                                var e = i.getHighlightedResults()
+                                0 !== e.length && e.trigger('mouseup')
+                            }),
+                            t.on('results:select', function () {
+                                var e,
+                                    t = i.getHighlightedResults()
+                                0 !== t.length &&
+                                    ((e = p.GetData(t[0], 'data')),
+                                    t.hasClass('select2-results__option--selected') ? i.trigger('close', {}) : i.trigger('select', { data: e }))
+                            }),
+                            t.on('results:previous', function () {
+                                var e,
+                                    t = i.getHighlightedResults(),
+                                    n = i.$results.find('.select2-results__option--selectable'),
+                                    s = n.index(t)
+                                s <= 0 ||
+                                    ((e = s - 1),
+                                    0 === t.length && (e = 0),
+                                    (s = n.eq(e)).trigger('mouseenter'),
+                                    (t = i.$results.offset().top),
+                                    (n = s.offset().top),
+                                    (s = i.$results.scrollTop() + (n - t)),
+                                    0 === e ? i.$results.scrollTop(0) : n - t < 0 && i.$results.scrollTop(s))
+                            }),
+                            t.on('results:next', function () {
+                                var e,
+                                    t = i.getHighlightedResults(),
+                                    n = i.$results.find('.select2-results__option--selectable'),
+                                    s = n.index(t) + 1
+                                s >= n.length ||
+                                    ((e = n.eq(s)).trigger('mouseenter'),
+                                    (t = i.$results.offset().top + i.$results.outerHeight(!1)),
+                                    (n = e.offset().top + e.outerHeight(!1)),
+                                    (e = i.$results.scrollTop() + n - t),
+                                    0 === s ? i.$results.scrollTop(0) : t < n && i.$results.scrollTop(e))
+                            }),
+                            t.on('results:focus', function (e) {
+                                e.element[0].classList.add('select2-results__option--highlighted'), e.element[0].setAttribute('aria-selected', 'true')
+                            }),
+                            t.on('results:message', function (e) {
+                                i.displayMessage(e)
+                            }),
+                            d.fn.mousewheel &&
                                 this.$results.on('mousewheel', function (e) {
                                     var t = i.$results.scrollTop(),
                                         n = i.$results.get(0).scrollHeight - t + e.deltaY,
@@ -520,1713 +526,1735 @@ const URL_PATTERN_REGEX =
                                     t
                                         ? (i.$results.scrollTop(0), e.preventDefault(), e.stopPropagation())
                                         : n &&
-                                        (i.$results.scrollTop(i.$results.get(0).scrollHeight - i.$results.height()),
-                                            e.preventDefault(),
-                                            e.stopPropagation())
+                                          (i.$results.scrollTop(i.$results.get(0).scrollHeight - i.$results.height()),
+                                          e.preventDefault(),
+                                          e.stopPropagation())
                                 }),
-                                this.$results.on('mouseup', '.select2-results__option--selectable', function (e) {
-                                    var t = d(this),
-                                        n = p.GetData(this, 'data')
-                                    t.hasClass('select2-results__option--selected')
-                                        ? i.options.get('multiple')
-                                            ? i.trigger('unselect', { originalEvent: e, data: n })
-                                            : i.trigger('close', {})
-                                        : i.trigger('select', { originalEvent: e, data: n })
-                                }),
-                                this.$results.on('mouseenter', '.select2-results__option--selectable', function (e) {
-                                    var t = p.GetData(this, 'data')
-                                    i.getHighlightedResults().removeClass('select2-results__option--highlighted').attr('aria-selected', 'false'),
-                                        i.trigger('results:focus', { data: t, element: d(this) })
-                                })
-                        }),
-                        (s.prototype.getHighlightedResults = function () {
-                            return this.$results.find('.select2-results__option--highlighted')
-                        }),
-                        (s.prototype.destroy = function () {
-                            this.$results.remove()
-                        }),
-                        (s.prototype.ensureHighlightVisible = function () {
-                            var e,
-                                t,
-                                n,
-                                s,
-                                i = this.getHighlightedResults()
-                            0 !== i.length &&
-                                ((e = this.$results.find('.select2-results__option--selectable').index(i)),
-                                    (s = this.$results.offset().top),
-                                    (t = i.offset().top),
-                                    (n = this.$results.scrollTop() + (t - s)),
-                                    (s = t - s),
-                                    (n -= 2 * i.outerHeight(!1)),
-                                    e <= 2 ? this.$results.scrollTop(0) : (s > this.$results.outerHeight() || s < 0) && this.$results.scrollTop(n))
-                        }),
-                        (s.prototype.template = function (e, t) {
-                            var n = this.options.get('templateResult'),
-                                s = this.options.get('escapeMarkup'),
-                                e = n(e, t)
-                            null == e ? (t.style.display = 'none') : 'string' == typeof e ? (t.innerHTML = s(e)) : d(t).append(e)
-                        }),
-                        s
-                    )
-                }),
-                u.define('select2/keys', [], function () {
-                    return {
-                        BACKSPACE: 8,
-                        TAB: 9,
-                        ENTER: 13,
-                        SHIFT: 16,
-                        CTRL: 17,
-                        ALT: 18,
-                        ESC: 27,
-                        SPACE: 32,
-                        PAGE_UP: 33,
-                        PAGE_DOWN: 34,
-                        END: 35,
-                        HOME: 36,
-                        LEFT: 37,
-                        UP: 38,
-                        RIGHT: 39,
-                        DOWN: 40,
-                        DELETE: 46,
-                    }
-                }),
-                u.define('select2/selection/base', ['jquery', '../utils', '../keys'], function (n, s, i) {
-                    function r(e, t) {
-                        ; (this.$element = e), (this.options = t), r.__super__.constructor.call(this)
-                    }
-                    return (
-                        s.Extend(r, s.Observable),
-                        (r.prototype.render = function () {
-                            var e = n('<span class="select2-selection" role="combobox"  aria-haspopup="true" aria-expanded="false"></span>')
-                            return (
-                                (this._tabindex = 0),
-                                null != s.GetData(this.$element[0], 'old-tabindex')
-                                    ? (this._tabindex = s.GetData(this.$element[0], 'old-tabindex'))
-                                    : null != this.$element.attr('tabindex') && (this._tabindex = this.$element.attr('tabindex')),
-                                e.attr('title', this.$element.attr('title')),
-                                e.attr('tabindex', this._tabindex),
-                                e.attr('aria-disabled', 'false'),
-                                (this.$selection = e)
-                            )
-                        }),
-                        (r.prototype.bind = function (e, t) {
-                            var n = this,
-                                s = e.id + '-results'
-                                ; (this.container = e),
-                                    this.$selection.on('focus', function (e) {
-                                        n.trigger('focus', e)
-                                    }),
-                                    this.$selection.on('blur', function (e) {
-                                        n._handleBlur(e)
-                                    }),
-                                    this.$selection.on('keydown', function (e) {
-                                        n.trigger('keypress', e), e.which === i.SPACE && e.preventDefault()
-                                    }),
-                                    e.on('results:focus', function (e) {
-                                        n.$selection.attr('aria-activedescendant', e.data._resultId)
-                                    }),
-                                    e.on('selection:update', function (e) {
-                                        n.update(e.data)
-                                    }),
-                                    e.on('open', function () {
-                                        n.$selection.attr('aria-expanded', 'true'), n.$selection.attr('aria-owns', s), n._attachCloseHandler(e)
-                                    }),
-                                    e.on('close', function () {
-                                        n.$selection.attr('aria-expanded', 'false'),
-                                            n.$selection.removeAttr('aria-activedescendant'),
-                                            n.$selection.removeAttr('aria-owns'),
-                                            n.$selection.trigger('focus'),
-                                            n._detachCloseHandler(e)
-                                    }),
-                                    e.on('enable', function () {
-                                        n.$selection.attr('tabindex', n._tabindex), n.$selection.attr('aria-disabled', 'false')
-                                    }),
-                                    e.on('disable', function () {
-                                        n.$selection.attr('tabindex', '-1'), n.$selection.attr('aria-disabled', 'true')
-                                    })
-                        }),
-                        (r.prototype._handleBlur = function (e) {
-                            var t = this
-                            window.setTimeout(function () {
-                                document.activeElement == t.$selection[0] || n.contains(t.$selection[0], document.activeElement) || t.trigger('blur', e)
-                            }, 1)
-                        }),
-                        (r.prototype._attachCloseHandler = function (e) {
-                            n(document.body).on('mousedown.select2.' + e.id, function (e) {
-                                var t = n(e.target).closest('.select2')
-                                n('.select2.select2-container--open').each(function () {
-                                    this != t[0] && s.GetData(this, 'element').select2('close')
-                                })
+                            this.$results.on('mouseup', '.select2-results__option--selectable', function (e) {
+                                var t = d(this),
+                                    n = p.GetData(this, 'data')
+                                t.hasClass('select2-results__option--selected')
+                                    ? i.options.get('multiple')
+                                        ? i.trigger('unselect', { originalEvent: e, data: n })
+                                        : i.trigger('close', {})
+                                    : i.trigger('select', { originalEvent: e, data: n })
+                            }),
+                            this.$results.on('mouseenter', '.select2-results__option--selectable', function (e) {
+                                var t = p.GetData(this, 'data')
+                                i.getHighlightedResults().removeClass('select2-results__option--highlighted').attr('aria-selected', 'false'),
+                                    i.trigger('results:focus', { data: t, element: d(this) })
                             })
-                        }),
-                        (r.prototype._detachCloseHandler = function (e) {
-                            n(document.body).off('mousedown.select2.' + e.id)
-                        }),
-                        (r.prototype.position = function (e, t) {
-                            t.find('.selection').append(e)
-                        }),
-                        (r.prototype.destroy = function () {
-                            this._detachCloseHandler(this.container)
-                        }),
-                        (r.prototype.update = function (e) {
-                            throw new Error('The `update` method must be defined in child classes.')
-                        }),
-                        (r.prototype.isEnabled = function () {
-                            return !this.isDisabled()
-                        }),
-                        (r.prototype.isDisabled = function () {
-                            return this.options.get('disabled')
-                        }),
-                        r
-                    )
-                }),
-                u.define('select2/selection/single', ['jquery', './base', '../utils', '../keys'], function (e, t, n, s) {
-                    function i() {
-                        i.__super__.constructor.apply(this, arguments)
-                    }
-                    return (
-                        n.Extend(i, t),
-                        (i.prototype.render = function () {
-                            var e = i.__super__.render.call(this)
-                            return (
-                                e[0].classList.add('select2-selection--single'),
-                                e.html(
-                                    '<span class="select2-selection__rendered"></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>',
-                                ),
-                                e
-                            )
-                        }),
-                        (i.prototype.bind = function (t, e) {
-                            var n = this
-                            i.__super__.bind.apply(this, arguments)
-                            var s = t.id + '-container'
-                            this.$selection.find('.select2-selection__rendered').attr('id', s).attr('role', 'textbox').attr('aria-readonly', 'true'),
-                                this.$selection.attr('aria-labelledby', s),
-                                this.$selection.attr('aria-controls', s),
-                                this.$selection.on('mousedown', function (e) {
-                                    1 === e.which && n.trigger('toggle', { originalEvent: e })
-                                }),
-                                this.$selection.on('focus', function (e) { }),
-                                this.$selection.on('blur', function (e) { }),
-                                t.on('focus', function (e) {
-                                    t.isOpen() || n.$selection.trigger('focus')
-                                })
-                        }),
-                        (i.prototype.clear = function () {
-                            var e = this.$selection.find('.select2-selection__rendered')
-                            e.empty(), e.removeAttr('title')
-                        }),
-                        (i.prototype.display = function (e, t) {
-                            var n = this.options.get('templateSelection')
-                            return this.options.get('escapeMarkup')(n(e, t))
-                        }),
-                        (i.prototype.selectionContainer = function () {
-                            return e('<span></span>')
-                        }),
-                        (i.prototype.update = function (e) {
-                            var t, n
-                            0 !== e.length
-                                ? ((n = e[0]),
-                                    (t = this.$selection.find('.select2-selection__rendered')),
-                                    (e = this.display(n, t)),
-                                    t.empty().append(e),
-                                    (n = n.title || n.text) ? t.attr('title', n) : t.removeAttr('title'))
-                                : this.clear()
-                        }),
-                        i
-                    )
-                }),
-                u.define('select2/selection/multiple', ['jquery', './base', '../utils'], function (i, e, c) {
-                    function r(e, t) {
-                        r.__super__.constructor.apply(this, arguments)
-                    }
-                    return (
-                        c.Extend(r, e),
-                        (r.prototype.render = function () {
-                            var e = r.__super__.render.call(this)
-                            return e[0].classList.add('select2-selection--multiple'), e.html('<ul class="select2-selection__rendered"></ul>'), e
-                        }),
-                        (r.prototype.bind = function (e, t) {
-                            var n = this
-                            r.__super__.bind.apply(this, arguments)
-                            var s = e.id + '-container'
-                            this.$selection.find('.select2-selection__rendered').attr('id', s),
-                                this.$selection.on('click', function (e) {
-                                    n.trigger('toggle', { originalEvent: e })
-                                }),
-                                this.$selection.on('click', '.select2-selection__choice__remove', function (e) {
-                                    var t
-                                    n.isDisabled() ||
-                                        ((t = i(this).parent()), (t = c.GetData(t[0], 'data')), n.trigger('unselect', { originalEvent: e, data: t }))
-                                }),
-                                this.$selection.on('keydown', '.select2-selection__choice__remove', function (e) {
-                                    n.isDisabled() || e.stopPropagation()
-                                })
-                        }),
-                        (r.prototype.clear = function () {
-                            var e = this.$selection.find('.select2-selection__rendered')
-                            e.empty(), e.removeAttr('title')
-                        }),
-                        (r.prototype.display = function (e, t) {
-                            var n = this.options.get('templateSelection')
-                            return this.options.get('escapeMarkup')(n(e, t))
-                        }),
-                        (r.prototype.selectionContainer = function () {
-                            return i(
-                                '<li class="select2-selection__choice"><button type="button" class="select2-selection__choice__remove" tabindex="-1"><span aria-hidden="true">&times;</span></button><span class="select2-selection__choice__display"></span></li>',
-                            )
-                        }),
-                        (r.prototype.update = function (e) {
-                            if ((this.clear(), 0 !== e.length)) {
-                                for (
-                                    var t = [], n = this.$selection.find('.select2-selection__rendered').attr('id') + '-choice-', s = 0;
-                                    s < e.length;
-                                    s++
-                                ) {
-                                    var i = e[s],
-                                        r = this.selectionContainer(),
-                                        o = this.display(i, r),
-                                        a = n + c.generateChars(4) + '-'
-                                    i.id ? (a += i.id) : (a += c.generateChars(4)), r.find('.select2-selection__choice__display').append(o).attr('id', a)
-                                    var l = i.title || i.text
-                                    l && r.attr('title', l)
-                                        ; (o = this.options.get('translations').get('removeItem')), (l = r.find('.select2-selection__choice__remove'))
-                                    l.attr('title', o()),
-                                        l.attr('aria-label', o()),
-                                        l.attr('aria-describedby', a),
-                                        c.StoreData(r[0], 'data', i),
-                                        t.push(r)
-                                }
-                                this.$selection.find('.select2-selection__rendered').append(t)
+                    }),
+                    (s.prototype.getHighlightedResults = function () {
+                        return this.$results.find('.select2-results__option--highlighted')
+                    }),
+                    (s.prototype.destroy = function () {
+                        this.$results.remove()
+                    }),
+                    (s.prototype.ensureHighlightVisible = function () {
+                        var e,
+                            t,
+                            n,
+                            s,
+                            i = this.getHighlightedResults()
+                        0 !== i.length &&
+                            ((e = this.$results.find('.select2-results__option--selectable').index(i)),
+                            (s = this.$results.offset().top),
+                            (t = i.offset().top),
+                            (n = this.$results.scrollTop() + (t - s)),
+                            (s = t - s),
+                            (n -= 2 * i.outerHeight(!1)),
+                            e <= 2 ? this.$results.scrollTop(0) : (s > this.$results.outerHeight() || s < 0) && this.$results.scrollTop(n))
+                    }),
+                    (s.prototype.template = function (e, t) {
+                        var n = this.options.get('templateResult'),
+                            s = this.options.get('escapeMarkup'),
+                            e = n(e, t)
+                        null == e ? (t.style.display = 'none') : 'string' == typeof e ? (t.innerHTML = s(e)) : d(t).append(e)
+                    }),
+                    s
+                )
+            }),
+            u.define('select2/keys', [], function () {
+                return {
+                    BACKSPACE: 8,
+                    TAB: 9,
+                    ENTER: 13,
+                    SHIFT: 16,
+                    CTRL: 17,
+                    ALT: 18,
+                    ESC: 27,
+                    SPACE: 32,
+                    PAGE_UP: 33,
+                    PAGE_DOWN: 34,
+                    END: 35,
+                    HOME: 36,
+                    LEFT: 37,
+                    UP: 38,
+                    RIGHT: 39,
+                    DOWN: 40,
+                    DELETE: 46,
+                }
+            }),
+            u.define('select2/selection/base', ['jquery', '../utils', '../keys'], function (n, s, i) {
+                function r(e, t) {
+                    ;(this.$element = e), (this.options = t), r.__super__.constructor.call(this)
+                }
+
+                return (
+                    s.Extend(r, s.Observable),
+                    (r.prototype.render = function () {
+                        var e = n('<span class="select2-selection" role="combobox"  aria-haspopup="true" aria-expanded="false"></span>')
+                        return (
+                            (this._tabindex = 0),
+                            null != s.GetData(this.$element[0], 'old-tabindex')
+                                ? (this._tabindex = s.GetData(this.$element[0], 'old-tabindex'))
+                                : null != this.$element.attr('tabindex') && (this._tabindex = this.$element.attr('tabindex')),
+                            e.attr('title', this.$element.attr('title')),
+                            e.attr('tabindex', this._tabindex),
+                            e.attr('aria-disabled', 'false'),
+                            (this.$selection = e)
+                        )
+                    }),
+                    (r.prototype.bind = function (e, t) {
+                        var n = this,
+                            s = e.id + '-results'
+                        ;(this.container = e),
+                            this.$selection.on('focus', function (e) {
+                                n.trigger('focus', e)
+                            }),
+                            this.$selection.on('blur', function (e) {
+                                n._handleBlur(e)
+                            }),
+                            this.$selection.on('keydown', function (e) {
+                                n.trigger('keypress', e), e.which === i.SPACE && e.preventDefault()
+                            }),
+                            e.on('results:focus', function (e) {
+                                n.$selection.attr('aria-activedescendant', e.data._resultId)
+                            }),
+                            e.on('selection:update', function (e) {
+                                n.update(e.data)
+                            }),
+                            e.on('open', function () {
+                                n.$selection.attr('aria-expanded', 'true'), n.$selection.attr('aria-owns', s), n._attachCloseHandler(e)
+                            }),
+                            e.on('close', function () {
+                                n.$selection.attr('aria-expanded', 'false'),
+                                    n.$selection.removeAttr('aria-activedescendant'),
+                                    n.$selection.removeAttr('aria-owns'),
+                                    n.$selection.trigger('focus'),
+                                    n._detachCloseHandler(e)
+                            }),
+                            e.on('enable', function () {
+                                n.$selection.attr('tabindex', n._tabindex), n.$selection.attr('aria-disabled', 'false')
+                            }),
+                            e.on('disable', function () {
+                                n.$selection.attr('tabindex', '-1'), n.$selection.attr('aria-disabled', 'true')
+                            })
+                    }),
+                    (r.prototype._handleBlur = function (e) {
+                        var t = this
+                        window.setTimeout(function () {
+                            document.activeElement == t.$selection[0] || n.contains(t.$selection[0], document.activeElement) || t.trigger('blur', e)
+                        }, 1)
+                    }),
+                    (r.prototype._attachCloseHandler = function (e) {
+                        n(document.body).on('mousedown.select2.' + e.id, function (e) {
+                            var t = n(e.target).closest('.select2')
+                            n('.select2.select2-container--open').each(function () {
+                                this != t[0] && s.GetData(this, 'element').select2('close')
+                            })
+                        })
+                    }),
+                    (r.prototype._detachCloseHandler = function (e) {
+                        n(document.body).off('mousedown.select2.' + e.id)
+                    }),
+                    (r.prototype.position = function (e, t) {
+                        t.find('.selection').append(e)
+                    }),
+                    (r.prototype.destroy = function () {
+                        this._detachCloseHandler(this.container)
+                    }),
+                    (r.prototype.update = function (e) {
+                        throw new Error('The `update` method must be defined in child classes.')
+                    }),
+                    (r.prototype.isEnabled = function () {
+                        return !this.isDisabled()
+                    }),
+                    (r.prototype.isDisabled = function () {
+                        return this.options.get('disabled')
+                    }),
+                    r
+                )
+            }),
+            u.define('select2/selection/single', ['jquery', './base', '../utils', '../keys'], function (e, t, n, s) {
+                function i() {
+                    i.__super__.constructor.apply(this, arguments)
+                }
+
+                return (
+                    n.Extend(i, t),
+                    (i.prototype.render = function () {
+                        var e = i.__super__.render.call(this)
+                        return (
+                            e[0].classList.add('select2-selection--single'),
+                            e.html(
+                                '<span class="select2-selection__rendered"></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>',
+                            ),
+                            e
+                        )
+                    }),
+                    (i.prototype.bind = function (t, e) {
+                        var n = this
+                        i.__super__.bind.apply(this, arguments)
+                        var s = t.id + '-container'
+                        this.$selection.find('.select2-selection__rendered').attr('id', s).attr('role', 'textbox').attr('aria-readonly', 'true'),
+                            this.$selection.attr('aria-labelledby', s),
+                            this.$selection.attr('aria-controls', s),
+                            this.$selection.on('mousedown', function (e) {
+                                1 === e.which && n.trigger('toggle', { originalEvent: e })
+                            }),
+                            this.$selection.on('focus', function (e) {}),
+                            this.$selection.on('blur', function (e) {}),
+                            t.on('focus', function (e) {
+                                t.isOpen() || n.$selection.trigger('focus')
+                            })
+                    }),
+                    (i.prototype.clear = function () {
+                        var e = this.$selection.find('.select2-selection__rendered')
+                        e.empty(), e.removeAttr('title')
+                    }),
+                    (i.prototype.display = function (e, t) {
+                        var n = this.options.get('templateSelection')
+                        return this.options.get('escapeMarkup')(n(e, t))
+                    }),
+                    (i.prototype.selectionContainer = function () {
+                        return e('<span></span>')
+                    }),
+                    (i.prototype.update = function (e) {
+                        var t, n
+                        0 !== e.length
+                            ? ((n = e[0]),
+                              (t = this.$selection.find('.select2-selection__rendered')),
+                              (e = this.display(n, t)),
+                              t.empty().append(e),
+                              (n = n.title || n.text) ? t.attr('title', n) : t.removeAttr('title'))
+                            : this.clear()
+                    }),
+                    i
+                )
+            }),
+            u.define('select2/selection/multiple', ['jquery', './base', '../utils'], function (i, e, c) {
+                function r(e, t) {
+                    r.__super__.constructor.apply(this, arguments)
+                }
+
+                return (
+                    c.Extend(r, e),
+                    (r.prototype.render = function () {
+                        var e = r.__super__.render.call(this)
+                        return e[0].classList.add('select2-selection--multiple'), e.html('<ul class="select2-selection__rendered"></ul>'), e
+                    }),
+                    (r.prototype.bind = function (e, t) {
+                        var n = this
+                        r.__super__.bind.apply(this, arguments)
+                        var s = e.id + '-container'
+                        this.$selection.find('.select2-selection__rendered').attr('id', s),
+                            this.$selection.on('click', function (e) {
+                                n.trigger('toggle', { originalEvent: e })
+                            }),
+                            this.$selection.on('click', '.select2-selection__choice__remove', function (e) {
+                                var t
+                                n.isDisabled() ||
+                                    ((t = i(this).parent()),
+                                    (t = c.GetData(t[0], 'data')),
+                                    n.trigger('unselect', {
+                                        originalEvent: e,
+                                        data: t,
+                                    }))
+                            }),
+                            this.$selection.on('keydown', '.select2-selection__choice__remove', function (e) {
+                                n.isDisabled() || e.stopPropagation()
+                            })
+                    }),
+                    (r.prototype.clear = function () {
+                        var e = this.$selection.find('.select2-selection__rendered')
+                        e.empty(), e.removeAttr('title')
+                    }),
+                    (r.prototype.display = function (e, t) {
+                        var n = this.options.get('templateSelection')
+                        return this.options.get('escapeMarkup')(n(e, t))
+                    }),
+                    (r.prototype.selectionContainer = function () {
+                        return i(
+                            '<li class="select2-selection__choice"><button type="button" class="select2-selection__choice__remove" tabindex="-1"><span aria-hidden="true">&times;</span></button><span class="select2-selection__choice__display"></span></li>',
+                        )
+                    }),
+                    (r.prototype.update = function (e) {
+                        if ((this.clear(), 0 !== e.length)) {
+                            for (
+                                var t = [], n = this.$selection.find('.select2-selection__rendered').attr('id') + '-choice-', s = 0;
+                                s < e.length;
+                                s++
+                            ) {
+                                var i = e[s],
+                                    r = this.selectionContainer(),
+                                    o = this.display(i, r),
+                                    a = n + c.generateChars(4) + '-'
+                                i.id ? (a += i.id) : (a += c.generateChars(4)), r.find('.select2-selection__choice__display').append(o).attr('id', a)
+                                var l = i.title || i.text
+                                l && r.attr('title', l)
+                                ;(o = this.options.get('translations').get('removeItem')), (l = r.find('.select2-selection__choice__remove'))
+                                l.attr('title', o()),
+                                    l.attr('aria-label', o()),
+                                    l.attr('aria-describedby', a),
+                                    c.StoreData(r[0], 'data', i),
+                                    t.push(r)
                             }
-                        }),
-                        r
-                    )
-                }),
-                u.define('select2/selection/placeholder', [], function () {
-                    function e(e, t, n) {
-                        ; (this.placeholder = this.normalizePlaceholder(n.get('placeholder'))), e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.normalizePlaceholder = function (e, t) {
-                            return (t = 'string' == typeof t ? { id: '', text: t } : t)
-                        }),
-                        (e.prototype.createPlaceholder = function (e, t) {
-                            var n = this.selectionContainer()
-                            n.html(this.display(t)),
-                                n[0].classList.add('select2-selection__placeholder'),
-                                n[0].classList.remove('select2-selection__choice')
-                            t = t.title || t.text || n.text()
-                            return this.$selection.find('.select2-selection__rendered').attr('title', t), n
-                        }),
-                        (e.prototype.update = function (e, t) {
-                            var n = 1 == t.length && t[0].id != this.placeholder.id
-                            if (1 < t.length || n) return e.call(this, t)
-                            this.clear()
-                            t = this.createPlaceholder(this.placeholder)
                             this.$selection.find('.select2-selection__rendered').append(t)
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/selection/allowClear', ['jquery', '../keys', '../utils'], function (i, s, a) {
-                    function e() { }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this
-                            e.call(this, t, n),
-                                null == this.placeholder &&
+                        }
+                    }),
+                    r
+                )
+            }),
+            u.define('select2/selection/placeholder', [], function () {
+                function e(e, t, n) {
+                    ;(this.placeholder = this.normalizePlaceholder(n.get('placeholder'))), e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.normalizePlaceholder = function (e, t) {
+                        return (t = 'string' == typeof t ? { id: '', text: t } : t)
+                    }),
+                    (e.prototype.createPlaceholder = function (e, t) {
+                        var n = this.selectionContainer()
+                        n.html(this.display(t)),
+                            n[0].classList.add('select2-selection__placeholder'),
+                            n[0].classList.remove('select2-selection__choice')
+                        t = t.title || t.text || n.text()
+                        return this.$selection.find('.select2-selection__rendered').attr('title', t), n
+                    }),
+                    (e.prototype.update = function (e, t) {
+                        var n = 1 == t.length && t[0].id != this.placeholder.id
+                        if (1 < t.length || n) return e.call(this, t)
+                        this.clear()
+                        t = this.createPlaceholder(this.placeholder)
+                        this.$selection.find('.select2-selection__rendered').append(t)
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/selection/allowClear', ['jquery', '../keys', '../utils'], function (i, s, a) {
+                function e() {}
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this
+                        e.call(this, t, n),
+                            null == this.placeholder &&
                                 this.options.get('debug') &&
                                 window.console &&
                                 console.error &&
                                 console.error('Select2: The `allowClear` option should be used in combination with the `placeholder` option.'),
-                                this.$selection.on('mousedown', '.select2-selection__clear', function (e) {
-                                    s._handleClear(e)
-                                }),
-                                t.on('keypress', function (e) {
-                                    s._handleKeyboardClear(e, t)
-                                })
-                        }),
-                        (e.prototype._handleClear = function (e, t) {
-                            if (!this.isDisabled()) {
-                                var n = this.$selection.find('.select2-selection__clear')
-                                if (0 !== n.length) {
-                                    t.stopPropagation()
-                                    var s = a.GetData(n[0], 'data'),
-                                        i = this.$element.val()
-                                    this.$element.val(this.placeholder.id)
-                                    var r = { data: s }
-                                    if ((this.trigger('clear', r), r.prevented)) this.$element.val(i)
-                                    else {
-                                        for (var o = 0; o < s.length; o++)
-                                            if (((r = { data: s[o] }), this.trigger('unselect', r), r.prevented)) return void this.$element.val(i)
-                                        this.$element.trigger('input').trigger('change'), this.trigger('toggle', {})
-                                    }
+                            this.$selection.on('mousedown', '.select2-selection__clear', function (e) {
+                                s._handleClear(e)
+                            }),
+                            t.on('keypress', function (e) {
+                                s._handleKeyboardClear(e, t)
+                            })
+                    }),
+                    (e.prototype._handleClear = function (e, t) {
+                        if (!this.isDisabled()) {
+                            var n = this.$selection.find('.select2-selection__clear')
+                            if (0 !== n.length) {
+                                t.stopPropagation()
+                                var s = a.GetData(n[0], 'data'),
+                                    i = this.$element.val()
+                                this.$element.val(this.placeholder.id)
+                                var r = { data: s }
+                                if ((this.trigger('clear', r), r.prevented)) this.$element.val(i)
+                                else {
+                                    for (var o = 0; o < s.length; o++)
+                                        if (((r = { data: s[o] }), this.trigger('unselect', r), r.prevented)) return void this.$element.val(i)
+                                    this.$element.trigger('input').trigger('change'), this.trigger('toggle', {})
                                 }
                             }
-                        }),
-                        (e.prototype._handleKeyboardClear = function (e, t, n) {
-                            n.isOpen() || (t.which != s.DELETE && t.which != s.BACKSPACE) || this._handleClear(t)
-                        }),
-                        (e.prototype.update = function (e, t) {
-                            var n, s
-                            e.call(this, t),
-                                this.$selection.find('.select2-selection__clear').remove(),
-                                this.$selection[0].classList.remove('select2-selection--clearable'),
-                                0 < this.$selection.find('.select2-selection__placeholder').length ||
+                        }
+                    }),
+                    (e.prototype._handleKeyboardClear = function (e, t, n) {
+                        n.isOpen() || (t.which != s.DELETE && t.which != s.BACKSPACE) || this._handleClear(t)
+                    }),
+                    (e.prototype.update = function (e, t) {
+                        var n, s
+                        e.call(this, t),
+                            this.$selection.find('.select2-selection__clear').remove(),
+                            this.$selection[0].classList.remove('select2-selection--clearable'),
+                            0 < this.$selection.find('.select2-selection__placeholder').length ||
                                 0 === t.length ||
                                 ((n = this.$selection.find('.select2-selection__rendered').attr('id')),
-                                    (s = this.options.get('translations').get('removeAllItems')),
-                                    (e = i(
-                                        '<button type="button" class="select2-selection__clear" tabindex="-1"><span aria-hidden="true">&times;</span></button>',
-                                    )).attr('title', s()),
-                                    e.attr('aria-label', s()),
-                                    e.attr('aria-describedby', n),
-                                    a.StoreData(e[0], 'data', t),
-                                    this.$selection.prepend(e),
-                                    this.$selection[0].classList.add('select2-selection--clearable'))
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/selection/search', ['jquery', '../utils', '../keys'], function (s, a, l) {
-                    function e(e, t, n) {
-                        e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.render = function (e) {
-                            var t = this.options.get('translations').get('search'),
-                                n = s(
-                                    '<span class="select2-search select2-search--inline"><textarea class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" ></textarea></span>',
-                                )
-                                ; (this.$searchContainer = n),
-                                    (this.$search = n.find('textarea')),
-                                    this.$search.prop('autocomplete', this.options.get('autocomplete')),
-                                    this.$search.attr('aria-label', t())
-                            e = e.call(this)
-                            return this._transferTabIndex(), e.append(this.$searchContainer), e
-                        }),
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this,
-                                i = t.id + '-results',
-                                r = t.id + '-container'
-                            e.call(this, t, n),
-                                s.$search.attr('aria-describedby', r),
-                                t.on('open', function () {
-                                    s.$search.attr('aria-controls', i), s.$search.trigger('focus')
-                                }),
-                                t.on('close', function () {
-                                    s.$search.val(''),
-                                        s.resizeSearch(),
-                                        s.$search.removeAttr('aria-controls'),
-                                        s.$search.removeAttr('aria-activedescendant'),
-                                        s.$search.trigger('focus')
-                                }),
-                                t.on('enable', function () {
-                                    s.$search.prop('disabled', !1), s._transferTabIndex()
-                                }),
-                                t.on('disable', function () {
-                                    s.$search.prop('disabled', !0)
-                                }),
-                                t.on('focus', function (e) {
+                                (s = this.options.get('translations').get('removeAllItems')),
+                                (e = i(
+                                    '<button type="button" class="select2-selection__clear" tabindex="-1"><span aria-hidden="true">&times;</span></button>',
+                                )).attr('title', s()),
+                                e.attr('aria-label', s()),
+                                e.attr('aria-describedby', n),
+                                a.StoreData(e[0], 'data', t),
+                                this.$selection.prepend(e),
+                                this.$selection[0].classList.add('select2-selection--clearable'))
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/selection/search', ['jquery', '../utils', '../keys'], function (s, a, l) {
+                function e(e, t, n) {
+                    e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.render = function (e) {
+                        var t = this.options.get('translations').get('search'),
+                            n = s(
+                                '<span class="select2-search select2-search--inline"><textarea class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" ></textarea></span>',
+                            )
+                        ;(this.$searchContainer = n),
+                            (this.$search = n.find('textarea')),
+                            this.$search.prop('autocomplete', this.options.get('autocomplete')),
+                            this.$search.attr('aria-label', t())
+                        e = e.call(this)
+                        return this._transferTabIndex(), e.append(this.$searchContainer), e
+                    }),
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this,
+                            i = t.id + '-results',
+                            r = t.id + '-container'
+                        e.call(this, t, n),
+                            s.$search.attr('aria-describedby', r),
+                            t.on('open', function () {
+                                s.$search.attr('aria-controls', i), s.$search.trigger('focus')
+                            }),
+                            t.on('close', function () {
+                                s.$search.val(''),
+                                    s.resizeSearch(),
+                                    s.$search.removeAttr('aria-controls'),
+                                    s.$search.removeAttr('aria-activedescendant'),
                                     s.$search.trigger('focus')
-                                }),
-                                t.on('results:focus', function (e) {
-                                    e.data._resultId
-                                        ? s.$search.attr('aria-activedescendant', e.data._resultId)
-                                        : s.$search.removeAttr('aria-activedescendant')
-                                }),
-                                this.$selection.on('focusin', '.select2-search--inline', function (e) {
-                                    s.trigger('focus', e)
-                                }),
-                                this.$selection.on('focusout', '.select2-search--inline', function (e) {
-                                    s._handleBlur(e)
-                                }),
-                                this.$selection.on('keydown', '.select2-search--inline', function (e) {
-                                    var t
-                                    e.stopPropagation(),
-                                        s.trigger('keypress', e),
-                                        (s._keyUpPrevented = e.isDefaultPrevented()),
-                                        e.which !== l.BACKSPACE ||
+                            }),
+                            t.on('enable', function () {
+                                s.$search.prop('disabled', !1), s._transferTabIndex()
+                            }),
+                            t.on('disable', function () {
+                                s.$search.prop('disabled', !0)
+                            }),
+                            t.on('focus', function (e) {
+                                s.$search.trigger('focus')
+                            }),
+                            t.on('results:focus', function (e) {
+                                e.data._resultId
+                                    ? s.$search.attr('aria-activedescendant', e.data._resultId)
+                                    : s.$search.removeAttr('aria-activedescendant')
+                            }),
+                            this.$selection.on('focusin', '.select2-search--inline', function (e) {
+                                s.trigger('focus', e)
+                            }),
+                            this.$selection.on('focusout', '.select2-search--inline', function (e) {
+                                s._handleBlur(e)
+                            }),
+                            this.$selection.on('keydown', '.select2-search--inline', function (e) {
+                                var t
+                                e.stopPropagation(),
+                                    s.trigger('keypress', e),
+                                    (s._keyUpPrevented = e.isDefaultPrevented()),
+                                    e.which !== l.BACKSPACE ||
                                         '' !== s.$search.val() ||
                                         (0 < (t = s.$selection.find('.select2-selection__choice').last()).length &&
                                             ((t = a.GetData(t[0], 'data')), s.searchRemoveChoice(t), e.preventDefault()))
-                                }),
-                                this.$selection.on('click', '.select2-search--inline', function (e) {
-                                    s.$search.val() && e.stopPropagation()
-                                })
-                            var t = document.documentMode,
-                                o = t && t <= 11
-                            this.$selection.on('input.searchcheck', '.select2-search--inline', function (e) {
-                                o ? s.$selection.off('input.search input.searchcheck') : s.$selection.off('keyup.search')
                             }),
-                                this.$selection.on('keyup.search input.search', '.select2-search--inline', function (e) {
-                                    var t
-                                    o && 'input' === e.type
-                                        ? s.$selection.off('input.search input.searchcheck')
-                                        : (t = e.which) != l.SHIFT && t != l.CTRL && t != l.ALT && t != l.TAB && s.handleSearch(e)
-                                })
+                            this.$selection.on('click', '.select2-search--inline', function (e) {
+                                s.$search.val() && e.stopPropagation()
+                            })
+                        var t = document.documentMode,
+                            o = t && t <= 11
+                        this.$selection.on('input.searchcheck', '.select2-search--inline', function (e) {
+                            o ? s.$selection.off('input.search input.searchcheck') : s.$selection.off('keyup.search')
                         }),
-                        (e.prototype._transferTabIndex = function (e) {
-                            this.$search.attr('tabindex', this.$selection.attr('tabindex')), this.$selection.attr('tabindex', '-1')
+                            this.$selection.on('keyup.search input.search', '.select2-search--inline', function (e) {
+                                var t
+                                o && 'input' === e.type
+                                    ? s.$selection.off('input.search input.searchcheck')
+                                    : (t = e.which) != l.SHIFT && t != l.CTRL && t != l.ALT && t != l.TAB && s.handleSearch(e)
+                            })
+                    }),
+                    (e.prototype._transferTabIndex = function (e) {
+                        this.$search.attr('tabindex', this.$selection.attr('tabindex')), this.$selection.attr('tabindex', '-1')
+                    }),
+                    (e.prototype.createPlaceholder = function (e, t) {
+                        this.$search.attr('placeholder', t.text)
+                    }),
+                    (e.prototype.update = function (e, t) {
+                        var n = this.$search[0] == document.activeElement
+                        this.$search.attr('placeholder', ''), e.call(this, t), this.resizeSearch(), n && this.$search.trigger('focus')
+                    }),
+                    (e.prototype.handleSearch = function () {
+                        var e
+                        this.resizeSearch(),
+                            this._keyUpPrevented || ((e = this.$search.val()), this.trigger('query', { term: e })),
+                            (this._keyUpPrevented = !1)
+                    }),
+                    (e.prototype.searchRemoveChoice = function (e, t) {
+                        this.trigger('unselect', { data: t }), this.$search.val(t.text), this.handleSearch()
+                    }),
+                    (e.prototype.resizeSearch = function () {
+                        this.$search.css('width', '25px')
+                        var e = '100%'
+                        '' === this.$search.attr('placeholder') && (e = 0.75 * (this.$search.val().length + 1) + 'em'), this.$search.css('width', e)
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/selection/selectionCss', ['../utils'], function (n) {
+                function e() {}
+
+                return (
+                    (e.prototype.render = function (e) {
+                        var t = e.call(this),
+                            e = this.options.get('selectionCssClass') || ''
+                        return (
+                            -1 !== e.indexOf(':all:') && ((e = e.replace(':all:', '')), n.copyNonInternalCssClasses(t[0], this.$element[0])),
+                            t.addClass(e),
+                            t
+                        )
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/selection/eventRelay', ['jquery'], function (o) {
+                function e() {}
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this,
+                            i = ['open', 'opening', 'close', 'closing', 'select', 'selecting', 'unselect', 'unselecting', 'clear', 'clearing'],
+                            r = ['opening', 'closing', 'selecting', 'unselecting', 'clearing']
+                        e.call(this, t, n),
+                            t.on('*', function (e, t) {
+                                var n
+                                ;-1 !== i.indexOf(e) &&
+                                    ((t = t || {}),
+                                    (n = o.Event('select2:' + e, { params: t })),
+                                    s.$element.trigger(n),
+                                    -1 !== r.indexOf(e) && (t.prevented = n.isDefaultPrevented()))
+                            })
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/translation', ['jquery', 'require'], function (t, n) {
+                function s(e) {
+                    this.dict = e || {}
+                }
+
+                return (
+                    (s.prototype.all = function () {
+                        return this.dict
+                    }),
+                    (s.prototype.get = function (e) {
+                        return this.dict[e]
+                    }),
+                    (s.prototype.extend = function (e) {
+                        this.dict = t.extend({}, e.all(), this.dict)
+                    }),
+                    (s._cache = {}),
+                    (s.loadPath = function (e) {
+                        var t
+                        return e in s._cache || ((t = n(e)), (s._cache[e] = t)), new s(s._cache[e])
+                    }),
+                    s
+                )
+            }),
+            u.define('select2/diacritics', [], function () {
+                return {
+                    'Ⓐ': 'A',
+                    Ａ: 'A',
+                    À: 'A',
+                    Á: 'A',
+                    Â: 'A',
+                    Ầ: 'A',
+                    Ấ: 'A',
+                    Ẫ: 'A',
+                    Ẩ: 'A',
+                    Ã: 'A',
+                    Ā: 'A',
+                    Ă: 'A',
+                    Ằ: 'A',
+                    Ắ: 'A',
+                    Ẵ: 'A',
+                    Ẳ: 'A',
+                    Ȧ: 'A',
+                    Ǡ: 'A',
+                    Ä: 'A',
+                    Ǟ: 'A',
+                    Ả: 'A',
+                    Å: 'A',
+                    Ǻ: 'A',
+                    Ǎ: 'A',
+                    Ȁ: 'A',
+                    Ȃ: 'A',
+                    Ạ: 'A',
+                    Ậ: 'A',
+                    Ặ: 'A',
+                    Ḁ: 'A',
+                    Ą: 'A',
+                    Ⱥ: 'A',
+                    Ɐ: 'A',
+                    Ꜳ: 'AA',
+                    Æ: 'AE',
+                    Ǽ: 'AE',
+                    Ǣ: 'AE',
+                    Ꜵ: 'AO',
+                    Ꜷ: 'AU',
+                    Ꜹ: 'AV',
+                    Ꜻ: 'AV',
+                    Ꜽ: 'AY',
+                    'Ⓑ': 'B',
+                    Ｂ: 'B',
+                    Ḃ: 'B',
+                    Ḅ: 'B',
+                    Ḇ: 'B',
+                    Ƀ: 'B',
+                    Ƃ: 'B',
+                    Ɓ: 'B',
+                    'Ⓒ': 'C',
+                    Ｃ: 'C',
+                    Ć: 'C',
+                    Ĉ: 'C',
+                    Ċ: 'C',
+                    Č: 'C',
+                    Ç: 'C',
+                    Ḉ: 'C',
+                    Ƈ: 'C',
+                    Ȼ: 'C',
+                    Ꜿ: 'C',
+                    'Ⓓ': 'D',
+                    Ｄ: 'D',
+                    Ḋ: 'D',
+                    Ď: 'D',
+                    Ḍ: 'D',
+                    Ḑ: 'D',
+                    Ḓ: 'D',
+                    Ḏ: 'D',
+                    Đ: 'D',
+                    Ƌ: 'D',
+                    Ɗ: 'D',
+                    Ɖ: 'D',
+                    Ꝺ: 'D',
+                    Ǳ: 'DZ',
+                    Ǆ: 'DZ',
+                    ǲ: 'Dz',
+                    ǅ: 'Dz',
+                    'Ⓔ': 'E',
+                    Ｅ: 'E',
+                    È: 'E',
+                    É: 'E',
+                    Ê: 'E',
+                    Ề: 'E',
+                    Ế: 'E',
+                    Ễ: 'E',
+                    Ể: 'E',
+                    Ẽ: 'E',
+                    Ē: 'E',
+                    Ḕ: 'E',
+                    Ḗ: 'E',
+                    Ĕ: 'E',
+                    Ė: 'E',
+                    Ë: 'E',
+                    Ẻ: 'E',
+                    Ě: 'E',
+                    Ȅ: 'E',
+                    Ȇ: 'E',
+                    Ẹ: 'E',
+                    Ệ: 'E',
+                    Ȩ: 'E',
+                    Ḝ: 'E',
+                    Ę: 'E',
+                    Ḙ: 'E',
+                    Ḛ: 'E',
+                    Ɛ: 'E',
+                    Ǝ: 'E',
+                    'Ⓕ': 'F',
+                    Ｆ: 'F',
+                    Ḟ: 'F',
+                    Ƒ: 'F',
+                    Ꝼ: 'F',
+                    'Ⓖ': 'G',
+                    Ｇ: 'G',
+                    Ǵ: 'G',
+                    Ĝ: 'G',
+                    Ḡ: 'G',
+                    Ğ: 'G',
+                    Ġ: 'G',
+                    Ǧ: 'G',
+                    Ģ: 'G',
+                    Ǥ: 'G',
+                    Ɠ: 'G',
+                    Ꞡ: 'G',
+                    Ᵹ: 'G',
+                    Ꝿ: 'G',
+                    'Ⓗ': 'H',
+                    Ｈ: 'H',
+                    Ĥ: 'H',
+                    Ḣ: 'H',
+                    Ḧ: 'H',
+                    Ȟ: 'H',
+                    Ḥ: 'H',
+                    Ḩ: 'H',
+                    Ḫ: 'H',
+                    Ħ: 'H',
+                    Ⱨ: 'H',
+                    Ⱶ: 'H',
+                    Ɥ: 'H',
+                    'Ⓘ': 'I',
+                    Ｉ: 'I',
+                    Ì: 'I',
+                    Í: 'I',
+                    Î: 'I',
+                    Ĩ: 'I',
+                    Ī: 'I',
+                    Ĭ: 'I',
+                    İ: 'I',
+                    Ï: 'I',
+                    Ḯ: 'I',
+                    Ỉ: 'I',
+                    Ǐ: 'I',
+                    Ȉ: 'I',
+                    Ȋ: 'I',
+                    Ị: 'I',
+                    Į: 'I',
+                    Ḭ: 'I',
+                    Ɨ: 'I',
+                    'Ⓙ': 'J',
+                    Ｊ: 'J',
+                    Ĵ: 'J',
+                    Ɉ: 'J',
+                    'Ⓚ': 'K',
+                    Ｋ: 'K',
+                    Ḱ: 'K',
+                    Ǩ: 'K',
+                    Ḳ: 'K',
+                    Ķ: 'K',
+                    Ḵ: 'K',
+                    Ƙ: 'K',
+                    Ⱪ: 'K',
+                    Ꝁ: 'K',
+                    Ꝃ: 'K',
+                    Ꝅ: 'K',
+                    Ꞣ: 'K',
+                    'Ⓛ': 'L',
+                    Ｌ: 'L',
+                    Ŀ: 'L',
+                    Ĺ: 'L',
+                    Ľ: 'L',
+                    Ḷ: 'L',
+                    Ḹ: 'L',
+                    Ļ: 'L',
+                    Ḽ: 'L',
+                    Ḻ: 'L',
+                    Ł: 'L',
+                    Ƚ: 'L',
+                    Ɫ: 'L',
+                    Ⱡ: 'L',
+                    Ꝉ: 'L',
+                    Ꝇ: 'L',
+                    Ꞁ: 'L',
+                    Ǉ: 'LJ',
+                    ǈ: 'Lj',
+                    'Ⓜ': 'M',
+                    Ｍ: 'M',
+                    Ḿ: 'M',
+                    Ṁ: 'M',
+                    Ṃ: 'M',
+                    Ɱ: 'M',
+                    Ɯ: 'M',
+                    'Ⓝ': 'N',
+                    Ｎ: 'N',
+                    Ǹ: 'N',
+                    Ń: 'N',
+                    Ñ: 'N',
+                    Ṅ: 'N',
+                    Ň: 'N',
+                    Ṇ: 'N',
+                    Ņ: 'N',
+                    Ṋ: 'N',
+                    Ṉ: 'N',
+                    Ƞ: 'N',
+                    Ɲ: 'N',
+                    Ꞑ: 'N',
+                    Ꞥ: 'N',
+                    Ǌ: 'NJ',
+                    ǋ: 'Nj',
+                    'Ⓞ': 'O',
+                    Ｏ: 'O',
+                    Ò: 'O',
+                    Ó: 'O',
+                    Ô: 'O',
+                    Ồ: 'O',
+                    Ố: 'O',
+                    Ỗ: 'O',
+                    Ổ: 'O',
+                    Õ: 'O',
+                    Ṍ: 'O',
+                    Ȭ: 'O',
+                    Ṏ: 'O',
+                    Ō: 'O',
+                    Ṑ: 'O',
+                    Ṓ: 'O',
+                    Ŏ: 'O',
+                    Ȯ: 'O',
+                    Ȱ: 'O',
+                    Ö: 'O',
+                    Ȫ: 'O',
+                    Ỏ: 'O',
+                    Ő: 'O',
+                    Ǒ: 'O',
+                    Ȍ: 'O',
+                    Ȏ: 'O',
+                    Ơ: 'O',
+                    Ờ: 'O',
+                    Ớ: 'O',
+                    Ỡ: 'O',
+                    Ở: 'O',
+                    Ợ: 'O',
+                    Ọ: 'O',
+                    Ộ: 'O',
+                    Ǫ: 'O',
+                    Ǭ: 'O',
+                    Ø: 'O',
+                    Ǿ: 'O',
+                    Ɔ: 'O',
+                    Ɵ: 'O',
+                    Ꝋ: 'O',
+                    Ꝍ: 'O',
+                    Œ: 'OE',
+                    Ƣ: 'OI',
+                    Ꝏ: 'OO',
+                    Ȣ: 'OU',
+                    'Ⓟ': 'P',
+                    Ｐ: 'P',
+                    Ṕ: 'P',
+                    Ṗ: 'P',
+                    Ƥ: 'P',
+                    Ᵽ: 'P',
+                    Ꝑ: 'P',
+                    Ꝓ: 'P',
+                    Ꝕ: 'P',
+                    'Ⓠ': 'Q',
+                    Ｑ: 'Q',
+                    Ꝗ: 'Q',
+                    Ꝙ: 'Q',
+                    Ɋ: 'Q',
+                    'Ⓡ': 'R',
+                    Ｒ: 'R',
+                    Ŕ: 'R',
+                    Ṙ: 'R',
+                    Ř: 'R',
+                    Ȑ: 'R',
+                    Ȓ: 'R',
+                    Ṛ: 'R',
+                    Ṝ: 'R',
+                    Ŗ: 'R',
+                    Ṟ: 'R',
+                    Ɍ: 'R',
+                    Ɽ: 'R',
+                    Ꝛ: 'R',
+                    Ꞧ: 'R',
+                    Ꞃ: 'R',
+                    'Ⓢ': 'S',
+                    Ｓ: 'S',
+                    ẞ: 'S',
+                    Ś: 'S',
+                    Ṥ: 'S',
+                    Ŝ: 'S',
+                    Ṡ: 'S',
+                    Š: 'S',
+                    Ṧ: 'S',
+                    Ṣ: 'S',
+                    Ṩ: 'S',
+                    Ș: 'S',
+                    Ş: 'S',
+                    Ȿ: 'S',
+                    Ꞩ: 'S',
+                    Ꞅ: 'S',
+                    'Ⓣ': 'T',
+                    Ｔ: 'T',
+                    Ṫ: 'T',
+                    Ť: 'T',
+                    Ṭ: 'T',
+                    Ț: 'T',
+                    Ţ: 'T',
+                    Ṱ: 'T',
+                    Ṯ: 'T',
+                    Ŧ: 'T',
+                    Ƭ: 'T',
+                    Ʈ: 'T',
+                    Ⱦ: 'T',
+                    Ꞇ: 'T',
+                    Ꜩ: 'TZ',
+                    'Ⓤ': 'U',
+                    Ｕ: 'U',
+                    Ù: 'U',
+                    Ú: 'U',
+                    Û: 'U',
+                    Ũ: 'U',
+                    Ṹ: 'U',
+                    Ū: 'U',
+                    Ṻ: 'U',
+                    Ŭ: 'U',
+                    Ü: 'U',
+                    Ǜ: 'U',
+                    Ǘ: 'U',
+                    Ǖ: 'U',
+                    Ǚ: 'U',
+                    Ủ: 'U',
+                    Ů: 'U',
+                    Ű: 'U',
+                    Ǔ: 'U',
+                    Ȕ: 'U',
+                    Ȗ: 'U',
+                    Ư: 'U',
+                    Ừ: 'U',
+                    Ứ: 'U',
+                    Ữ: 'U',
+                    Ử: 'U',
+                    Ự: 'U',
+                    Ụ: 'U',
+                    Ṳ: 'U',
+                    Ų: 'U',
+                    Ṷ: 'U',
+                    Ṵ: 'U',
+                    Ʉ: 'U',
+                    'Ⓥ': 'V',
+                    Ｖ: 'V',
+                    Ṽ: 'V',
+                    Ṿ: 'V',
+                    Ʋ: 'V',
+                    Ꝟ: 'V',
+                    Ʌ: 'V',
+                    Ꝡ: 'VY',
+                    'Ⓦ': 'W',
+                    Ｗ: 'W',
+                    Ẁ: 'W',
+                    Ẃ: 'W',
+                    Ŵ: 'W',
+                    Ẇ: 'W',
+                    Ẅ: 'W',
+                    Ẉ: 'W',
+                    Ⱳ: 'W',
+                    'Ⓧ': 'X',
+                    Ｘ: 'X',
+                    Ẋ: 'X',
+                    Ẍ: 'X',
+                    'Ⓨ': 'Y',
+                    Ｙ: 'Y',
+                    Ỳ: 'Y',
+                    Ý: 'Y',
+                    Ŷ: 'Y',
+                    Ỹ: 'Y',
+                    Ȳ: 'Y',
+                    Ẏ: 'Y',
+                    Ÿ: 'Y',
+                    Ỷ: 'Y',
+                    Ỵ: 'Y',
+                    Ƴ: 'Y',
+                    Ɏ: 'Y',
+                    Ỿ: 'Y',
+                    'Ⓩ': 'Z',
+                    Ｚ: 'Z',
+                    Ź: 'Z',
+                    Ẑ: 'Z',
+                    Ż: 'Z',
+                    Ž: 'Z',
+                    Ẓ: 'Z',
+                    Ẕ: 'Z',
+                    Ƶ: 'Z',
+                    Ȥ: 'Z',
+                    Ɀ: 'Z',
+                    Ⱬ: 'Z',
+                    Ꝣ: 'Z',
+                    'ⓐ': 'a',
+                    ａ: 'a',
+                    ẚ: 'a',
+                    à: 'a',
+                    á: 'a',
+                    â: 'a',
+                    ầ: 'a',
+                    ấ: 'a',
+                    ẫ: 'a',
+                    ẩ: 'a',
+                    ã: 'a',
+                    ā: 'a',
+                    ă: 'a',
+                    ằ: 'a',
+                    ắ: 'a',
+                    ẵ: 'a',
+                    ẳ: 'a',
+                    ȧ: 'a',
+                    ǡ: 'a',
+                    ä: 'a',
+                    ǟ: 'a',
+                    ả: 'a',
+                    å: 'a',
+                    ǻ: 'a',
+                    ǎ: 'a',
+                    ȁ: 'a',
+                    ȃ: 'a',
+                    ạ: 'a',
+                    ậ: 'a',
+                    ặ: 'a',
+                    ḁ: 'a',
+                    ą: 'a',
+                    ⱥ: 'a',
+                    ɐ: 'a',
+                    ꜳ: 'aa',
+                    æ: 'ae',
+                    ǽ: 'ae',
+                    ǣ: 'ae',
+                    ꜵ: 'ao',
+                    ꜷ: 'au',
+                    ꜹ: 'av',
+                    ꜻ: 'av',
+                    ꜽ: 'ay',
+                    'ⓑ': 'b',
+                    ｂ: 'b',
+                    ḃ: 'b',
+                    ḅ: 'b',
+                    ḇ: 'b',
+                    ƀ: 'b',
+                    ƃ: 'b',
+                    ɓ: 'b',
+                    'ⓒ': 'c',
+                    ｃ: 'c',
+                    ć: 'c',
+                    ĉ: 'c',
+                    ċ: 'c',
+                    č: 'c',
+                    ç: 'c',
+                    ḉ: 'c',
+                    ƈ: 'c',
+                    ȼ: 'c',
+                    ꜿ: 'c',
+                    ↄ: 'c',
+                    'ⓓ': 'd',
+                    ｄ: 'd',
+                    ḋ: 'd',
+                    ď: 'd',
+                    ḍ: 'd',
+                    ḑ: 'd',
+                    ḓ: 'd',
+                    ḏ: 'd',
+                    đ: 'd',
+                    ƌ: 'd',
+                    ɖ: 'd',
+                    ɗ: 'd',
+                    ꝺ: 'd',
+                    ǳ: 'dz',
+                    ǆ: 'dz',
+                    'ⓔ': 'e',
+                    ｅ: 'e',
+                    è: 'e',
+                    é: 'e',
+                    ê: 'e',
+                    ề: 'e',
+                    ế: 'e',
+                    ễ: 'e',
+                    ể: 'e',
+                    ẽ: 'e',
+                    ē: 'e',
+                    ḕ: 'e',
+                    ḗ: 'e',
+                    ĕ: 'e',
+                    ė: 'e',
+                    ë: 'e',
+                    ẻ: 'e',
+                    ě: 'e',
+                    ȅ: 'e',
+                    ȇ: 'e',
+                    ẹ: 'e',
+                    ệ: 'e',
+                    ȩ: 'e',
+                    ḝ: 'e',
+                    ę: 'e',
+                    ḙ: 'e',
+                    ḛ: 'e',
+                    ɇ: 'e',
+                    ɛ: 'e',
+                    ǝ: 'e',
+                    'ⓕ': 'f',
+                    ｆ: 'f',
+                    ḟ: 'f',
+                    ƒ: 'f',
+                    ꝼ: 'f',
+                    'ⓖ': 'g',
+                    ｇ: 'g',
+                    ǵ: 'g',
+                    ĝ: 'g',
+                    ḡ: 'g',
+                    ğ: 'g',
+                    ġ: 'g',
+                    ǧ: 'g',
+                    ģ: 'g',
+                    ǥ: 'g',
+                    ɠ: 'g',
+                    ꞡ: 'g',
+                    ᵹ: 'g',
+                    ꝿ: 'g',
+                    'ⓗ': 'h',
+                    ｈ: 'h',
+                    ĥ: 'h',
+                    ḣ: 'h',
+                    ḧ: 'h',
+                    ȟ: 'h',
+                    ḥ: 'h',
+                    ḩ: 'h',
+                    ḫ: 'h',
+                    ẖ: 'h',
+                    ħ: 'h',
+                    ⱨ: 'h',
+                    ⱶ: 'h',
+                    ɥ: 'h',
+                    ƕ: 'hv',
+                    'ⓘ': 'i',
+                    ｉ: 'i',
+                    ì: 'i',
+                    í: 'i',
+                    î: 'i',
+                    ĩ: 'i',
+                    ī: 'i',
+                    ĭ: 'i',
+                    ï: 'i',
+                    ḯ: 'i',
+                    ỉ: 'i',
+                    ǐ: 'i',
+                    ȉ: 'i',
+                    ȋ: 'i',
+                    ị: 'i',
+                    į: 'i',
+                    ḭ: 'i',
+                    ɨ: 'i',
+                    ı: 'i',
+                    'ⓙ': 'j',
+                    ｊ: 'j',
+                    ĵ: 'j',
+                    ǰ: 'j',
+                    ɉ: 'j',
+                    'ⓚ': 'k',
+                    ｋ: 'k',
+                    ḱ: 'k',
+                    ǩ: 'k',
+                    ḳ: 'k',
+                    ķ: 'k',
+                    ḵ: 'k',
+                    ƙ: 'k',
+                    ⱪ: 'k',
+                    ꝁ: 'k',
+                    ꝃ: 'k',
+                    ꝅ: 'k',
+                    ꞣ: 'k',
+                    'ⓛ': 'l',
+                    ｌ: 'l',
+                    ŀ: 'l',
+                    ĺ: 'l',
+                    ľ: 'l',
+                    ḷ: 'l',
+                    ḹ: 'l',
+                    ļ: 'l',
+                    ḽ: 'l',
+                    ḻ: 'l',
+                    ſ: 'l',
+                    ł: 'l',
+                    ƚ: 'l',
+                    ɫ: 'l',
+                    ⱡ: 'l',
+                    ꝉ: 'l',
+                    ꞁ: 'l',
+                    ꝇ: 'l',
+                    ǉ: 'lj',
+                    'ⓜ': 'm',
+                    ｍ: 'm',
+                    ḿ: 'm',
+                    ṁ: 'm',
+                    ṃ: 'm',
+                    ɱ: 'm',
+                    ɯ: 'm',
+                    'ⓝ': 'n',
+                    ｎ: 'n',
+                    ǹ: 'n',
+                    ń: 'n',
+                    ñ: 'n',
+                    ṅ: 'n',
+                    ň: 'n',
+                    ṇ: 'n',
+                    ņ: 'n',
+                    ṋ: 'n',
+                    ṉ: 'n',
+                    ƞ: 'n',
+                    ɲ: 'n',
+                    ŉ: 'n',
+                    ꞑ: 'n',
+                    ꞥ: 'n',
+                    ǌ: 'nj',
+                    'ⓞ': 'o',
+                    ｏ: 'o',
+                    ò: 'o',
+                    ó: 'o',
+                    ô: 'o',
+                    ồ: 'o',
+                    ố: 'o',
+                    ỗ: 'o',
+                    ổ: 'o',
+                    õ: 'o',
+                    ṍ: 'o',
+                    ȭ: 'o',
+                    ṏ: 'o',
+                    ō: 'o',
+                    ṑ: 'o',
+                    ṓ: 'o',
+                    ŏ: 'o',
+                    ȯ: 'o',
+                    ȱ: 'o',
+                    ö: 'o',
+                    ȫ: 'o',
+                    ỏ: 'o',
+                    ő: 'o',
+                    ǒ: 'o',
+                    ȍ: 'o',
+                    ȏ: 'o',
+                    ơ: 'o',
+                    ờ: 'o',
+                    ớ: 'o',
+                    ỡ: 'o',
+                    ở: 'o',
+                    ợ: 'o',
+                    ọ: 'o',
+                    ộ: 'o',
+                    ǫ: 'o',
+                    ǭ: 'o',
+                    ø: 'o',
+                    ǿ: 'o',
+                    ɔ: 'o',
+                    ꝋ: 'o',
+                    ꝍ: 'o',
+                    ɵ: 'o',
+                    œ: 'oe',
+                    ƣ: 'oi',
+                    ȣ: 'ou',
+                    ꝏ: 'oo',
+                    'ⓟ': 'p',
+                    ｐ: 'p',
+                    ṕ: 'p',
+                    ṗ: 'p',
+                    ƥ: 'p',
+                    ᵽ: 'p',
+                    ꝑ: 'p',
+                    ꝓ: 'p',
+                    ꝕ: 'p',
+                    'ⓠ': 'q',
+                    ｑ: 'q',
+                    ɋ: 'q',
+                    ꝗ: 'q',
+                    ꝙ: 'q',
+                    'ⓡ': 'r',
+                    ｒ: 'r',
+                    ŕ: 'r',
+                    ṙ: 'r',
+                    ř: 'r',
+                    ȑ: 'r',
+                    ȓ: 'r',
+                    ṛ: 'r',
+                    ṝ: 'r',
+                    ŗ: 'r',
+                    ṟ: 'r',
+                    ɍ: 'r',
+                    ɽ: 'r',
+                    ꝛ: 'r',
+                    ꞧ: 'r',
+                    ꞃ: 'r',
+                    'ⓢ': 's',
+                    ｓ: 's',
+                    ß: 's',
+                    ś: 's',
+                    ṥ: 's',
+                    ŝ: 's',
+                    ṡ: 's',
+                    š: 's',
+                    ṧ: 's',
+                    ṣ: 's',
+                    ṩ: 's',
+                    ș: 's',
+                    ş: 's',
+                    ȿ: 's',
+                    ꞩ: 's',
+                    ꞅ: 's',
+                    ẛ: 's',
+                    'ⓣ': 't',
+                    ｔ: 't',
+                    ṫ: 't',
+                    ẗ: 't',
+                    ť: 't',
+                    ṭ: 't',
+                    ț: 't',
+                    ţ: 't',
+                    ṱ: 't',
+                    ṯ: 't',
+                    ŧ: 't',
+                    ƭ: 't',
+                    ʈ: 't',
+                    ⱦ: 't',
+                    ꞇ: 't',
+                    ꜩ: 'tz',
+                    'ⓤ': 'u',
+                    ｕ: 'u',
+                    ù: 'u',
+                    ú: 'u',
+                    û: 'u',
+                    ũ: 'u',
+                    ṹ: 'u',
+                    ū: 'u',
+                    ṻ: 'u',
+                    ŭ: 'u',
+                    ü: 'u',
+                    ǜ: 'u',
+                    ǘ: 'u',
+                    ǖ: 'u',
+                    ǚ: 'u',
+                    ủ: 'u',
+                    ů: 'u',
+                    ű: 'u',
+                    ǔ: 'u',
+                    ȕ: 'u',
+                    ȗ: 'u',
+                    ư: 'u',
+                    ừ: 'u',
+                    ứ: 'u',
+                    ữ: 'u',
+                    ử: 'u',
+                    ự: 'u',
+                    ụ: 'u',
+                    ṳ: 'u',
+                    ų: 'u',
+                    ṷ: 'u',
+                    ṵ: 'u',
+                    ʉ: 'u',
+                    'ⓥ': 'v',
+                    ｖ: 'v',
+                    ṽ: 'v',
+                    ṿ: 'v',
+                    ʋ: 'v',
+                    ꝟ: 'v',
+                    ʌ: 'v',
+                    ꝡ: 'vy',
+                    'ⓦ': 'w',
+                    ｗ: 'w',
+                    ẁ: 'w',
+                    ẃ: 'w',
+                    ŵ: 'w',
+                    ẇ: 'w',
+                    ẅ: 'w',
+                    ẘ: 'w',
+                    ẉ: 'w',
+                    ⱳ: 'w',
+                    'ⓧ': 'x',
+                    ｘ: 'x',
+                    ẋ: 'x',
+                    ẍ: 'x',
+                    'ⓨ': 'y',
+                    ｙ: 'y',
+                    ỳ: 'y',
+                    ý: 'y',
+                    ŷ: 'y',
+                    ỹ: 'y',
+                    ȳ: 'y',
+                    ẏ: 'y',
+                    ÿ: 'y',
+                    ỷ: 'y',
+                    ẙ: 'y',
+                    ỵ: 'y',
+                    ƴ: 'y',
+                    ɏ: 'y',
+                    ỿ: 'y',
+                    'ⓩ': 'z',
+                    ｚ: 'z',
+                    ź: 'z',
+                    ẑ: 'z',
+                    ż: 'z',
+                    ž: 'z',
+                    ẓ: 'z',
+                    ẕ: 'z',
+                    ƶ: 'z',
+                    ȥ: 'z',
+                    ɀ: 'z',
+                    ⱬ: 'z',
+                    ꝣ: 'z',
+                    Ά: 'Α',
+                    Έ: 'Ε',
+                    Ή: 'Η',
+                    Ί: 'Ι',
+                    Ϊ: 'Ι',
+                    Ό: 'Ο',
+                    Ύ: 'Υ',
+                    Ϋ: 'Υ',
+                    Ώ: 'Ω',
+                    ά: 'α',
+                    έ: 'ε',
+                    ή: 'η',
+                    ί: 'ι',
+                    ϊ: 'ι',
+                    ΐ: 'ι',
+                    ό: 'ο',
+                    ύ: 'υ',
+                    ϋ: 'υ',
+                    ΰ: 'υ',
+                    ώ: 'ω',
+                    ς: 'σ',
+                    '’': "'",
+                }
+            }),
+            u.define('select2/data/base', ['../utils'], function (n) {
+                function s(e, t) {
+                    s.__super__.constructor.call(this)
+                }
+
+                return (
+                    n.Extend(s, n.Observable),
+                    (s.prototype.current = function (e) {
+                        throw new Error('The `current` method must be defined in child classes.')
+                    }),
+                    (s.prototype.query = function (e, t) {
+                        throw new Error('The `query` method must be defined in child classes.')
+                    }),
+                    (s.prototype.bind = function (e, t) {}),
+                    (s.prototype.destroy = function () {}),
+                    (s.prototype.generateResultId = function (e, t) {
+                        e = e.id + '-result-'
+                        return (e += n.generateChars(4)), null != t.id ? (e += '-' + t.id.toString()) : (e += '-' + n.generateChars(4)), e
+                    }),
+                    s
+                )
+            }),
+            u.define('select2/data/select', ['./base', '../utils', 'jquery'], function (e, a, l) {
+                function n(e, t) {
+                    ;(this.$element = e), (this.options = t), n.__super__.constructor.call(this)
+                }
+
+                return (
+                    a.Extend(n, e),
+                    (n.prototype.current = function (e) {
+                        var t = this
+                        e(
+                            Array.prototype.map.call(this.$element[0].querySelectorAll(':checked'), function (e) {
+                                return t.item(l(e))
+                            }),
+                        )
+                    }),
+                    (n.prototype.select = function (i) {
+                        var e,
+                            r = this
+                        if (((i.selected = !0), null != i.element && 'option' === i.element.tagName.toLowerCase()))
+                            return (i.element.selected = !0), void this.$element.trigger('input').trigger('change')
+                        this.$element.prop('multiple')
+                            ? this.current(function (e) {
+                                  var t = []
+                                  ;(i = [i]).push.apply(i, e)
+                                  for (var n = 0; n < i.length; n++) {
+                                      var s = i[n].id
+                                      ;-1 === t.indexOf(s) && t.push(s)
+                                  }
+                                  r.$element.val(t), r.$element.trigger('input').trigger('change')
+                              })
+                            : ((e = i.id), this.$element.val(e), this.$element.trigger('input').trigger('change'))
+                    }),
+                    (n.prototype.unselect = function (i) {
+                        var r = this
+                        if (this.$element.prop('multiple')) {
+                            if (((i.selected = !1), null != i.element && 'option' === i.element.tagName.toLowerCase()))
+                                return (i.element.selected = !1), void this.$element.trigger('input').trigger('change')
+                            this.current(function (e) {
+                                for (var t = [], n = 0; n < e.length; n++) {
+                                    var s = e[n].id
+                                    s !== i.id && -1 === t.indexOf(s) && t.push(s)
+                                }
+                                r.$element.val(t), r.$element.trigger('input').trigger('change')
+                            })
+                        }
+                    }),
+                    (n.prototype.bind = function (e, t) {
+                        var n = this
+                        ;(this.container = e).on('select', function (e) {
+                            n.select(e.data)
                         }),
-                        (e.prototype.createPlaceholder = function (e, t) {
-                            this.$search.attr('placeholder', t.text)
-                        }),
-                        (e.prototype.update = function (e, t) {
-                            var n = this.$search[0] == document.activeElement
-                            this.$search.attr('placeholder', ''), e.call(this, t), this.resizeSearch(), n && this.$search.trigger('focus')
-                        }),
-                        (e.prototype.handleSearch = function () {
+                            e.on('unselect', function (e) {
+                                n.unselect(e.data)
+                            })
+                    }),
+                    (n.prototype.destroy = function () {
+                        this.$element.find('*').each(function () {
+                            a.RemoveData(this)
+                        })
+                    }),
+                    (n.prototype.query = function (t, e) {
+                        var n = [],
+                            s = this
+                        this.$element.children().each(function () {
                             var e
-                            this.resizeSearch(),
-                                this._keyUpPrevented || ((e = this.$search.val()), this.trigger('query', { term: e })),
-                                (this._keyUpPrevented = !1)
+                            ;('option' !== this.tagName.toLowerCase() && 'optgroup' !== this.tagName.toLowerCase()) ||
+                                ((e = l(this)), (e = s.item(e)), null !== (e = s.matches(t, e)) && n.push(e))
                         }),
-                        (e.prototype.searchRemoveChoice = function (e, t) {
-                            this.trigger('unselect', { data: t }), this.$search.val(t.text), this.handleSearch()
-                        }),
-                        (e.prototype.resizeSearch = function () {
-                            this.$search.css('width', '25px')
-                            var e = '100%'
-                            '' === this.$search.attr('placeholder') && (e = 0.75 * (this.$search.val().length + 1) + 'em'), this.$search.css('width', e)
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/selection/selectionCss', ['../utils'], function (n) {
-                    function e() { }
-                    return (
-                        (e.prototype.render = function (e) {
-                            var t = e.call(this),
-                                e = this.options.get('selectionCssClass') || ''
-                            return (
-                                -1 !== e.indexOf(':all:') && ((e = e.replace(':all:', '')), n.copyNonInternalCssClasses(t[0], this.$element[0])),
-                                t.addClass(e),
-                                t
-                            )
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/selection/eventRelay', ['jquery'], function (o) {
-                    function e() { }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this,
-                                i = ['open', 'opening', 'close', 'closing', 'select', 'selecting', 'unselect', 'unselecting', 'clear', 'clearing'],
-                                r = ['opening', 'closing', 'selecting', 'unselecting', 'clearing']
-                            e.call(this, t, n),
-                                t.on('*', function (e, t) {
-                                    var n
-                                        ; -1 !== i.indexOf(e) &&
-                                            ((t = t || {}),
-                                                (n = o.Event('select2:' + e, { params: t })),
-                                                s.$element.trigger(n),
-                                                -1 !== r.indexOf(e) && (t.prevented = n.isDefaultPrevented()))
-                                })
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/translation', ['jquery', 'require'], function (t, n) {
-                    function s(e) {
-                        this.dict = e || {}
-                    }
-                    return (
-                        (s.prototype.all = function () {
-                            return this.dict
-                        }),
-                        (s.prototype.get = function (e) {
-                            return this.dict[e]
-                        }),
-                        (s.prototype.extend = function (e) {
-                            this.dict = t.extend({}, e.all(), this.dict)
-                        }),
-                        (s._cache = {}),
-                        (s.loadPath = function (e) {
-                            var t
-                            return e in s._cache || ((t = n(e)), (s._cache[e] = t)), new s(s._cache[e])
-                        }),
-                        s
-                    )
-                }),
-                u.define('select2/diacritics', [], function () {
-                    return {
-                        'Ⓐ': 'A',
-                        Ａ: 'A',
-                        À: 'A',
-                        Á: 'A',
-                        Â: 'A',
-                        Ầ: 'A',
-                        Ấ: 'A',
-                        Ẫ: 'A',
-                        Ẩ: 'A',
-                        Ã: 'A',
-                        Ā: 'A',
-                        Ă: 'A',
-                        Ằ: 'A',
-                        Ắ: 'A',
-                        Ẵ: 'A',
-                        Ẳ: 'A',
-                        Ȧ: 'A',
-                        Ǡ: 'A',
-                        Ä: 'A',
-                        Ǟ: 'A',
-                        Ả: 'A',
-                        Å: 'A',
-                        Ǻ: 'A',
-                        Ǎ: 'A',
-                        Ȁ: 'A',
-                        Ȃ: 'A',
-                        Ạ: 'A',
-                        Ậ: 'A',
-                        Ặ: 'A',
-                        Ḁ: 'A',
-                        Ą: 'A',
-                        Ⱥ: 'A',
-                        Ɐ: 'A',
-                        Ꜳ: 'AA',
-                        Æ: 'AE',
-                        Ǽ: 'AE',
-                        Ǣ: 'AE',
-                        Ꜵ: 'AO',
-                        Ꜷ: 'AU',
-                        Ꜹ: 'AV',
-                        Ꜻ: 'AV',
-                        Ꜽ: 'AY',
-                        'Ⓑ': 'B',
-                        Ｂ: 'B',
-                        Ḃ: 'B',
-                        Ḅ: 'B',
-                        Ḇ: 'B',
-                        Ƀ: 'B',
-                        Ƃ: 'B',
-                        Ɓ: 'B',
-                        'Ⓒ': 'C',
-                        Ｃ: 'C',
-                        Ć: 'C',
-                        Ĉ: 'C',
-                        Ċ: 'C',
-                        Č: 'C',
-                        Ç: 'C',
-                        Ḉ: 'C',
-                        Ƈ: 'C',
-                        Ȼ: 'C',
-                        Ꜿ: 'C',
-                        'Ⓓ': 'D',
-                        Ｄ: 'D',
-                        Ḋ: 'D',
-                        Ď: 'D',
-                        Ḍ: 'D',
-                        Ḑ: 'D',
-                        Ḓ: 'D',
-                        Ḏ: 'D',
-                        Đ: 'D',
-                        Ƌ: 'D',
-                        Ɗ: 'D',
-                        Ɖ: 'D',
-                        Ꝺ: 'D',
-                        Ǳ: 'DZ',
-                        Ǆ: 'DZ',
-                        ǲ: 'Dz',
-                        ǅ: 'Dz',
-                        'Ⓔ': 'E',
-                        Ｅ: 'E',
-                        È: 'E',
-                        É: 'E',
-                        Ê: 'E',
-                        Ề: 'E',
-                        Ế: 'E',
-                        Ễ: 'E',
-                        Ể: 'E',
-                        Ẽ: 'E',
-                        Ē: 'E',
-                        Ḕ: 'E',
-                        Ḗ: 'E',
-                        Ĕ: 'E',
-                        Ė: 'E',
-                        Ë: 'E',
-                        Ẻ: 'E',
-                        Ě: 'E',
-                        Ȅ: 'E',
-                        Ȇ: 'E',
-                        Ẹ: 'E',
-                        Ệ: 'E',
-                        Ȩ: 'E',
-                        Ḝ: 'E',
-                        Ę: 'E',
-                        Ḙ: 'E',
-                        Ḛ: 'E',
-                        Ɛ: 'E',
-                        Ǝ: 'E',
-                        'Ⓕ': 'F',
-                        Ｆ: 'F',
-                        Ḟ: 'F',
-                        Ƒ: 'F',
-                        Ꝼ: 'F',
-                        'Ⓖ': 'G',
-                        Ｇ: 'G',
-                        Ǵ: 'G',
-                        Ĝ: 'G',
-                        Ḡ: 'G',
-                        Ğ: 'G',
-                        Ġ: 'G',
-                        Ǧ: 'G',
-                        Ģ: 'G',
-                        Ǥ: 'G',
-                        Ɠ: 'G',
-                        Ꞡ: 'G',
-                        Ᵹ: 'G',
-                        Ꝿ: 'G',
-                        'Ⓗ': 'H',
-                        Ｈ: 'H',
-                        Ĥ: 'H',
-                        Ḣ: 'H',
-                        Ḧ: 'H',
-                        Ȟ: 'H',
-                        Ḥ: 'H',
-                        Ḩ: 'H',
-                        Ḫ: 'H',
-                        Ħ: 'H',
-                        Ⱨ: 'H',
-                        Ⱶ: 'H',
-                        Ɥ: 'H',
-                        'Ⓘ': 'I',
-                        Ｉ: 'I',
-                        Ì: 'I',
-                        Í: 'I',
-                        Î: 'I',
-                        Ĩ: 'I',
-                        Ī: 'I',
-                        Ĭ: 'I',
-                        İ: 'I',
-                        Ï: 'I',
-                        Ḯ: 'I',
-                        Ỉ: 'I',
-                        Ǐ: 'I',
-                        Ȉ: 'I',
-                        Ȋ: 'I',
-                        Ị: 'I',
-                        Į: 'I',
-                        Ḭ: 'I',
-                        Ɨ: 'I',
-                        'Ⓙ': 'J',
-                        Ｊ: 'J',
-                        Ĵ: 'J',
-                        Ɉ: 'J',
-                        'Ⓚ': 'K',
-                        Ｋ: 'K',
-                        Ḱ: 'K',
-                        Ǩ: 'K',
-                        Ḳ: 'K',
-                        Ķ: 'K',
-                        Ḵ: 'K',
-                        Ƙ: 'K',
-                        Ⱪ: 'K',
-                        Ꝁ: 'K',
-                        Ꝃ: 'K',
-                        Ꝅ: 'K',
-                        Ꞣ: 'K',
-                        'Ⓛ': 'L',
-                        Ｌ: 'L',
-                        Ŀ: 'L',
-                        Ĺ: 'L',
-                        Ľ: 'L',
-                        Ḷ: 'L',
-                        Ḹ: 'L',
-                        Ļ: 'L',
-                        Ḽ: 'L',
-                        Ḻ: 'L',
-                        Ł: 'L',
-                        Ƚ: 'L',
-                        Ɫ: 'L',
-                        Ⱡ: 'L',
-                        Ꝉ: 'L',
-                        Ꝇ: 'L',
-                        Ꞁ: 'L',
-                        Ǉ: 'LJ',
-                        ǈ: 'Lj',
-                        'Ⓜ': 'M',
-                        Ｍ: 'M',
-                        Ḿ: 'M',
-                        Ṁ: 'M',
-                        Ṃ: 'M',
-                        Ɱ: 'M',
-                        Ɯ: 'M',
-                        'Ⓝ': 'N',
-                        Ｎ: 'N',
-                        Ǹ: 'N',
-                        Ń: 'N',
-                        Ñ: 'N',
-                        Ṅ: 'N',
-                        Ň: 'N',
-                        Ṇ: 'N',
-                        Ņ: 'N',
-                        Ṋ: 'N',
-                        Ṉ: 'N',
-                        Ƞ: 'N',
-                        Ɲ: 'N',
-                        Ꞑ: 'N',
-                        Ꞥ: 'N',
-                        Ǌ: 'NJ',
-                        ǋ: 'Nj',
-                        'Ⓞ': 'O',
-                        Ｏ: 'O',
-                        Ò: 'O',
-                        Ó: 'O',
-                        Ô: 'O',
-                        Ồ: 'O',
-                        Ố: 'O',
-                        Ỗ: 'O',
-                        Ổ: 'O',
-                        Õ: 'O',
-                        Ṍ: 'O',
-                        Ȭ: 'O',
-                        Ṏ: 'O',
-                        Ō: 'O',
-                        Ṑ: 'O',
-                        Ṓ: 'O',
-                        Ŏ: 'O',
-                        Ȯ: 'O',
-                        Ȱ: 'O',
-                        Ö: 'O',
-                        Ȫ: 'O',
-                        Ỏ: 'O',
-                        Ő: 'O',
-                        Ǒ: 'O',
-                        Ȍ: 'O',
-                        Ȏ: 'O',
-                        Ơ: 'O',
-                        Ờ: 'O',
-                        Ớ: 'O',
-                        Ỡ: 'O',
-                        Ở: 'O',
-                        Ợ: 'O',
-                        Ọ: 'O',
-                        Ộ: 'O',
-                        Ǫ: 'O',
-                        Ǭ: 'O',
-                        Ø: 'O',
-                        Ǿ: 'O',
-                        Ɔ: 'O',
-                        Ɵ: 'O',
-                        Ꝋ: 'O',
-                        Ꝍ: 'O',
-                        Œ: 'OE',
-                        Ƣ: 'OI',
-                        Ꝏ: 'OO',
-                        Ȣ: 'OU',
-                        'Ⓟ': 'P',
-                        Ｐ: 'P',
-                        Ṕ: 'P',
-                        Ṗ: 'P',
-                        Ƥ: 'P',
-                        Ᵽ: 'P',
-                        Ꝑ: 'P',
-                        Ꝓ: 'P',
-                        Ꝕ: 'P',
-                        'Ⓠ': 'Q',
-                        Ｑ: 'Q',
-                        Ꝗ: 'Q',
-                        Ꝙ: 'Q',
-                        Ɋ: 'Q',
-                        'Ⓡ': 'R',
-                        Ｒ: 'R',
-                        Ŕ: 'R',
-                        Ṙ: 'R',
-                        Ř: 'R',
-                        Ȑ: 'R',
-                        Ȓ: 'R',
-                        Ṛ: 'R',
-                        Ṝ: 'R',
-                        Ŗ: 'R',
-                        Ṟ: 'R',
-                        Ɍ: 'R',
-                        Ɽ: 'R',
-                        Ꝛ: 'R',
-                        Ꞧ: 'R',
-                        Ꞃ: 'R',
-                        'Ⓢ': 'S',
-                        Ｓ: 'S',
-                        ẞ: 'S',
-                        Ś: 'S',
-                        Ṥ: 'S',
-                        Ŝ: 'S',
-                        Ṡ: 'S',
-                        Š: 'S',
-                        Ṧ: 'S',
-                        Ṣ: 'S',
-                        Ṩ: 'S',
-                        Ș: 'S',
-                        Ş: 'S',
-                        Ȿ: 'S',
-                        Ꞩ: 'S',
-                        Ꞅ: 'S',
-                        'Ⓣ': 'T',
-                        Ｔ: 'T',
-                        Ṫ: 'T',
-                        Ť: 'T',
-                        Ṭ: 'T',
-                        Ț: 'T',
-                        Ţ: 'T',
-                        Ṱ: 'T',
-                        Ṯ: 'T',
-                        Ŧ: 'T',
-                        Ƭ: 'T',
-                        Ʈ: 'T',
-                        Ⱦ: 'T',
-                        Ꞇ: 'T',
-                        Ꜩ: 'TZ',
-                        'Ⓤ': 'U',
-                        Ｕ: 'U',
-                        Ù: 'U',
-                        Ú: 'U',
-                        Û: 'U',
-                        Ũ: 'U',
-                        Ṹ: 'U',
-                        Ū: 'U',
-                        Ṻ: 'U',
-                        Ŭ: 'U',
-                        Ü: 'U',
-                        Ǜ: 'U',
-                        Ǘ: 'U',
-                        Ǖ: 'U',
-                        Ǚ: 'U',
-                        Ủ: 'U',
-                        Ů: 'U',
-                        Ű: 'U',
-                        Ǔ: 'U',
-                        Ȕ: 'U',
-                        Ȗ: 'U',
-                        Ư: 'U',
-                        Ừ: 'U',
-                        Ứ: 'U',
-                        Ữ: 'U',
-                        Ử: 'U',
-                        Ự: 'U',
-                        Ụ: 'U',
-                        Ṳ: 'U',
-                        Ų: 'U',
-                        Ṷ: 'U',
-                        Ṵ: 'U',
-                        Ʉ: 'U',
-                        'Ⓥ': 'V',
-                        Ｖ: 'V',
-                        Ṽ: 'V',
-                        Ṿ: 'V',
-                        Ʋ: 'V',
-                        Ꝟ: 'V',
-                        Ʌ: 'V',
-                        Ꝡ: 'VY',
-                        'Ⓦ': 'W',
-                        Ｗ: 'W',
-                        Ẁ: 'W',
-                        Ẃ: 'W',
-                        Ŵ: 'W',
-                        Ẇ: 'W',
-                        Ẅ: 'W',
-                        Ẉ: 'W',
-                        Ⱳ: 'W',
-                        'Ⓧ': 'X',
-                        Ｘ: 'X',
-                        Ẋ: 'X',
-                        Ẍ: 'X',
-                        'Ⓨ': 'Y',
-                        Ｙ: 'Y',
-                        Ỳ: 'Y',
-                        Ý: 'Y',
-                        Ŷ: 'Y',
-                        Ỹ: 'Y',
-                        Ȳ: 'Y',
-                        Ẏ: 'Y',
-                        Ÿ: 'Y',
-                        Ỷ: 'Y',
-                        Ỵ: 'Y',
-                        Ƴ: 'Y',
-                        Ɏ: 'Y',
-                        Ỿ: 'Y',
-                        'Ⓩ': 'Z',
-                        Ｚ: 'Z',
-                        Ź: 'Z',
-                        Ẑ: 'Z',
-                        Ż: 'Z',
-                        Ž: 'Z',
-                        Ẓ: 'Z',
-                        Ẕ: 'Z',
-                        Ƶ: 'Z',
-                        Ȥ: 'Z',
-                        Ɀ: 'Z',
-                        Ⱬ: 'Z',
-                        Ꝣ: 'Z',
-                        'ⓐ': 'a',
-                        ａ: 'a',
-                        ẚ: 'a',
-                        à: 'a',
-                        á: 'a',
-                        â: 'a',
-                        ầ: 'a',
-                        ấ: 'a',
-                        ẫ: 'a',
-                        ẩ: 'a',
-                        ã: 'a',
-                        ā: 'a',
-                        ă: 'a',
-                        ằ: 'a',
-                        ắ: 'a',
-                        ẵ: 'a',
-                        ẳ: 'a',
-                        ȧ: 'a',
-                        ǡ: 'a',
-                        ä: 'a',
-                        ǟ: 'a',
-                        ả: 'a',
-                        å: 'a',
-                        ǻ: 'a',
-                        ǎ: 'a',
-                        ȁ: 'a',
-                        ȃ: 'a',
-                        ạ: 'a',
-                        ậ: 'a',
-                        ặ: 'a',
-                        ḁ: 'a',
-                        ą: 'a',
-                        ⱥ: 'a',
-                        ɐ: 'a',
-                        ꜳ: 'aa',
-                        æ: 'ae',
-                        ǽ: 'ae',
-                        ǣ: 'ae',
-                        ꜵ: 'ao',
-                        ꜷ: 'au',
-                        ꜹ: 'av',
-                        ꜻ: 'av',
-                        ꜽ: 'ay',
-                        'ⓑ': 'b',
-                        ｂ: 'b',
-                        ḃ: 'b',
-                        ḅ: 'b',
-                        ḇ: 'b',
-                        ƀ: 'b',
-                        ƃ: 'b',
-                        ɓ: 'b',
-                        'ⓒ': 'c',
-                        ｃ: 'c',
-                        ć: 'c',
-                        ĉ: 'c',
-                        ċ: 'c',
-                        č: 'c',
-                        ç: 'c',
-                        ḉ: 'c',
-                        ƈ: 'c',
-                        ȼ: 'c',
-                        ꜿ: 'c',
-                        ↄ: 'c',
-                        'ⓓ': 'd',
-                        ｄ: 'd',
-                        ḋ: 'd',
-                        ď: 'd',
-                        ḍ: 'd',
-                        ḑ: 'd',
-                        ḓ: 'd',
-                        ḏ: 'd',
-                        đ: 'd',
-                        ƌ: 'd',
-                        ɖ: 'd',
-                        ɗ: 'd',
-                        ꝺ: 'd',
-                        ǳ: 'dz',
-                        ǆ: 'dz',
-                        'ⓔ': 'e',
-                        ｅ: 'e',
-                        è: 'e',
-                        é: 'e',
-                        ê: 'e',
-                        ề: 'e',
-                        ế: 'e',
-                        ễ: 'e',
-                        ể: 'e',
-                        ẽ: 'e',
-                        ē: 'e',
-                        ḕ: 'e',
-                        ḗ: 'e',
-                        ĕ: 'e',
-                        ė: 'e',
-                        ë: 'e',
-                        ẻ: 'e',
-                        ě: 'e',
-                        ȅ: 'e',
-                        ȇ: 'e',
-                        ẹ: 'e',
-                        ệ: 'e',
-                        ȩ: 'e',
-                        ḝ: 'e',
-                        ę: 'e',
-                        ḙ: 'e',
-                        ḛ: 'e',
-                        ɇ: 'e',
-                        ɛ: 'e',
-                        ǝ: 'e',
-                        'ⓕ': 'f',
-                        ｆ: 'f',
-                        ḟ: 'f',
-                        ƒ: 'f',
-                        ꝼ: 'f',
-                        'ⓖ': 'g',
-                        ｇ: 'g',
-                        ǵ: 'g',
-                        ĝ: 'g',
-                        ḡ: 'g',
-                        ğ: 'g',
-                        ġ: 'g',
-                        ǧ: 'g',
-                        ģ: 'g',
-                        ǥ: 'g',
-                        ɠ: 'g',
-                        ꞡ: 'g',
-                        ᵹ: 'g',
-                        ꝿ: 'g',
-                        'ⓗ': 'h',
-                        ｈ: 'h',
-                        ĥ: 'h',
-                        ḣ: 'h',
-                        ḧ: 'h',
-                        ȟ: 'h',
-                        ḥ: 'h',
-                        ḩ: 'h',
-                        ḫ: 'h',
-                        ẖ: 'h',
-                        ħ: 'h',
-                        ⱨ: 'h',
-                        ⱶ: 'h',
-                        ɥ: 'h',
-                        ƕ: 'hv',
-                        'ⓘ': 'i',
-                        ｉ: 'i',
-                        ì: 'i',
-                        í: 'i',
-                        î: 'i',
-                        ĩ: 'i',
-                        ī: 'i',
-                        ĭ: 'i',
-                        ï: 'i',
-                        ḯ: 'i',
-                        ỉ: 'i',
-                        ǐ: 'i',
-                        ȉ: 'i',
-                        ȋ: 'i',
-                        ị: 'i',
-                        į: 'i',
-                        ḭ: 'i',
-                        ɨ: 'i',
-                        ı: 'i',
-                        'ⓙ': 'j',
-                        ｊ: 'j',
-                        ĵ: 'j',
-                        ǰ: 'j',
-                        ɉ: 'j',
-                        'ⓚ': 'k',
-                        ｋ: 'k',
-                        ḱ: 'k',
-                        ǩ: 'k',
-                        ḳ: 'k',
-                        ķ: 'k',
-                        ḵ: 'k',
-                        ƙ: 'k',
-                        ⱪ: 'k',
-                        ꝁ: 'k',
-                        ꝃ: 'k',
-                        ꝅ: 'k',
-                        ꞣ: 'k',
-                        'ⓛ': 'l',
-                        ｌ: 'l',
-                        ŀ: 'l',
-                        ĺ: 'l',
-                        ľ: 'l',
-                        ḷ: 'l',
-                        ḹ: 'l',
-                        ļ: 'l',
-                        ḽ: 'l',
-                        ḻ: 'l',
-                        ſ: 'l',
-                        ł: 'l',
-                        ƚ: 'l',
-                        ɫ: 'l',
-                        ⱡ: 'l',
-                        ꝉ: 'l',
-                        ꞁ: 'l',
-                        ꝇ: 'l',
-                        ǉ: 'lj',
-                        'ⓜ': 'm',
-                        ｍ: 'm',
-                        ḿ: 'm',
-                        ṁ: 'm',
-                        ṃ: 'm',
-                        ɱ: 'm',
-                        ɯ: 'm',
-                        'ⓝ': 'n',
-                        ｎ: 'n',
-                        ǹ: 'n',
-                        ń: 'n',
-                        ñ: 'n',
-                        ṅ: 'n',
-                        ň: 'n',
-                        ṇ: 'n',
-                        ņ: 'n',
-                        ṋ: 'n',
-                        ṉ: 'n',
-                        ƞ: 'n',
-                        ɲ: 'n',
-                        ŉ: 'n',
-                        ꞑ: 'n',
-                        ꞥ: 'n',
-                        ǌ: 'nj',
-                        'ⓞ': 'o',
-                        ｏ: 'o',
-                        ò: 'o',
-                        ó: 'o',
-                        ô: 'o',
-                        ồ: 'o',
-                        ố: 'o',
-                        ỗ: 'o',
-                        ổ: 'o',
-                        õ: 'o',
-                        ṍ: 'o',
-                        ȭ: 'o',
-                        ṏ: 'o',
-                        ō: 'o',
-                        ṑ: 'o',
-                        ṓ: 'o',
-                        ŏ: 'o',
-                        ȯ: 'o',
-                        ȱ: 'o',
-                        ö: 'o',
-                        ȫ: 'o',
-                        ỏ: 'o',
-                        ő: 'o',
-                        ǒ: 'o',
-                        ȍ: 'o',
-                        ȏ: 'o',
-                        ơ: 'o',
-                        ờ: 'o',
-                        ớ: 'o',
-                        ỡ: 'o',
-                        ở: 'o',
-                        ợ: 'o',
-                        ọ: 'o',
-                        ộ: 'o',
-                        ǫ: 'o',
-                        ǭ: 'o',
-                        ø: 'o',
-                        ǿ: 'o',
-                        ɔ: 'o',
-                        ꝋ: 'o',
-                        ꝍ: 'o',
-                        ɵ: 'o',
-                        œ: 'oe',
-                        ƣ: 'oi',
-                        ȣ: 'ou',
-                        ꝏ: 'oo',
-                        'ⓟ': 'p',
-                        ｐ: 'p',
-                        ṕ: 'p',
-                        ṗ: 'p',
-                        ƥ: 'p',
-                        ᵽ: 'p',
-                        ꝑ: 'p',
-                        ꝓ: 'p',
-                        ꝕ: 'p',
-                        'ⓠ': 'q',
-                        ｑ: 'q',
-                        ɋ: 'q',
-                        ꝗ: 'q',
-                        ꝙ: 'q',
-                        'ⓡ': 'r',
-                        ｒ: 'r',
-                        ŕ: 'r',
-                        ṙ: 'r',
-                        ř: 'r',
-                        ȑ: 'r',
-                        ȓ: 'r',
-                        ṛ: 'r',
-                        ṝ: 'r',
-                        ŗ: 'r',
-                        ṟ: 'r',
-                        ɍ: 'r',
-                        ɽ: 'r',
-                        ꝛ: 'r',
-                        ꞧ: 'r',
-                        ꞃ: 'r',
-                        'ⓢ': 's',
-                        ｓ: 's',
-                        ß: 's',
-                        ś: 's',
-                        ṥ: 's',
-                        ŝ: 's',
-                        ṡ: 's',
-                        š: 's',
-                        ṧ: 's',
-                        ṣ: 's',
-                        ṩ: 's',
-                        ș: 's',
-                        ş: 's',
-                        ȿ: 's',
-                        ꞩ: 's',
-                        ꞅ: 's',
-                        ẛ: 's',
-                        'ⓣ': 't',
-                        ｔ: 't',
-                        ṫ: 't',
-                        ẗ: 't',
-                        ť: 't',
-                        ṭ: 't',
-                        ț: 't',
-                        ţ: 't',
-                        ṱ: 't',
-                        ṯ: 't',
-                        ŧ: 't',
-                        ƭ: 't',
-                        ʈ: 't',
-                        ⱦ: 't',
-                        ꞇ: 't',
-                        ꜩ: 'tz',
-                        'ⓤ': 'u',
-                        ｕ: 'u',
-                        ù: 'u',
-                        ú: 'u',
-                        û: 'u',
-                        ũ: 'u',
-                        ṹ: 'u',
-                        ū: 'u',
-                        ṻ: 'u',
-                        ŭ: 'u',
-                        ü: 'u',
-                        ǜ: 'u',
-                        ǘ: 'u',
-                        ǖ: 'u',
-                        ǚ: 'u',
-                        ủ: 'u',
-                        ů: 'u',
-                        ű: 'u',
-                        ǔ: 'u',
-                        ȕ: 'u',
-                        ȗ: 'u',
-                        ư: 'u',
-                        ừ: 'u',
-                        ứ: 'u',
-                        ữ: 'u',
-                        ử: 'u',
-                        ự: 'u',
-                        ụ: 'u',
-                        ṳ: 'u',
-                        ų: 'u',
-                        ṷ: 'u',
-                        ṵ: 'u',
-                        ʉ: 'u',
-                        'ⓥ': 'v',
-                        ｖ: 'v',
-                        ṽ: 'v',
-                        ṿ: 'v',
-                        ʋ: 'v',
-                        ꝟ: 'v',
-                        ʌ: 'v',
-                        ꝡ: 'vy',
-                        'ⓦ': 'w',
-                        ｗ: 'w',
-                        ẁ: 'w',
-                        ẃ: 'w',
-                        ŵ: 'w',
-                        ẇ: 'w',
-                        ẅ: 'w',
-                        ẘ: 'w',
-                        ẉ: 'w',
-                        ⱳ: 'w',
-                        'ⓧ': 'x',
-                        ｘ: 'x',
-                        ẋ: 'x',
-                        ẍ: 'x',
-                        'ⓨ': 'y',
-                        ｙ: 'y',
-                        ỳ: 'y',
-                        ý: 'y',
-                        ŷ: 'y',
-                        ỹ: 'y',
-                        ȳ: 'y',
-                        ẏ: 'y',
-                        ÿ: 'y',
-                        ỷ: 'y',
-                        ẙ: 'y',
-                        ỵ: 'y',
-                        ƴ: 'y',
-                        ɏ: 'y',
-                        ỿ: 'y',
-                        'ⓩ': 'z',
-                        ｚ: 'z',
-                        ź: 'z',
-                        ẑ: 'z',
-                        ż: 'z',
-                        ž: 'z',
-                        ẓ: 'z',
-                        ẕ: 'z',
-                        ƶ: 'z',
-                        ȥ: 'z',
-                        ɀ: 'z',
-                        ⱬ: 'z',
-                        ꝣ: 'z',
-                        Ά: 'Α',
-                        Έ: 'Ε',
-                        Ή: 'Η',
-                        Ί: 'Ι',
-                        Ϊ: 'Ι',
-                        Ό: 'Ο',
-                        Ύ: 'Υ',
-                        Ϋ: 'Υ',
-                        Ώ: 'Ω',
-                        ά: 'α',
-                        έ: 'ε',
-                        ή: 'η',
-                        ί: 'ι',
-                        ϊ: 'ι',
-                        ΐ: 'ι',
-                        ό: 'ο',
-                        ύ: 'υ',
-                        ϋ: 'υ',
-                        ΰ: 'υ',
-                        ώ: 'ω',
-                        ς: 'σ',
-                        '’': "'",
-                    }
-                }),
-                u.define('select2/data/base', ['../utils'], function (n) {
-                    function s(e, t) {
-                        s.__super__.constructor.call(this)
-                    }
-                    return (
-                        n.Extend(s, n.Observable),
-                        (s.prototype.current = function (e) {
-                            throw new Error('The `current` method must be defined in child classes.')
-                        }),
-                        (s.prototype.query = function (e, t) {
-                            throw new Error('The `query` method must be defined in child classes.')
-                        }),
-                        (s.prototype.bind = function (e, t) { }),
-                        (s.prototype.destroy = function () { }),
-                        (s.prototype.generateResultId = function (e, t) {
-                            e = e.id + '-result-'
-                            return (e += n.generateChars(4)), null != t.id ? (e += '-' + t.id.toString()) : (e += '-' + n.generateChars(4)), e
-                        }),
-                        s
-                    )
-                }),
-                u.define('select2/data/select', ['./base', '../utils', 'jquery'], function (e, a, l) {
-                    function n(e, t) {
-                        ; (this.$element = e), (this.options = t), n.__super__.constructor.call(this)
-                    }
-                    return (
-                        a.Extend(n, e),
-                        (n.prototype.current = function (e) {
-                            var t = this
-                            e(
-                                Array.prototype.map.call(this.$element[0].querySelectorAll(':checked'), function (e) {
-                                    return t.item(l(e))
-                                }),
-                            )
-                        }),
-                        (n.prototype.select = function (i) {
-                            var e,
-                                r = this
-                            if (((i.selected = !0), null != i.element && 'option' === i.element.tagName.toLowerCase()))
-                                return (i.element.selected = !0), void this.$element.trigger('input').trigger('change')
-                            this.$element.prop('multiple')
-                                ? this.current(function (e) {
-                                    var t = []
-                                        ; (i = [i]).push.apply(i, e)
-                                    for (var n = 0; n < i.length; n++) {
-                                        var s = i[n].id
-                                            ; -1 === t.indexOf(s) && t.push(s)
-                                    }
-                                    r.$element.val(t), r.$element.trigger('input').trigger('change')
-                                })
-                                : ((e = i.id), this.$element.val(e), this.$element.trigger('input').trigger('change'))
-                        }),
-                        (n.prototype.unselect = function (i) {
-                            var r = this
-                            if (this.$element.prop('multiple')) {
-                                if (((i.selected = !1), null != i.element && 'option' === i.element.tagName.toLowerCase()))
-                                    return (i.element.selected = !1), void this.$element.trigger('input').trigger('change')
-                                this.current(function (e) {
-                                    for (var t = [], n = 0; n < e.length; n++) {
-                                        var s = e[n].id
-                                        s !== i.id && -1 === t.indexOf(s) && t.push(s)
-                                    }
-                                    r.$element.val(t), r.$element.trigger('input').trigger('change')
-                                })
+                            e({ results: n })
+                    }),
+                    (n.prototype.addOptions = function (e) {
+                        this.$element.append(e)
+                    }),
+                    (n.prototype.option = function (e) {
+                        var t
+                        e.children
+                            ? ((t = document.createElement('optgroup')).label = e.text)
+                            : void 0 !== (t = document.createElement('option')).textContent
+                              ? (t.textContent = e.text)
+                              : (t.innerText = e.text),
+                            void 0 !== e.id && (t.value = e.id),
+                            e.disabled && (t.disabled = !0),
+                            e.selected && (t.selected = !0),
+                            e.title && (t.title = e.title)
+                        e = this._normalizeItem(e)
+                        return (e.element = t), a.StoreData(t, 'data', e), l(t)
+                    }),
+                    (n.prototype.item = function (e) {
+                        var t = {}
+                        if (null != (t = a.GetData(e[0], 'data'))) return t
+                        var n = e[0]
+                        if ('option' === n.tagName.toLowerCase())
+                            t = {
+                                id: e.val(),
+                                text: e.text(),
+                                disabled: e.prop('disabled'),
+                                selected: e.prop('selected'),
+                                title: e.prop('title'),
                             }
-                        }),
-                        (n.prototype.bind = function (e, t) {
-                            var n = this
-                                ; (this.container = e).on('select', function (e) {
-                                    n.select(e.data)
-                                }),
-                                    e.on('unselect', function (e) {
-                                        n.unselect(e.data)
-                                    })
-                        }),
-                        (n.prototype.destroy = function () {
-                            this.$element.find('*').each(function () {
-                                a.RemoveData(this)
-                            })
-                        }),
-                        (n.prototype.query = function (t, e) {
-                            var n = [],
-                                s = this
-                            this.$element.children().each(function () {
-                                var e
-                                    ; ('option' !== this.tagName.toLowerCase() && 'optgroup' !== this.tagName.toLowerCase()) ||
-                                        ((e = l(this)), (e = s.item(e)), null !== (e = s.matches(t, e)) && n.push(e))
-                            }),
-                                e({ results: n })
-                        }),
-                        (n.prototype.addOptions = function (e) {
-                            this.$element.append(e)
-                        }),
-                        (n.prototype.option = function (e) {
-                            var t
-                            e.children
-                                ? ((t = document.createElement('optgroup')).label = e.text)
-                                : void 0 !== (t = document.createElement('option')).textContent
-                                    ? (t.textContent = e.text)
-                                    : (t.innerText = e.text),
-                                void 0 !== e.id && (t.value = e.id),
-                                e.disabled && (t.disabled = !0),
-                                e.selected && (t.selected = !0),
-                                e.title && (t.title = e.title)
-                            e = this._normalizeItem(e)
-                            return (e.element = t), a.StoreData(t, 'data', e), l(t)
-                        }),
-                        (n.prototype.item = function (e) {
-                            var t = {}
-                            if (null != (t = a.GetData(e[0], 'data'))) return t
-                            var n = e[0]
-                            if ('option' === n.tagName.toLowerCase())
-                                t = {
-                                    id: e.val(),
-                                    text: e.text(),
-                                    disabled: e.prop('disabled'),
-                                    selected: e.prop('selected'),
-                                    title: e.prop('title'),
-                                }
-                            else if ('optgroup' === n.tagName.toLowerCase()) {
-                                t = {
-                                    text: e.prop('label'),
-                                    children: [],
-                                    title: e.prop('title'),
-                                }
-                                for (var s = e.children('option'), i = [], r = 0; r < s.length; r++) {
-                                    var o = l(s[r]),
-                                        o = this.item(o)
-                                    i.push(o)
-                                }
-                                t.children = i
+                        else if ('optgroup' === n.tagName.toLowerCase()) {
+                            t = {
+                                text: e.prop('label'),
+                                children: [],
+                                title: e.prop('title'),
                             }
-                            return ((t = this._normalizeItem(t)).element = e[0]), a.StoreData(e[0], 'data', t), t
-                        }),
-                        (n.prototype._normalizeItem = function (e) {
-                            e !== Object(e) && (e = { id: e, text: e })
-                            return (
-                                null != (e = l.extend({}, { text: '' }, e)).id && (e.id = e.id.toString()),
-                                null != e.text && (e.text = e.text.toString()),
-                                null == e._resultId && e.id && null != this.container && (e._resultId = this.generateResultId(this.container, e)),
-                                l.extend({}, { selected: !1, disabled: !1 }, e)
-                            )
-                        }),
-                        (n.prototype.matches = function (e, t) {
-                            return this.options.get('matcher')(e, t)
-                        }),
-                        n
-                    )
-                }),
-                u.define('select2/data/array', ['./select', '../utils', 'jquery'], function (e, t, c) {
-                    function s(e, t) {
-                        ; (this._dataToConvert = t.get('data') || []), s.__super__.constructor.call(this, e, t)
-                    }
-                    return (
-                        t.Extend(s, e),
-                        (s.prototype.bind = function (e, t) {
-                            s.__super__.bind.call(this, e, t), this.addOptions(this.convertToOptions(this._dataToConvert))
-                        }),
-                        (s.prototype.select = function (n) {
-                            var e = this.$element.find('option').filter(function (e, t) {
-                                return t.value == n.id.toString()
-                            })
-                            0 === e.length && ((e = this.option(n)), this.addOptions(e)), s.__super__.select.call(this, n)
-                        }),
-                        (s.prototype.convertToOptions = function (e) {
-                            var t = this,
-                                n = this.$element.find('option'),
-                                s = n
-                                    .map(function () {
-                                        return t.item(c(this)).id
-                                    })
-                                    .get(),
-                                i = []
-                            for (var r = 0; r < e.length; r++) {
-                                var o,
-                                    a,
-                                    l = this._normalizeItem(e[r])
-                                0 <= s.indexOf(l.id)
-                                    ? ((o = n.filter(
-                                        (function (e) {
-                                            return function () {
-                                                return c(this).val() == e.id
-                                            }
-                                        })(l),
-                                    )),
-                                        (a = this.item(o)),
-                                        (a = c.extend(!0, {}, l, a)),
-                                        (a = this.option(a)),
-                                        o.replaceWith(a))
-                                    : ((a = this.option(l)), l.children && ((l = this.convertToOptions(l.children)), a.append(l)), i.push(a))
+                            for (var s = e.children('option'), i = [], r = 0; r < s.length; r++) {
+                                var o = l(s[r]),
+                                    o = this.item(o)
+                                i.push(o)
                             }
-                            return i
-                        }),
-                        s
-                    )
-                }),
-                u.define('select2/data/ajax', ['./array', '../utils', 'jquery'], function (e, t, r) {
-                    function n(e, t) {
-                        ; (this.ajaxOptions = this._applyDefaults(t.get('ajax'))),
-                            null != this.ajaxOptions.processResults && (this.processResults = this.ajaxOptions.processResults),
-                            n.__super__.constructor.call(this, e, t)
-                    }
-                    return (
-                        t.Extend(n, e),
-                        (n.prototype._applyDefaults = function (e) {
-                            var t = {
-                                data: function (e) {
-                                    return r.extend({}, e, { q: e.term })
+                            t.children = i
+                        }
+                        return ((t = this._normalizeItem(t)).element = e[0]), a.StoreData(e[0], 'data', t), t
+                    }),
+                    (n.prototype._normalizeItem = function (e) {
+                        e !== Object(e) && (e = { id: e, text: e })
+                        return (
+                            null != (e = l.extend({}, { text: '' }, e)).id && (e.id = e.id.toString()),
+                            null != e.text && (e.text = e.text.toString()),
+                            null == e._resultId && e.id && null != this.container && (e._resultId = this.generateResultId(this.container, e)),
+                            l.extend({}, { selected: !1, disabled: !1 }, e)
+                        )
+                    }),
+                    (n.prototype.matches = function (e, t) {
+                        return this.options.get('matcher')(e, t)
+                    }),
+                    n
+                )
+            }),
+            u.define('select2/data/array', ['./select', '../utils', 'jquery'], function (e, t, c) {
+                function s(e, t) {
+                    ;(this._dataToConvert = t.get('data') || []), s.__super__.constructor.call(this, e, t)
+                }
+
+                return (
+                    t.Extend(s, e),
+                    (s.prototype.bind = function (e, t) {
+                        s.__super__.bind.call(this, e, t), this.addOptions(this.convertToOptions(this._dataToConvert))
+                    }),
+                    (s.prototype.select = function (n) {
+                        var e = this.$element.find('option').filter(function (e, t) {
+                            return t.value == n.id.toString()
+                        })
+                        0 === e.length && ((e = this.option(n)), this.addOptions(e)), s.__super__.select.call(this, n)
+                    }),
+                    (s.prototype.convertToOptions = function (e) {
+                        var t = this,
+                            n = this.$element.find('option'),
+                            s = n
+                                .map(function () {
+                                    return t.item(c(this)).id
+                                })
+                                .get(),
+                            i = []
+                        for (var r = 0; r < e.length; r++) {
+                            var o,
+                                a,
+                                l = this._normalizeItem(e[r])
+                            0 <= s.indexOf(l.id)
+                                ? ((o = n.filter(
+                                      (function (e) {
+                                          return function () {
+                                              return c(this).val() == e.id
+                                          }
+                                      })(l),
+                                  )),
+                                  (a = this.item(o)),
+                                  (a = c.extend(!0, {}, l, a)),
+                                  (a = this.option(a)),
+                                  o.replaceWith(a))
+                                : ((a = this.option(l)), l.children && ((l = this.convertToOptions(l.children)), a.append(l)), i.push(a))
+                        }
+                        return i
+                    }),
+                    s
+                )
+            }),
+            u.define('select2/data/ajax', ['./array', '../utils', 'jquery'], function (e, t, r) {
+                function n(e, t) {
+                    ;(this.ajaxOptions = this._applyDefaults(t.get('ajax'))),
+                        null != this.ajaxOptions.processResults && (this.processResults = this.ajaxOptions.processResults),
+                        n.__super__.constructor.call(this, e, t)
+                }
+
+                return (
+                    t.Extend(n, e),
+                    (n.prototype._applyDefaults = function (e) {
+                        var t = {
+                            data: function (e) {
+                                return r.extend({}, e, { q: e.term })
+                            },
+                            transport: function (e, t, n) {
+                                e = r.ajax(e)
+                                return e.then(t), e.fail(n), e
+                            },
+                        }
+                        return r.extend({}, t, e, !0)
+                    }),
+                    (n.prototype.processResults = function (e) {
+                        return e
+                    }),
+                    (n.prototype.query = function (t, n) {
+                        var s = this
+                        null != this._request && ('function' == typeof this._request.abort && this._request.abort(), (this._request = null))
+                        var i = r.extend({ type: 'GET' }, this.ajaxOptions)
+
+                        function e() {
+                            var e = i.transport(
+                                i,
+                                function (e) {
+                                    e = s.processResults(e, t)
+                                    s.options.get('debug') &&
+                                        window.console &&
+                                        console.error &&
+                                        ((e && e.results && Array.isArray(e.results)) ||
+                                            console.error('Select2: The AJAX results did not return an array in the `results` key of the response.')),
+                                        n(e)
                                 },
-                                transport: function (e, t, n) {
-                                    e = r.ajax(e)
-                                    return e.then(t), e.fail(n), e
+                                function () {
+                                    ;('status' in e && (0 === e.status || '0' === e.status)) ||
+                                        s.trigger('results:message', { message: 'errorLoading' })
                                 },
-                            }
-                            return r.extend({}, t, e, !0)
-                        }),
-                        (n.prototype.processResults = function (e) {
-                            return e
-                        }),
-                        (n.prototype.query = function (t, n) {
-                            var s = this
-                            null != this._request && ('function' == typeof this._request.abort && this._request.abort(), (this._request = null))
-                            var i = r.extend({ type: 'GET' }, this.ajaxOptions)
-                            function e() {
-                                var e = i.transport(
-                                    i,
-                                    function (e) {
-                                        e = s.processResults(e, t)
-                                        s.options.get('debug') &&
-                                            window.console &&
-                                            console.error &&
-                                            ((e && e.results && Array.isArray(e.results)) ||
-                                                console.error('Select2: The AJAX results did not return an array in the `results` key of the response.')),
-                                            n(e)
-                                    },
-                                    function () {
-                                        ; ('status' in e && (0 === e.status || '0' === e.status)) ||
-                                            s.trigger('results:message', { message: 'errorLoading' })
-                                    },
-                                )
-                                s._request = e
-                            }
-                            'function' == typeof i.url && (i.url = i.url.call(this.$element, t)),
-                                'function' == typeof i.data && (i.data = i.data.call(this.$element, t)),
-                                this.ajaxOptions.delay && null != t.term
-                                    ? (this._queryTimeout && window.clearTimeout(this._queryTimeout),
-                                        (this._queryTimeout = window.setTimeout(e, this.ajaxOptions.delay)))
-                                    : e()
-                        }),
-                        n
-                    )
-                }),
-                u.define('select2/data/tags', ['jquery'], function (t) {
-                    function e(e, t, n) {
-                        var s = n.get('tags'),
-                            i = n.get('createTag')
-                        void 0 !== i && (this.createTag = i)
-                        i = n.get('insertTag')
-                        if ((void 0 !== i && (this.insertTag = i), e.call(this, t, n), Array.isArray(s)))
-                            for (var r = 0; r < s.length; r++) {
-                                var o = s[r],
-                                    o = this._normalizeItem(o),
-                                    o = this.option(o)
-                                this.$element.append(o)
-                            }
-                    }
-                    return (
-                        (e.prototype.query = function (e, c, u) {
-                            var d = this
-                            this._removeOldTags(),
-                                null != c.term && null == c.page
-                                    ? e.call(this, c, function e(t, n) {
-                                        for (var s = t.results, i = 0; i < s.length; i++) {
-                                            var r = s[i],
-                                                o = null != r.children && !e({ results: r.children }, !0)
-                                            if ((r.text || '').toUpperCase() === (c.term || '').toUpperCase() || o)
-                                                return !n && ((t.data = s), void u(t))
-                                        }
-                                        if (n) return !0
-                                        var a,
-                                            l = d.createTag(c)
-                                        null != l && ((a = d.option(l)).attr('data-select2-tag', 'true'), d.addOptions([a]), d.insertTag(s, l)),
-                                            (t.results = s),
-                                            u(t)
-                                    })
-                                    : e.call(this, c, u)
-                        }),
-                        (e.prototype.createTag = function (e, t) {
-                            if (null == t.term) return null
-                            t = t.term.trim()
-                            return '' === t ? null : { id: t, text: t }
-                        }),
-                        (e.prototype.insertTag = function (e, t, n) {
-                            t.unshift(n)
-                        }),
-                        (e.prototype._removeOldTags = function (e) {
-                            this.$element.find('option[data-select2-tag]').each(function () {
-                                this.selected || t(this).remove()
-                            })
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/data/tokenizer', ['jquery'], function (c) {
-                    function e(e, t, n) {
-                        var s = n.get('tokenizer')
-                        void 0 !== s && (this.tokenizer = s), e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            e.call(this, t, n), (this.$search = t.dropdown.$search || t.selection.$search || n.find('.select2-search__field'))
-                        }),
-                        (e.prototype.query = function (e, t, n) {
-                            var s = this
-                            t.term = t.term || ''
-                            var i = this.tokenizer(t, this.options, function (e) {
-                                var t,
-                                    n = s._normalizeItem(e)
-                                s.$element.find('option').filter(function () {
-                                    return c(this).val() === n.id
-                                }).length || ((t = s.option(n)).attr('data-select2-tag', !0), s._removeOldTags(), s.addOptions([t])),
-                                    (t = n),
-                                    s.trigger('select', { data: t })
-                            })
-                            i.term !== t.term && (this.$search.length && (this.$search.val(i.term), this.$search.trigger('focus')), (t.term = i.term)),
-                                e.call(this, t, n)
-                        }),
-                        (e.prototype.tokenizer = function (e, t, n, s) {
-                            for (
-                                var i = n.get('tokenSeparators') || [],
+                            )
+                            s._request = e
+                        }
+
+                        'function' == typeof i.url && (i.url = i.url.call(this.$element, t)),
+                            'function' == typeof i.data && (i.data = i.data.call(this.$element, t)),
+                            this.ajaxOptions.delay && null != t.term
+                                ? (this._queryTimeout && window.clearTimeout(this._queryTimeout),
+                                  (this._queryTimeout = window.setTimeout(e, this.ajaxOptions.delay)))
+                                : e()
+                    }),
+                    n
+                )
+            }),
+            u.define('select2/data/tags', ['jquery'], function (t) {
+                function e(e, t, n) {
+                    var s = n.get('tags'),
+                        i = n.get('createTag')
+                    void 0 !== i && (this.createTag = i)
+                    i = n.get('insertTag')
+                    if ((void 0 !== i && (this.insertTag = i), e.call(this, t, n), Array.isArray(s)))
+                        for (var r = 0; r < s.length; r++) {
+                            var o = s[r],
+                                o = this._normalizeItem(o),
+                                o = this.option(o)
+                            this.$element.append(o)
+                        }
+                }
+
+                return (
+                    (e.prototype.query = function (e, c, u) {
+                        var d = this
+                        this._removeOldTags(),
+                            null != c.term && null == c.page
+                                ? e.call(this, c, function e(t, n) {
+                                      for (var s = t.results, i = 0; i < s.length; i++) {
+                                          var r = s[i],
+                                              o = null != r.children && !e({ results: r.children }, !0)
+                                          if ((r.text || '').toUpperCase() === (c.term || '').toUpperCase() || o)
+                                              return !n && ((t.data = s), void u(t))
+                                      }
+                                      if (n) return !0
+                                      var a,
+                                          l = d.createTag(c)
+                                      null != l && ((a = d.option(l)).attr('data-select2-tag', 'true'), d.addOptions([a]), d.insertTag(s, l)),
+                                          (t.results = s),
+                                          u(t)
+                                  })
+                                : e.call(this, c, u)
+                    }),
+                    (e.prototype.createTag = function (e, t) {
+                        if (null == t.term) return null
+                        t = t.term.trim()
+                        return '' === t ? null : { id: t, text: t }
+                    }),
+                    (e.prototype.insertTag = function (e, t, n) {
+                        t.unshift(n)
+                    }),
+                    (e.prototype._removeOldTags = function (e) {
+                        this.$element.find('option[data-select2-tag]').each(function () {
+                            this.selected || t(this).remove()
+                        })
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/data/tokenizer', ['jquery'], function (c) {
+                function e(e, t, n) {
+                    var s = n.get('tokenizer')
+                    void 0 !== s && (this.tokenizer = s), e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        e.call(this, t, n), (this.$search = t.dropdown.$search || t.selection.$search || n.find('.select2-search__field'))
+                    }),
+                    (e.prototype.query = function (e, t, n) {
+                        var s = this
+                        t.term = t.term || ''
+                        var i = this.tokenizer(t, this.options, function (e) {
+                            var t,
+                                n = s._normalizeItem(e)
+                            s.$element.find('option').filter(function () {
+                                return c(this).val() === n.id
+                            }).length || ((t = s.option(n)).attr('data-select2-tag', !0), s._removeOldTags(), s.addOptions([t])),
+                                (t = n),
+                                s.trigger('select', { data: t })
+                        })
+                        i.term !== t.term && (this.$search.length && (this.$search.val(i.term), this.$search.trigger('focus')), (t.term = i.term)),
+                            e.call(this, t, n)
+                    }),
+                    (e.prototype.tokenizer = function (e, t, n, s) {
+                        for (
+                            var i = n.get('tokenSeparators') || [],
                                 r = t.term,
                                 o = 0,
                                 a =
@@ -2234,1125 +2262,1145 @@ const URL_PATTERN_REGEX =
                                     function (e) {
                                         return { id: e.term, text: e.term }
                                     };
-                                o < r.length;
+                            o < r.length;
 
-                            ) {
-                                var l = r[o]
-                                    ; -1 !== i.indexOf(l)
-                                        ? ((l = r.substr(0, o)),
-                                            null != (l = a(c.extend({}, t, { term: l }))) ? (s(l), (r = r.substr(o + 1) || ''), (o = 0)) : o++)
-                                        : o++
-                            }
-                            return { term: r }
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/data/minimumInputLength', [], function () {
-                    function e(e, t, n) {
-                        ; (this.minimumInputLength = n.get('minimumInputLength')), e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.query = function (e, t, n) {
-                            ; (t.term = t.term || ''),
-                                t.term.length < this.minimumInputLength
-                                    ? this.trigger('results:message', {
-                                        message: 'inputTooShort',
-                                        args: {
-                                            minimum: this.minimumInputLength,
-                                            input: t.term,
-                                            params: t,
-                                        },
-                                    })
-                                    : e.call(this, t, n)
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/data/maximumInputLength', [], function () {
-                    function e(e, t, n) {
-                        ; (this.maximumInputLength = n.get('maximumInputLength')), e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.query = function (e, t, n) {
-                            ; (t.term = t.term || ''),
-                                0 < this.maximumInputLength && t.term.length > this.maximumInputLength
-                                    ? this.trigger('results:message', {
-                                        message: 'inputTooLong',
-                                        args: {
-                                            maximum: this.maximumInputLength,
-                                            input: t.term,
-                                            params: t,
-                                        },
-                                    })
-                                    : e.call(this, t, n)
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/data/maximumSelectionLength', [], function () {
-                    function e(e, t, n) {
-                        ; (this.maximumSelectionLength = n.get('maximumSelectionLength')), e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this
-                            e.call(this, t, n),
-                                t.on('select', function () {
-                                    s._checkIfMaximumSelected()
-                                })
-                        }),
-                        (e.prototype.query = function (e, t, n) {
-                            var s = this
-                            this._checkIfMaximumSelected(function () {
-                                e.call(s, t, n)
+                        ) {
+                            var l = r[o]
+                            ;-1 !== i.indexOf(l)
+                                ? ((l = r.substr(0, o)),
+                                  null != (l = a(c.extend({}, t, { term: l }))) ? (s(l), (r = r.substr(o + 1) || ''), (o = 0)) : o++)
+                                : o++
+                        }
+                        return { term: r }
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/data/minimumInputLength', [], function () {
+                function e(e, t, n) {
+                    ;(this.minimumInputLength = n.get('minimumInputLength')), e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.query = function (e, t, n) {
+                        ;(t.term = t.term || ''),
+                            t.term.length < this.minimumInputLength
+                                ? this.trigger('results:message', {
+                                      message: 'inputTooShort',
+                                      args: {
+                                          minimum: this.minimumInputLength,
+                                          input: t.term,
+                                          params: t,
+                                      },
+                                  })
+                                : e.call(this, t, n)
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/data/maximumInputLength', [], function () {
+                function e(e, t, n) {
+                    ;(this.maximumInputLength = n.get('maximumInputLength')), e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.query = function (e, t, n) {
+                        ;(t.term = t.term || ''),
+                            0 < this.maximumInputLength && t.term.length > this.maximumInputLength
+                                ? this.trigger('results:message', {
+                                      message: 'inputTooLong',
+                                      args: {
+                                          maximum: this.maximumInputLength,
+                                          input: t.term,
+                                          params: t,
+                                      },
+                                  })
+                                : e.call(this, t, n)
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/data/maximumSelectionLength', [], function () {
+                function e(e, t, n) {
+                    ;(this.maximumSelectionLength = n.get('maximumSelectionLength')), e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this
+                        e.call(this, t, n),
+                            t.on('select', function () {
+                                s._checkIfMaximumSelected()
                             })
-                        }),
-                        (e.prototype._checkIfMaximumSelected = function (e, t) {
-                            var n = this
-                            this.current(function (e) {
-                                e = null != e ? e.length : 0
-                                0 < n.maximumSelectionLength && e >= n.maximumSelectionLength
-                                    ? n.trigger('results:message', {
-                                        message: 'maximumSelected',
-                                        args: { maximum: n.maximumSelectionLength },
-                                    })
-                                    : t && t()
-                            })
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown', ['jquery', './utils'], function (t, e) {
-                    function n(e, t) {
-                        ; (this.$element = e), (this.options = t), n.__super__.constructor.call(this)
-                    }
-                    return (
-                        e.Extend(n, e.Observable),
-                        (n.prototype.render = function () {
-                            var e = t('<span class="select2-dropdown"><span class="select2-results"></span></span>')
-                            return e.attr('dir', this.options.get('dir')), (this.$dropdown = e)
-                        }),
-                        (n.prototype.bind = function () { }),
-                        (n.prototype.position = function (e, t) { }),
-                        (n.prototype.destroy = function () {
-                            this.$dropdown.remove()
-                        }),
-                        n
-                    )
-                }),
-                u.define('select2/dropdown/search', ['jquery'], function (r) {
-                    function e() { }
-                    return (
-                        (e.prototype.render = function (e) {
-                            var t = e.call(this),
-                                n = this.options.get('translations').get('search'),
-                                e = r(
-                                    '<span class="select2-search select2-search--dropdown"><input class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" /></span>',
-                                )
-                            return (
-                                (this.$searchContainer = e),
-                                (this.$search = e.find('input')),
-                                this.$search.prop('autocomplete', this.options.get('autocomplete')),
-                                this.$search.attr('aria-label', n()),
-                                t.prepend(e),
-                                t
+                    }),
+                    (e.prototype.query = function (e, t, n) {
+                        var s = this
+                        this._checkIfMaximumSelected(function () {
+                            e.call(s, t, n)
+                        })
+                    }),
+                    (e.prototype._checkIfMaximumSelected = function (e, t) {
+                        var n = this
+                        this.current(function (e) {
+                            e = null != e ? e.length : 0
+                            0 < n.maximumSelectionLength && e >= n.maximumSelectionLength
+                                ? n.trigger('results:message', {
+                                      message: 'maximumSelected',
+                                      args: { maximum: n.maximumSelectionLength },
+                                  })
+                                : t && t()
+                        })
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown', ['jquery', './utils'], function (t, e) {
+                function n(e, t) {
+                    ;(this.$element = e), (this.options = t), n.__super__.constructor.call(this)
+                }
+
+                return (
+                    e.Extend(n, e.Observable),
+                    (n.prototype.render = function () {
+                        var e = t('<span class="select2-dropdown"><span class="select2-results"></span></span>')
+                        return e.attr('dir', this.options.get('dir')), (this.$dropdown = e)
+                    }),
+                    (n.prototype.bind = function () {}),
+                    (n.prototype.position = function (e, t) {}),
+                    (n.prototype.destroy = function () {
+                        this.$dropdown.remove()
+                    }),
+                    n
+                )
+            }),
+            u.define('select2/dropdown/search', ['jquery'], function (r) {
+                function e() {}
+
+                return (
+                    (e.prototype.render = function (e) {
+                        var t = e.call(this),
+                            n = this.options.get('translations').get('search'),
+                            e = r(
+                                '<span class="select2-search select2-search--dropdown"><input class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" /></span>',
                             )
+                        return (
+                            (this.$searchContainer = e),
+                            (this.$search = e.find('input')),
+                            this.$search.prop('autocomplete', this.options.get('autocomplete')),
+                            this.$search.attr('aria-label', n()),
+                            t.prepend(e),
+                            t
+                        )
+                    }),
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this,
+                            i = t.id + '-results'
+                        e.call(this, t, n),
+                            this.$search.on('keydown', function (e) {
+                                s.trigger('keypress', e), (s._keyUpPrevented = e.isDefaultPrevented())
+                            }),
+                            this.$search.on('input', function (e) {
+                                r(this).off('keyup')
+                            }),
+                            this.$search.on('keyup input', function (e) {
+                                s.handleSearch(e)
+                            }),
+                            t.on('open', function () {
+                                s.$search.attr('tabindex', 0),
+                                    s.$search.attr('aria-controls', i),
+                                    s.$search.trigger('focus'),
+                                    window.setTimeout(function () {
+                                        s.$search.trigger('focus')
+                                    }, 0)
+                            }),
+                            t.on('close', function () {
+                                s.$search.attr('tabindex', -1),
+                                    s.$search.removeAttr('aria-controls'),
+                                    s.$search.removeAttr('aria-activedescendant'),
+                                    s.$search.val(''),
+                                    s.$search.trigger('blur')
+                            }),
+                            t.on('focus', function () {
+                                t.isOpen() || s.$search.trigger('focus')
+                            }),
+                            t.on('results:all', function (e) {
+                                ;(null != e.query.term && '' !== e.query.term) ||
+                                    (s.showSearch(e)
+                                        ? s.$searchContainer[0].classList.remove('select2-search--hide')
+                                        : s.$searchContainer[0].classList.add('select2-search--hide'))
+                            }),
+                            t.on('results:focus', function (e) {
+                                e.data._resultId
+                                    ? s.$search.attr('aria-activedescendant', e.data._resultId)
+                                    : s.$search.removeAttr('aria-activedescendant')
+                            })
+                    }),
+                    (e.prototype.handleSearch = function (e) {
+                        var t
+                        this._keyUpPrevented || ((t = this.$search.val()), this.trigger('query', { term: t })), (this._keyUpPrevented = !1)
+                    }),
+                    (e.prototype.showSearch = function (e, t) {
+                        return !0
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/hidePlaceholder', [], function () {
+                function e(e, t, n, s) {
+                    ;(this.placeholder = this.normalizePlaceholder(n.get('placeholder'))), e.call(this, t, n, s)
+                }
+
+                return (
+                    (e.prototype.append = function (e, t) {
+                        ;(t.results = this.removePlaceholder(t.results)), e.call(this, t)
+                    }),
+                    (e.prototype.normalizePlaceholder = function (e, t) {
+                        return (t = 'string' == typeof t ? { id: '', text: t } : t)
+                    }),
+                    (e.prototype.removePlaceholder = function (e, t) {
+                        for (var n = t.slice(0), s = t.length - 1; 0 <= s; s--) {
+                            var i = t[s]
+                            this.placeholder.id === i.id && n.splice(s, 1)
+                        }
+                        return n
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/infiniteScroll', ['jquery'], function (n) {
+                function e(e, t, n, s) {
+                    ;(this.lastParams = {}), e.call(this, t, n, s), (this.$loadingMore = this.createLoadingMore()), (this.loading = !1)
+                }
+
+                return (
+                    (e.prototype.append = function (e, t) {
+                        this.$loadingMore.remove(),
+                            (this.loading = !1),
+                            e.call(this, t),
+                            this.showLoadingMore(t) && (this.$results.append(this.$loadingMore), this.loadMoreIfNeeded())
+                    }),
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this
+                        e.call(this, t, n),
+                            t.on('query', function (e) {
+                                ;(s.lastParams = e), (s.loading = !0)
+                            }),
+                            t.on('query:append', function (e) {
+                                ;(s.lastParams = e), (s.loading = !0)
+                            }),
+                            this.$results.on('scroll', this.loadMoreIfNeeded.bind(this))
+                    }),
+                    (e.prototype.loadMoreIfNeeded = function () {
+                        var e = n.contains(document.documentElement, this.$loadingMore[0])
+                        !this.loading &&
+                            e &&
+                            ((e = this.$results.offset().top + this.$results.outerHeight(!1)),
+                            this.$loadingMore.offset().top + this.$loadingMore.outerHeight(!1) <= e + 50 && this.loadMore())
+                    }),
+                    (e.prototype.loadMore = function () {
+                        this.loading = !0
+                        var e = n.extend({}, { page: 1 }, this.lastParams)
+                        e.page++, this.trigger('query:append', e)
+                    }),
+                    (e.prototype.showLoadingMore = function (e, t) {
+                        return t.pagination && t.pagination.more
+                    }),
+                    (e.prototype.createLoadingMore = function () {
+                        var e = n('<li class="select2-results__option select2-results__option--load-more"role="option" aria-disabled="true"></li>'),
+                            t = this.options.get('translations').get('loadingMore')
+                        return e.html(t(this.lastParams)), e
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/attachBody', ['jquery', '../utils'], function (u, o) {
+                function e(e, t, n) {
+                    ;(this.$dropdownParent = u(n.get('dropdownParent') || document.body)), e.call(this, t, n)
+                }
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this
+                        e.call(this, t, n),
+                            t.on('open', function () {
+                                s._showDropdown(), s._attachPositioningHandler(t), s._bindContainerResultHandlers(t)
+                            }),
+                            t.on('close', function () {
+                                s._hideDropdown(), s._detachPositioningHandler(t)
+                            }),
+                            this.$dropdownContainer.on('mousedown', function (e) {
+                                e.stopPropagation()
+                            })
+                    }),
+                    (e.prototype.destroy = function (e) {
+                        e.call(this), this.$dropdownContainer.remove()
+                    }),
+                    (e.prototype.position = function (e, t, n) {
+                        t.attr('class', n.attr('class')),
+                            t[0].classList.remove('select2'),
+                            t[0].classList.add('select2-container--open'),
+                            t.css({ position: 'absolute', top: -999999 }),
+                            (this.$container = n)
+                    }),
+                    (e.prototype.render = function (e) {
+                        var t = u('<span></span>'),
+                            e = e.call(this)
+                        return t.append(e), (this.$dropdownContainer = t)
+                    }),
+                    (e.prototype._hideDropdown = function (e) {
+                        this.$dropdownContainer.detach()
+                    }),
+                    (e.prototype._bindContainerResultHandlers = function (e, t) {
+                        var n
+                        this._containerResultsHandlersBound ||
+                            ((n = this),
+                            t.on('results:all', function () {
+                                n._positionDropdown(), n._resizeDropdown()
+                            }),
+                            t.on('results:append', function () {
+                                n._positionDropdown(), n._resizeDropdown()
+                            }),
+                            t.on('results:message', function () {
+                                n._positionDropdown(), n._resizeDropdown()
+                            }),
+                            t.on('select', function () {
+                                n._positionDropdown(), n._resizeDropdown()
+                            }),
+                            t.on('unselect', function () {
+                                n._positionDropdown(), n._resizeDropdown()
+                            }),
+                            (this._containerResultsHandlersBound = !0))
+                    }),
+                    (e.prototype._attachPositioningHandler = function (e, t) {
+                        var n = this,
+                            s = 'scroll.select2.' + t.id,
+                            i = 'resize.select2.' + t.id,
+                            r = 'orientationchange.select2.' + t.id,
+                            t = this.$container.parents().filter(o.hasScroll)
+                        t.each(function () {
+                            o.StoreData(this, 'select2-scroll-position', {
+                                x: u(this).scrollLeft(),
+                                y: u(this).scrollTop(),
+                            })
                         }),
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this,
-                                i = t.id + '-results'
-                            e.call(this, t, n),
-                                this.$search.on('keydown', function (e) {
-                                    s.trigger('keypress', e), (s._keyUpPrevented = e.isDefaultPrevented())
-                                }),
-                                this.$search.on('input', function (e) {
-                                    r(this).off('keyup')
-                                }),
-                                this.$search.on('keyup input', function (e) {
-                                    s.handleSearch(e)
-                                }),
-                                t.on('open', function () {
-                                    s.$search.attr('tabindex', 0),
-                                        s.$search.attr('aria-controls', i),
-                                        s.$search.trigger('focus'),
-                                        window.setTimeout(function () {
-                                            s.$search.trigger('focus')
-                                        }, 0)
-                                }),
-                                t.on('close', function () {
-                                    s.$search.attr('tabindex', -1),
-                                        s.$search.removeAttr('aria-controls'),
-                                        s.$search.removeAttr('aria-activedescendant'),
-                                        s.$search.val(''),
-                                        s.$search.trigger('blur')
-                                }),
-                                t.on('focus', function () {
-                                    t.isOpen() || s.$search.trigger('focus')
-                                }),
-                                t.on('results:all', function (e) {
-                                    ; (null != e.query.term && '' !== e.query.term) ||
-                                        (s.showSearch(e)
-                                            ? s.$searchContainer[0].classList.remove('select2-search--hide')
-                                            : s.$searchContainer[0].classList.add('select2-search--hide'))
-                                }),
-                                t.on('results:focus', function (e) {
-                                    e.data._resultId
-                                        ? s.$search.attr('aria-activedescendant', e.data._resultId)
-                                        : s.$search.removeAttr('aria-activedescendant')
-                                })
-                        }),
-                        (e.prototype.handleSearch = function (e) {
-                            var t
-                            this._keyUpPrevented || ((t = this.$search.val()), this.trigger('query', { term: t })), (this._keyUpPrevented = !1)
-                        }),
-                        (e.prototype.showSearch = function (e, t) {
-                            return !0
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/hidePlaceholder', [], function () {
-                    function e(e, t, n, s) {
-                        ; (this.placeholder = this.normalizePlaceholder(n.get('placeholder'))), e.call(this, t, n, s)
+                            t.on(s, function (e) {
+                                var t = o.GetData(this, 'select2-scroll-position')
+                                u(this).scrollTop(t.y)
+                            }),
+                            u(window).on(s + ' ' + i + ' ' + r, function (e) {
+                                n._positionDropdown(), n._resizeDropdown()
+                            })
+                    }),
+                    (e.prototype._detachPositioningHandler = function (e, t) {
+                        var n = 'scroll.select2.' + t.id,
+                            s = 'resize.select2.' + t.id,
+                            t = 'orientationchange.select2.' + t.id
+                        this.$container.parents().filter(o.hasScroll).off(n), u(window).off(n + ' ' + s + ' ' + t)
+                    }),
+                    (e.prototype._positionDropdown = function () {
+                        var e = u(window),
+                            t = this.$dropdown[0].classList.contains('select2-dropdown--above'),
+                            n = this.$dropdown[0].classList.contains('select2-dropdown--below'),
+                            s = null,
+                            i = this.$container.offset()
+                        i.bottom = i.top + this.$container.outerHeight(!1)
+                        var r = { height: this.$container.outerHeight(!1) }
+                        ;(r.top = i.top), (r.bottom = i.top + r.height)
+                        var o = this.$dropdown.outerHeight(!1),
+                            a = e.scrollTop(),
+                            l = e.scrollTop() + e.height(),
+                            c = a < i.top - o,
+                            e = l > i.bottom + o,
+                            a = { left: i.left, top: r.bottom },
+                            l = this.$dropdownParent
+                        'static' === l.css('position') && (l = l.offsetParent())
+                        i = { top: 0, left: 0 }
+                        ;(u.contains(document.body, l[0]) || l[0].isConnected) && (i = l.offset()),
+                            (a.top -= i.top),
+                            (a.left -= i.left),
+                            t || n || (s = 'below'),
+                            e || !c || t ? !c && e && t && (s = 'below') : (s = 'above'),
+                            ('above' == s || (t && 'below' !== s)) && (a.top = r.top - i.top - o),
+                            null != s &&
+                                (this.$dropdown[0].classList.remove('select2-dropdown--below'),
+                                this.$dropdown[0].classList.remove('select2-dropdown--above'),
+                                this.$dropdown[0].classList.add('select2-dropdown--' + s),
+                                this.$container[0].classList.remove('select2-container--below'),
+                                this.$container[0].classList.remove('select2-container--above'),
+                                this.$container[0].classList.add('select2-container--' + s)),
+                            this.$dropdownContainer.css(a)
+                    }),
+                    (e.prototype._resizeDropdown = function () {
+                        var e = { width: this.$container.outerWidth(!1) + 'px' }
+                        this.options.get('dropdownAutoWidth') && ((e.minWidth = e.width), (e.position = 'relative'), (e.width = 'auto')),
+                            this.$dropdown.css(e)
+                    }),
+                    (e.prototype._showDropdown = function (e) {
+                        this.$dropdownContainer.appendTo(this.$dropdownParent), this._positionDropdown(), this._resizeDropdown()
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/minimumResultsForSearch', [], function () {
+                function e(e, t, n, s) {
+                    ;(this.minimumResultsForSearch = n.get('minimumResultsForSearch')),
+                        this.minimumResultsForSearch < 0 && (this.minimumResultsForSearch = 1 / 0),
+                        e.call(this, t, n, s)
+                }
+
+                return (
+                    (e.prototype.showSearch = function (e, t) {
+                        return (
+                            !(
+                                (function e(t) {
+                                    for (var n = 0, s = 0; s < t.length; s++) {
+                                        var i = t[s]
+                                        i.children ? (n += e(i.children)) : n++
+                                    }
+                                    return n
+                                })(t.data.results) < this.minimumResultsForSearch
+                            ) && e.call(this, t)
+                        )
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/selectOnClose', ['../utils'], function (s) {
+                function e() {}
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this
+                        e.call(this, t, n),
+                            t.on('close', function (e) {
+                                s._handleSelectOnClose(e)
+                            })
+                    }),
+                    (e.prototype._handleSelectOnClose = function (e, t) {
+                        if (t && null != t.originalSelect2Event) {
+                            var n = t.originalSelect2Event
+                            if ('select' === n._type || 'unselect' === n._type) return
+                        }
+                        n = this.getHighlightedResults()
+                        n.length < 1 ||
+                            (null != (n = s.GetData(n[0], 'data')).element && n.element.selected) ||
+                            (null == n.element && n.selected) ||
+                            this.trigger('select', { data: n })
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/closeOnSelect', [], function () {
+                function e() {}
+
+                return (
+                    (e.prototype.bind = function (e, t, n) {
+                        var s = this
+                        e.call(this, t, n),
+                            t.on('select', function (e) {
+                                s._selectTriggered(e)
+                            }),
+                            t.on('unselect', function (e) {
+                                s._selectTriggered(e)
+                            })
+                    }),
+                    (e.prototype._selectTriggered = function (e, t) {
+                        var n = t.originalEvent
+                        ;(n && (n.ctrlKey || n.metaKey)) ||
+                            this.trigger('close', {
+                                originalEvent: n,
+                                originalSelect2Event: t,
+                            })
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/dropdownCss', ['../utils'], function (n) {
+                function e() {}
+
+                return (
+                    (e.prototype.render = function (e) {
+                        var t = e.call(this),
+                            e = this.options.get('dropdownCssClass') || ''
+                        return (
+                            -1 !== e.indexOf(':all:') && ((e = e.replace(':all:', '')), n.copyNonInternalCssClasses(t[0], this.$element[0])),
+                            t.addClass(e),
+                            t
+                        )
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/dropdown/tagsSearchHighlight', ['../utils'], function (s) {
+                function e() {}
+
+                return (
+                    (e.prototype.highlightFirstItem = function (e) {
+                        var t = this.$results.find('.select2-results__option--selectable:not(.select2-results__option--selected)')
+                        if (0 < t.length) {
+                            var n = t.first(),
+                                t = s.GetData(n[0], 'data').element
+                            if (t && t.getAttribute && 'true' === t.getAttribute('data-select2-tag')) return void n.trigger('mouseenter')
+                        }
+                        e.call(this)
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/i18n/en', [], function () {
+                return {
+                    errorLoading: function () {
+                        return 'The results could not be loaded.'
+                    },
+                    inputTooLong: function (e) {
+                        var t = e.input.length - e.maximum,
+                            e = 'Please delete ' + t + ' character'
+                        return 1 != t && (e += 's'), e
+                    },
+                    inputTooShort: function (e) {
+                        return 'Please enter ' + (e.minimum - e.input.length) + ' or more characters'
+                    },
+                    loadingMore: function () {
+                        return 'Loading more results…'
+                    },
+                    maximumSelected: function (e) {
+                        var t = 'You can only select ' + e.maximum + ' item'
+                        return 1 != e.maximum && (t += 's'), t
+                    },
+                    noResults: function () {
+                        return 'No results found'
+                    },
+                    searching: function () {
+                        return 'Searching…'
+                    },
+                    removeAllItems: function () {
+                        return 'Remove all items'
+                    },
+                    removeItem: function () {
+                        return 'Remove item'
+                    },
+                    search: function () {
+                        return 'Search'
+                    },
+                }
+            }),
+            u.define(
+                'select2/defaults',
+                [
+                    'jquery',
+                    './results',
+                    './selection/single',
+                    './selection/multiple',
+                    './selection/placeholder',
+                    './selection/allowClear',
+                    './selection/search',
+                    './selection/selectionCss',
+                    './selection/eventRelay',
+                    './utils',
+                    './translation',
+                    './diacritics',
+                    './data/select',
+                    './data/array',
+                    './data/ajax',
+                    './data/tags',
+                    './data/tokenizer',
+                    './data/minimumInputLength',
+                    './data/maximumInputLength',
+                    './data/maximumSelectionLength',
+                    './dropdown',
+                    './dropdown/search',
+                    './dropdown/hidePlaceholder',
+                    './dropdown/infiniteScroll',
+                    './dropdown/attachBody',
+                    './dropdown/minimumResultsForSearch',
+                    './dropdown/selectOnClose',
+                    './dropdown/closeOnSelect',
+                    './dropdown/dropdownCss',
+                    './dropdown/tagsSearchHighlight',
+                    './i18n/en',
+                ],
+                function (l, r, o, a, c, u, d, p, h, f, g, t, m, y, v, _, b, $, w, x, A, D, S, E, O, C, L, T, q, I, e) {
+                    function n() {
+                        this.reset()
                     }
+
                     return (
-                        (e.prototype.append = function (e, t) {
-                            ; (t.results = this.removePlaceholder(t.results)), e.call(this, t)
+                        (n.prototype.apply = function (e) {
+                            var t
+                            null == (e = l.extend(!0, {}, this.defaults, e)).dataAdapter &&
+                                (null != e.ajax ? (e.dataAdapter = v) : null != e.data ? (e.dataAdapter = y) : (e.dataAdapter = m),
+                                0 < e.minimumInputLength && (e.dataAdapter = f.Decorate(e.dataAdapter, $)),
+                                0 < e.maximumInputLength && (e.dataAdapter = f.Decorate(e.dataAdapter, w)),
+                                0 < e.maximumSelectionLength && (e.dataAdapter = f.Decorate(e.dataAdapter, x)),
+                                e.tags && (e.dataAdapter = f.Decorate(e.dataAdapter, _)),
+                                (null == e.tokenSeparators && null == e.tokenizer) || (e.dataAdapter = f.Decorate(e.dataAdapter, b))),
+                                null == e.resultsAdapter &&
+                                    ((e.resultsAdapter = r),
+                                    null != e.ajax && (e.resultsAdapter = f.Decorate(e.resultsAdapter, E)),
+                                    null != e.placeholder && (e.resultsAdapter = f.Decorate(e.resultsAdapter, S)),
+                                    e.selectOnClose && (e.resultsAdapter = f.Decorate(e.resultsAdapter, L)),
+                                    e.tags && (e.resultsAdapter = f.Decorate(e.resultsAdapter, I))),
+                                null == e.dropdownAdapter &&
+                                    (e.multiple ? (e.dropdownAdapter = A) : ((t = f.Decorate(A, D)), (e.dropdownAdapter = t)),
+                                    0 !== e.minimumResultsForSearch && (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, C)),
+                                    e.closeOnSelect && (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, T)),
+                                    null != e.dropdownCssClass && (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, q)),
+                                    (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, O))),
+                                null == e.selectionAdapter &&
+                                    (e.multiple ? (e.selectionAdapter = a) : (e.selectionAdapter = o),
+                                    null != e.placeholder && (e.selectionAdapter = f.Decorate(e.selectionAdapter, c)),
+                                    e.allowClear && (e.selectionAdapter = f.Decorate(e.selectionAdapter, u)),
+                                    e.multiple && (e.selectionAdapter = f.Decorate(e.selectionAdapter, d)),
+                                    null != e.selectionCssClass && (e.selectionAdapter = f.Decorate(e.selectionAdapter, p)),
+                                    (e.selectionAdapter = f.Decorate(e.selectionAdapter, h))),
+                                (e.language = this._resolveLanguage(e.language)),
+                                e.language.push('en')
+                            for (var n = [], s = 0; s < e.language.length; s++) {
+                                var i = e.language[s]
+                                ;-1 === n.indexOf(i) && n.push(i)
+                            }
+                            return (e.language = n), (e.translations = this._processTranslations(e.language, e.debug)), e
                         }),
-                        (e.prototype.normalizePlaceholder = function (e, t) {
-                            return (t = 'string' == typeof t ? { id: '', text: t } : t)
+                        (n.prototype.reset = function () {
+                            function a(e) {
+                                return e.replace(/[^\u0000-\u007E]/g, function (e) {
+                                    return t[e] || e
+                                })
+                            }
+
+                            this.defaults = {
+                                amdLanguageBase: './i18n/',
+                                autocomplete: 'off',
+                                closeOnSelect: !0,
+                                debug: !1,
+                                dropdownAutoWidth: !1,
+                                escapeMarkup: f.escapeMarkup,
+                                language: {},
+                                matcher: function e(t, n) {
+                                    if (null == t.term || '' === t.term.trim()) return n
+                                    if (n.children && 0 < n.children.length) {
+                                        for (var s = l.extend(!0, {}, n), i = n.children.length - 1; 0 <= i; i--)
+                                            null == e(t, n.children[i]) && s.children.splice(i, 1)
+                                        return 0 < s.children.length ? s : e(t, s)
+                                    }
+                                    var r = a(n.text).toUpperCase(),
+                                        o = a(t.term).toUpperCase()
+                                    return -1 < r.indexOf(o) ? n : null
+                                },
+                                minimumInputLength: 0,
+                                maximumInputLength: 0,
+                                maximumSelectionLength: 0,
+                                minimumResultsForSearch: 0,
+                                selectOnClose: !1,
+                                scrollAfterSelect: !1,
+                                sorter: function (e) {
+                                    return e
+                                },
+                                templateResult: function (e) {
+                                    return e.text
+                                },
+                                templateSelection: function (e) {
+                                    return e.text
+                                },
+                                theme: 'default',
+                                width: 'resolve',
+                            }
                         }),
-                        (e.prototype.removePlaceholder = function (e, t) {
-                            for (var n = t.slice(0), s = t.length - 1; 0 <= s; s--) {
-                                var i = t[s]
-                                this.placeholder.id === i.id && n.splice(s, 1)
+                        (n.prototype.applyFromElement = function (e, t) {
+                            var n = e.language,
+                                s = this.defaults.language,
+                                i = t.prop('lang'),
+                                t = t.closest('[lang]').prop('lang'),
+                                t = Array.prototype.concat.call(
+                                    this._resolveLanguage(i),
+                                    this._resolveLanguage(n),
+                                    this._resolveLanguage(s),
+                                    this._resolveLanguage(t),
+                                )
+                            return (e.language = t), e
+                        }),
+                        (n.prototype._resolveLanguage = function (e) {
+                            if (!e) return []
+                            if (l.isEmptyObject(e)) return []
+                            if (l.isPlainObject(e)) return [e]
+                            for (var t, n = Array.isArray(e) ? e : [e], s = [], i = 0; i < n.length; i++)
+                                s.push(n[i]), 'string' == typeof n[i] && 0 < n[i].indexOf('-') && ((t = n[i].split('-')[0]), s.push(t))
+                            return s
+                        }),
+                        (n.prototype._processTranslations = function (e, t) {
+                            for (var n = new g(), s = 0; s < e.length; s++) {
+                                var i = new g(),
+                                    r = e[s]
+                                if ('string' == typeof r)
+                                    try {
+                                        i = g.loadPath(r)
+                                    } catch (e) {
+                                        try {
+                                            ;(r = this.defaults.amdLanguageBase + r), (i = g.loadPath(r))
+                                        } catch (e) {
+                                            t &&
+                                                window.console &&
+                                                console.warn &&
+                                                console.warn(
+                                                    'Select2: The language file for "' +
+                                                        r +
+                                                        '" could not be automatically loaded. A fallback will be used instead.',
+                                                )
+                                        }
+                                    }
+                                else i = l.isPlainObject(r) ? new g(r) : r
+                                n.extend(i)
                             }
                             return n
                         }),
-                        e
+                        (n.prototype.set = function (e, t) {
+                            var n = {}
+                            n[l.camelCase(e)] = t
+                            n = f._convertData(n)
+                            l.extend(!0, this.defaults, n)
+                        }),
+                        new n()
                     )
-                }),
-                u.define('select2/dropdown/infiniteScroll', ['jquery'], function (n) {
-                    function e(e, t, n, s) {
-                        ; (this.lastParams = {}), e.call(this, t, n, s), (this.$loadingMore = this.createLoadingMore()), (this.loading = !1)
-                    }
-                    return (
-                        (e.prototype.append = function (e, t) {
-                            this.$loadingMore.remove(),
-                                (this.loading = !1),
-                                e.call(this, t),
-                                this.showLoadingMore(t) && (this.$results.append(this.$loadingMore), this.loadMoreIfNeeded())
-                        }),
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this
-                            e.call(this, t, n),
-                                t.on('query', function (e) {
-                                    ; (s.lastParams = e), (s.loading = !0)
-                                }),
-                                t.on('query:append', function (e) {
-                                    ; (s.lastParams = e), (s.loading = !0)
-                                }),
-                                this.$results.on('scroll', this.loadMoreIfNeeded.bind(this))
-                        }),
-                        (e.prototype.loadMoreIfNeeded = function () {
-                            var e = n.contains(document.documentElement, this.$loadingMore[0])
-                            !this.loading &&
-                                e &&
-                                ((e = this.$results.offset().top + this.$results.outerHeight(!1)),
-                                    this.$loadingMore.offset().top + this.$loadingMore.outerHeight(!1) <= e + 50 && this.loadMore())
-                        }),
-                        (e.prototype.loadMore = function () {
-                            this.loading = !0
-                            var e = n.extend({}, { page: 1 }, this.lastParams)
-                            e.page++, this.trigger('query:append', e)
-                        }),
-                        (e.prototype.showLoadingMore = function (e, t) {
-                            return t.pagination && t.pagination.more
-                        }),
-                        (e.prototype.createLoadingMore = function () {
-                            var e = n('<li class="select2-results__option select2-results__option--load-more"role="option" aria-disabled="true"></li>'),
-                                t = this.options.get('translations').get('loadingMore')
-                            return e.html(t(this.lastParams)), e
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/attachBody', ['jquery', '../utils'], function (u, o) {
-                    function e(e, t, n) {
-                        ; (this.$dropdownParent = u(n.get('dropdownParent') || document.body)), e.call(this, t, n)
-                    }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this
-                            e.call(this, t, n),
-                                t.on('open', function () {
-                                    s._showDropdown(), s._attachPositioningHandler(t), s._bindContainerResultHandlers(t)
-                                }),
-                                t.on('close', function () {
-                                    s._hideDropdown(), s._detachPositioningHandler(t)
-                                }),
-                                this.$dropdownContainer.on('mousedown', function (e) {
-                                    e.stopPropagation()
-                                })
-                        }),
-                        (e.prototype.destroy = function (e) {
-                            e.call(this), this.$dropdownContainer.remove()
-                        }),
-                        (e.prototype.position = function (e, t, n) {
-                            t.attr('class', n.attr('class')),
-                                t[0].classList.remove('select2'),
-                                t[0].classList.add('select2-container--open'),
-                                t.css({ position: 'absolute', top: -999999 }),
-                                (this.$container = n)
-                        }),
-                        (e.prototype.render = function (e) {
-                            var t = u('<span></span>'),
-                                e = e.call(this)
-                            return t.append(e), (this.$dropdownContainer = t)
-                        }),
-                        (e.prototype._hideDropdown = function (e) {
-                            this.$dropdownContainer.detach()
-                        }),
-                        (e.prototype._bindContainerResultHandlers = function (e, t) {
-                            var n
-                            this._containerResultsHandlersBound ||
-                                ((n = this),
-                                    t.on('results:all', function () {
-                                        n._positionDropdown(), n._resizeDropdown()
-                                    }),
-                                    t.on('results:append', function () {
-                                        n._positionDropdown(), n._resizeDropdown()
-                                    }),
-                                    t.on('results:message', function () {
-                                        n._positionDropdown(), n._resizeDropdown()
-                                    }),
-                                    t.on('select', function () {
-                                        n._positionDropdown(), n._resizeDropdown()
-                                    }),
-                                    t.on('unselect', function () {
-                                        n._positionDropdown(), n._resizeDropdown()
-                                    }),
-                                    (this._containerResultsHandlersBound = !0))
-                        }),
-                        (e.prototype._attachPositioningHandler = function (e, t) {
-                            var n = this,
-                                s = 'scroll.select2.' + t.id,
-                                i = 'resize.select2.' + t.id,
-                                r = 'orientationchange.select2.' + t.id,
-                                t = this.$container.parents().filter(o.hasScroll)
-                            t.each(function () {
-                                o.StoreData(this, 'select2-scroll-position', {
-                                    x: u(this).scrollLeft(),
-                                    y: u(this).scrollTop(),
-                                })
-                            }),
-                                t.on(s, function (e) {
-                                    var t = o.GetData(this, 'select2-scroll-position')
-                                    u(this).scrollTop(t.y)
-                                }),
-                                u(window).on(s + ' ' + i + ' ' + r, function (e) {
-                                    n._positionDropdown(), n._resizeDropdown()
-                                })
-                        }),
-                        (e.prototype._detachPositioningHandler = function (e, t) {
-                            var n = 'scroll.select2.' + t.id,
-                                s = 'resize.select2.' + t.id,
-                                t = 'orientationchange.select2.' + t.id
-                            this.$container.parents().filter(o.hasScroll).off(n), u(window).off(n + ' ' + s + ' ' + t)
-                        }),
-                        (e.prototype._positionDropdown = function () {
-                            var e = u(window),
-                                t = this.$dropdown[0].classList.contains('select2-dropdown--above'),
-                                n = this.$dropdown[0].classList.contains('select2-dropdown--below'),
-                                s = null,
-                                i = this.$container.offset()
-                            i.bottom = i.top + this.$container.outerHeight(!1)
-                            var r = { height: this.$container.outerHeight(!1) }
-                                ; (r.top = i.top), (r.bottom = i.top + r.height)
-                            var o = this.$dropdown.outerHeight(!1),
-                                a = e.scrollTop(),
-                                l = e.scrollTop() + e.height(),
-                                c = a < i.top - o,
-                                e = l > i.bottom + o,
-                                a = { left: i.left, top: r.bottom },
-                                l = this.$dropdownParent
-                            'static' === l.css('position') && (l = l.offsetParent())
-                            i = { top: 0, left: 0 }
-                                ; (u.contains(document.body, l[0]) || l[0].isConnected) && (i = l.offset()),
-                                    (a.top -= i.top),
-                                    (a.left -= i.left),
-                                    t || n || (s = 'below'),
-                                    e || !c || t ? !c && e && t && (s = 'below') : (s = 'above'),
-                                    ('above' == s || (t && 'below' !== s)) && (a.top = r.top - i.top - o),
-                                    null != s &&
-                                    (this.$dropdown[0].classList.remove('select2-dropdown--below'),
-                                        this.$dropdown[0].classList.remove('select2-dropdown--above'),
-                                        this.$dropdown[0].classList.add('select2-dropdown--' + s),
-                                        this.$container[0].classList.remove('select2-container--below'),
-                                        this.$container[0].classList.remove('select2-container--above'),
-                                        this.$container[0].classList.add('select2-container--' + s)),
-                                    this.$dropdownContainer.css(a)
-                        }),
-                        (e.prototype._resizeDropdown = function () {
-                            var e = { width: this.$container.outerWidth(!1) + 'px' }
-                            this.options.get('dropdownAutoWidth') && ((e.minWidth = e.width), (e.position = 'relative'), (e.width = 'auto')),
-                                this.$dropdown.css(e)
-                        }),
-                        (e.prototype._showDropdown = function (e) {
-                            this.$dropdownContainer.appendTo(this.$dropdownParent), this._positionDropdown(), this._resizeDropdown()
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/minimumResultsForSearch', [], function () {
-                    function e(e, t, n, s) {
-                        ; (this.minimumResultsForSearch = n.get('minimumResultsForSearch')),
-                            this.minimumResultsForSearch < 0 && (this.minimumResultsForSearch = 1 / 0),
-                            e.call(this, t, n, s)
-                    }
-                    return (
-                        (e.prototype.showSearch = function (e, t) {
-                            return (
-                                !(
-                                    (function e(t) {
-                                        for (var n = 0, s = 0; s < t.length; s++) {
-                                            var i = t[s]
-                                            i.children ? (n += e(i.children)) : n++
-                                        }
-                                        return n
-                                    })(t.data.results) < this.minimumResultsForSearch
-                                ) && e.call(this, t)
-                            )
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/selectOnClose', ['../utils'], function (s) {
-                    function e() { }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this
-                            e.call(this, t, n),
-                                t.on('close', function (e) {
-                                    s._handleSelectOnClose(e)
-                                })
-                        }),
-                        (e.prototype._handleSelectOnClose = function (e, t) {
-                            if (t && null != t.originalSelect2Event) {
-                                var n = t.originalSelect2Event
-                                if ('select' === n._type || 'unselect' === n._type) return
-                            }
-                            n = this.getHighlightedResults()
-                            n.length < 1 ||
-                                (null != (n = s.GetData(n[0], 'data')).element && n.element.selected) ||
-                                (null == n.element && n.selected) ||
-                                this.trigger('select', { data: n })
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/closeOnSelect', [], function () {
-                    function e() { }
-                    return (
-                        (e.prototype.bind = function (e, t, n) {
-                            var s = this
-                            e.call(this, t, n),
-                                t.on('select', function (e) {
-                                    s._selectTriggered(e)
-                                }),
-                                t.on('unselect', function (e) {
-                                    s._selectTriggered(e)
-                                })
-                        }),
-                        (e.prototype._selectTriggered = function (e, t) {
-                            var n = t.originalEvent
-                                ; (n && (n.ctrlKey || n.metaKey)) ||
-                                    this.trigger('close', {
-                                        originalEvent: n,
-                                        originalSelect2Event: t,
-                                    })
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/dropdownCss', ['../utils'], function (n) {
-                    function e() { }
-                    return (
-                        (e.prototype.render = function (e) {
-                            var t = e.call(this),
-                                e = this.options.get('dropdownCssClass') || ''
-                            return (
-                                -1 !== e.indexOf(':all:') && ((e = e.replace(':all:', '')), n.copyNonInternalCssClasses(t[0], this.$element[0])),
-                                t.addClass(e),
-                                t
-                            )
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/dropdown/tagsSearchHighlight', ['../utils'], function (s) {
-                    function e() { }
-                    return (
-                        (e.prototype.highlightFirstItem = function (e) {
-                            var t = this.$results.find('.select2-results__option--selectable:not(.select2-results__option--selected)')
-                            if (0 < t.length) {
-                                var n = t.first(),
-                                    t = s.GetData(n[0], 'data').element
-                                if (t && t.getAttribute && 'true' === t.getAttribute('data-select2-tag')) return void n.trigger('mouseenter')
-                            }
-                            e.call(this)
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/i18n/en', [], function () {
-                    return {
-                        errorLoading: function () {
-                            return 'The results could not be loaded.'
-                        },
-                        inputTooLong: function (e) {
-                            var t = e.input.length - e.maximum,
-                                e = 'Please delete ' + t + ' character'
-                            return 1 != t && (e += 's'), e
-                        },
-                        inputTooShort: function (e) {
-                            return 'Please enter ' + (e.minimum - e.input.length) + ' or more characters'
-                        },
-                        loadingMore: function () {
-                            return 'Loading more results…'
-                        },
-                        maximumSelected: function (e) {
-                            var t = 'You can only select ' + e.maximum + ' item'
-                            return 1 != e.maximum && (t += 's'), t
-                        },
-                        noResults: function () {
-                            return 'No results found'
-                        },
-                        searching: function () {
-                            return 'Searching…'
-                        },
-                        removeAllItems: function () {
-                            return 'Remove all items'
-                        },
-                        removeItem: function () {
-                            return 'Remove item'
-                        },
-                        search: function () {
-                            return 'Search'
-                        },
-                    }
-                }),
-                u.define(
-                    'select2/defaults',
-                    [
-                        'jquery',
-                        './results',
-                        './selection/single',
-                        './selection/multiple',
-                        './selection/placeholder',
-                        './selection/allowClear',
-                        './selection/search',
-                        './selection/selectionCss',
-                        './selection/eventRelay',
-                        './utils',
-                        './translation',
-                        './diacritics',
-                        './data/select',
-                        './data/array',
-                        './data/ajax',
-                        './data/tags',
-                        './data/tokenizer',
-                        './data/minimumInputLength',
-                        './data/maximumInputLength',
-                        './data/maximumSelectionLength',
-                        './dropdown',
-                        './dropdown/search',
-                        './dropdown/hidePlaceholder',
-                        './dropdown/infiniteScroll',
-                        './dropdown/attachBody',
-                        './dropdown/minimumResultsForSearch',
-                        './dropdown/selectOnClose',
-                        './dropdown/closeOnSelect',
-                        './dropdown/dropdownCss',
-                        './dropdown/tagsSearchHighlight',
-                        './i18n/en',
-                    ],
-                    function (l, r, o, a, c, u, d, p, h, f, g, t, m, y, v, _, b, $, w, x, A, D, S, E, O, C, L, T, q, I, e) {
-                        function n() {
-                            this.reset()
-                        }
-                        return (
-                            (n.prototype.apply = function (e) {
-                                var t
-                                null == (e = l.extend(!0, {}, this.defaults, e)).dataAdapter &&
-                                    (null != e.ajax ? (e.dataAdapter = v) : null != e.data ? (e.dataAdapter = y) : (e.dataAdapter = m),
-                                        0 < e.minimumInputLength && (e.dataAdapter = f.Decorate(e.dataAdapter, $)),
-                                        0 < e.maximumInputLength && (e.dataAdapter = f.Decorate(e.dataAdapter, w)),
-                                        0 < e.maximumSelectionLength && (e.dataAdapter = f.Decorate(e.dataAdapter, x)),
-                                        e.tags && (e.dataAdapter = f.Decorate(e.dataAdapter, _)),
-                                        (null == e.tokenSeparators && null == e.tokenizer) || (e.dataAdapter = f.Decorate(e.dataAdapter, b))),
-                                    null == e.resultsAdapter &&
-                                    ((e.resultsAdapter = r),
-                                        null != e.ajax && (e.resultsAdapter = f.Decorate(e.resultsAdapter, E)),
-                                        null != e.placeholder && (e.resultsAdapter = f.Decorate(e.resultsAdapter, S)),
-                                        e.selectOnClose && (e.resultsAdapter = f.Decorate(e.resultsAdapter, L)),
-                                        e.tags && (e.resultsAdapter = f.Decorate(e.resultsAdapter, I))),
-                                    null == e.dropdownAdapter &&
-                                    (e.multiple ? (e.dropdownAdapter = A) : ((t = f.Decorate(A, D)), (e.dropdownAdapter = t)),
-                                        0 !== e.minimumResultsForSearch && (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, C)),
-                                        e.closeOnSelect && (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, T)),
-                                        null != e.dropdownCssClass && (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, q)),
-                                        (e.dropdownAdapter = f.Decorate(e.dropdownAdapter, O))),
-                                    null == e.selectionAdapter &&
-                                    (e.multiple ? (e.selectionAdapter = a) : (e.selectionAdapter = o),
-                                        null != e.placeholder && (e.selectionAdapter = f.Decorate(e.selectionAdapter, c)),
-                                        e.allowClear && (e.selectionAdapter = f.Decorate(e.selectionAdapter, u)),
-                                        e.multiple && (e.selectionAdapter = f.Decorate(e.selectionAdapter, d)),
-                                        null != e.selectionCssClass && (e.selectionAdapter = f.Decorate(e.selectionAdapter, p)),
-                                        (e.selectionAdapter = f.Decorate(e.selectionAdapter, h))),
-                                    (e.language = this._resolveLanguage(e.language)),
-                                    e.language.push('en')
-                                for (var n = [], s = 0; s < e.language.length; s++) {
-                                    var i = e.language[s]
-                                        ; -1 === n.indexOf(i) && n.push(i)
-                                }
-                                return (e.language = n), (e.translations = this._processTranslations(e.language, e.debug)), e
-                            }),
-                            (n.prototype.reset = function () {
-                                function a(e) {
-                                    return e.replace(/[^\u0000-\u007E]/g, function (e) {
-                                        return t[e] || e
-                                    })
-                                }
-                                this.defaults = {
-                                    amdLanguageBase: './i18n/',
-                                    autocomplete: 'off',
-                                    closeOnSelect: !0,
-                                    debug: !1,
-                                    dropdownAutoWidth: !1,
-                                    escapeMarkup: f.escapeMarkup,
-                                    language: {},
-                                    matcher: function e(t, n) {
-                                        if (null == t.term || '' === t.term.trim()) return n
-                                        if (n.children && 0 < n.children.length) {
-                                            for (var s = l.extend(!0, {}, n), i = n.children.length - 1; 0 <= i; i--)
-                                                null == e(t, n.children[i]) && s.children.splice(i, 1)
-                                            return 0 < s.children.length ? s : e(t, s)
-                                        }
-                                        var r = a(n.text).toUpperCase(),
-                                            o = a(t.term).toUpperCase()
-                                        return -1 < r.indexOf(o) ? n : null
-                                    },
-                                    minimumInputLength: 0,
-                                    maximumInputLength: 0,
-                                    maximumSelectionLength: 0,
-                                    minimumResultsForSearch: 0,
-                                    selectOnClose: !1,
-                                    scrollAfterSelect: !1,
-                                    sorter: function (e) {
-                                        return e
-                                    },
-                                    templateResult: function (e) {
-                                        return e.text
-                                    },
-                                    templateSelection: function (e) {
-                                        return e.text
-                                    },
-                                    theme: 'default',
-                                    width: 'resolve',
-                                }
-                            }),
-                            (n.prototype.applyFromElement = function (e, t) {
-                                var n = e.language,
-                                    s = this.defaults.language,
-                                    i = t.prop('lang'),
-                                    t = t.closest('[lang]').prop('lang'),
-                                    t = Array.prototype.concat.call(
-                                        this._resolveLanguage(i),
-                                        this._resolveLanguage(n),
-                                        this._resolveLanguage(s),
-                                        this._resolveLanguage(t),
-                                    )
-                                return (e.language = t), e
-                            }),
-                            (n.prototype._resolveLanguage = function (e) {
-                                if (!e) return []
-                                if (l.isEmptyObject(e)) return []
-                                if (l.isPlainObject(e)) return [e]
-                                for (var t, n = Array.isArray(e) ? e : [e], s = [], i = 0; i < n.length; i++)
-                                    s.push(n[i]), 'string' == typeof n[i] && 0 < n[i].indexOf('-') && ((t = n[i].split('-')[0]), s.push(t))
-                                return s
-                            }),
-                            (n.prototype._processTranslations = function (e, t) {
-                                for (var n = new g(), s = 0; s < e.length; s++) {
-                                    var i = new g(),
-                                        r = e[s]
-                                    if ('string' == typeof r)
-                                        try {
-                                            i = g.loadPath(r)
-                                        } catch (e) {
-                                            try {
-                                                ; (r = this.defaults.amdLanguageBase + r), (i = g.loadPath(r))
-                                            } catch (e) {
-                                                t &&
-                                                    window.console &&
-                                                    console.warn &&
-                                                    console.warn(
-                                                        'Select2: The language file for "' +
-                                                        r +
-                                                        '" could not be automatically loaded. A fallback will be used instead.',
-                                                    )
-                                            }
-                                        }
-                                    else i = l.isPlainObject(r) ? new g(r) : r
-                                    n.extend(i)
-                                }
-                                return n
-                            }),
-                            (n.prototype.set = function (e, t) {
-                                var n = {}
-                                n[l.camelCase(e)] = t
-                                n = f._convertData(n)
-                                l.extend(!0, this.defaults, n)
-                            }),
-                            new n()
-                        )
-                    },
-                ),
-                u.define('select2/options', ['jquery', './defaults', './utils'], function (c, n, u) {
-                    function e(e, t) {
-                        ; (this.options = e),
-                            null != t && this.fromElement(t),
-                            null != t && (this.options = n.applyFromElement(this.options, t)),
-                            (this.options = n.apply(this.options))
-                    }
-                    return (
-                        (e.prototype.fromElement = function (e) {
-                            var t = ['select2']
-                            null == this.options.multiple && (this.options.multiple = e.prop('multiple')),
-                                null == this.options.disabled && (this.options.disabled = e.prop('disabled')),
-                                null == this.options.autocomplete && e.prop('autocomplete') && (this.options.autocomplete = e.prop('autocomplete')),
-                                null == this.options.dir &&
+                },
+            ),
+            u.define('select2/options', ['jquery', './defaults', './utils'], function (c, n, u) {
+                function e(e, t) {
+                    ;(this.options = e),
+                        null != t && this.fromElement(t),
+                        null != t && (this.options = n.applyFromElement(this.options, t)),
+                        (this.options = n.apply(this.options))
+                }
+
+                return (
+                    (e.prototype.fromElement = function (e) {
+                        var t = ['select2']
+                        null == this.options.multiple && (this.options.multiple = e.prop('multiple')),
+                            null == this.options.disabled && (this.options.disabled = e.prop('disabled')),
+                            null == this.options.autocomplete && e.prop('autocomplete') && (this.options.autocomplete = e.prop('autocomplete')),
+                            null == this.options.dir &&
                                 (e.prop('dir')
                                     ? (this.options.dir = e.prop('dir'))
                                     : e.closest('[dir]').prop('dir')
-                                        ? (this.options.dir = e.closest('[dir]').prop('dir'))
-                                        : (this.options.dir = 'ltr')),
-                                e.prop('disabled', this.options.disabled),
-                                e.prop('multiple', this.options.multiple),
-                                u.GetData(e[0], 'select2Tags') &&
+                                      ? (this.options.dir = e.closest('[dir]').prop('dir'))
+                                      : (this.options.dir = 'ltr')),
+                            e.prop('disabled', this.options.disabled),
+                            e.prop('multiple', this.options.multiple),
+                            u.GetData(e[0], 'select2Tags') &&
                                 (this.options.debug &&
                                     window.console &&
                                     console.warn &&
                                     console.warn(
                                         'Select2: The `data-select2-tags` attribute has been changed to use the `data-data` and `data-tags="true"` attributes and will be removed in future versions of Select2.',
                                     ),
-                                    u.StoreData(e[0], 'data', u.GetData(e[0], 'select2Tags')),
-                                    u.StoreData(e[0], 'tags', !0)),
-                                u.GetData(e[0], 'ajaxUrl') &&
+                                u.StoreData(e[0], 'data', u.GetData(e[0], 'select2Tags')),
+                                u.StoreData(e[0], 'tags', !0)),
+                            u.GetData(e[0], 'ajaxUrl') &&
                                 (this.options.debug &&
                                     window.console &&
                                     console.warn &&
                                     console.warn(
                                         'Select2: The `data-ajax-url` attribute has been changed to `data-ajax--url` and support for the old attribute will be removed in future versions of Select2.',
                                     ),
-                                    e.attr('ajax--url', u.GetData(e[0], 'ajaxUrl')),
-                                    u.StoreData(e[0], 'ajax-Url', u.GetData(e[0], 'ajaxUrl')))
-                            var n = {}
-                            function s(e, t) {
-                                return t.toUpperCase()
-                            }
-                            for (var i = 0; i < e[0].attributes.length; i++) {
-                                var r = e[0].attributes[i].name,
-                                    o = 'data-'
-                                r.substr(0, o.length) == o && ((r = r.substring(o.length)), (o = u.GetData(e[0], r)), (n[r.replace(/-([a-z])/g, s)] = o))
-                            }
-                            c.fn.jquery && '1.' == c.fn.jquery.substr(0, 2) && e[0].dataset && (n = c.extend(!0, {}, e[0].dataset, n))
-                            var a,
-                                l = c.extend(!0, {}, u.GetData(e[0]), n)
-                            for (a in (l = u._convertData(l)))
-                                -1 < t.indexOf(a) || (c.isPlainObject(this.options[a]) ? c.extend(this.options[a], l[a]) : (this.options[a] = l[a]))
-                            return this
+                                e.attr('ajax--url', u.GetData(e[0], 'ajaxUrl')),
+                                u.StoreData(e[0], 'ajax-Url', u.GetData(e[0], 'ajaxUrl')))
+                        var n = {}
+
+                        function s(e, t) {
+                            return t.toUpperCase()
+                        }
+
+                        for (var i = 0; i < e[0].attributes.length; i++) {
+                            var r = e[0].attributes[i].name,
+                                o = 'data-'
+                            r.substr(0, o.length) == o && ((r = r.substring(o.length)), (o = u.GetData(e[0], r)), (n[r.replace(/-([a-z])/g, s)] = o))
+                        }
+                        c.fn.jquery && '1.' == c.fn.jquery.substr(0, 2) && e[0].dataset && (n = c.extend(!0, {}, e[0].dataset, n))
+                        var a,
+                            l = c.extend(!0, {}, u.GetData(e[0]), n)
+                        for (a in (l = u._convertData(l)))
+                            -1 < t.indexOf(a) || (c.isPlainObject(this.options[a]) ? c.extend(this.options[a], l[a]) : (this.options[a] = l[a]))
+                        return this
+                    }),
+                    (e.prototype.get = function (e) {
+                        return this.options[e]
+                    }),
+                    (e.prototype.set = function (e, t) {
+                        this.options[e] = t
+                    }),
+                    e
+                )
+            }),
+            u.define('select2/core', ['jquery', './options', './utils', './keys'], function (t, i, r, s) {
+                var o = function (e, t) {
+                    null != r.GetData(e[0], 'select2') && r.GetData(e[0], 'select2').destroy(),
+                        (this.$element = e),
+                        (this.id = this._generateId(e)),
+                        (t = t || {}),
+                        (this.options = new i(t, e)),
+                        o.__super__.constructor.call(this)
+                    var n = e.attr('tabindex') || 0
+                    r.StoreData(e[0], 'old-tabindex', n), e.attr('tabindex', '-1')
+                    t = this.options.get('dataAdapter')
+                    this.dataAdapter = new t(e, this.options)
+                    n = this.render()
+                    this._placeContainer(n)
+                    t = this.options.get('selectionAdapter')
+                    ;(this.selection = new t(e, this.options)),
+                        (this.$selection = this.selection.render()),
+                        this.selection.position(this.$selection, n)
+                    t = this.options.get('dropdownAdapter')
+                    ;(this.dropdown = new t(e, this.options)), (this.$dropdown = this.dropdown.render()), this.dropdown.position(this.$dropdown, n)
+                    n = this.options.get('resultsAdapter')
+                    ;(this.results = new n(e, this.options, this.dataAdapter)),
+                        (this.$results = this.results.render()),
+                        this.results.position(this.$results, this.$dropdown)
+                    var s = this
+                    this._bindAdapters(),
+                        this._registerDomEvents(),
+                        this._registerDataEvents(),
+                        this._registerSelectionEvents(),
+                        this._registerDropdownEvents(),
+                        this._registerResultsEvents(),
+                        this._registerEvents(),
+                        this.dataAdapter.current(function (e) {
+                            s.trigger('selection:update', { data: e })
                         }),
-                        (e.prototype.get = function (e) {
-                            return this.options[e]
-                        }),
-                        (e.prototype.set = function (e, t) {
-                            this.options[e] = t
-                        }),
-                        e
-                    )
-                }),
-                u.define('select2/core', ['jquery', './options', './utils', './keys'], function (t, i, r, s) {
-                    var o = function (e, t) {
-                        null != r.GetData(e[0], 'select2') && r.GetData(e[0], 'select2').destroy(),
-                            (this.$element = e),
-                            (this.id = this._generateId(e)),
-                            (t = t || {}),
-                            (this.options = new i(t, e)),
-                            o.__super__.constructor.call(this)
-                        var n = e.attr('tabindex') || 0
-                        r.StoreData(e[0], 'old-tabindex', n), e.attr('tabindex', '-1')
-                        t = this.options.get('dataAdapter')
-                        this.dataAdapter = new t(e, this.options)
-                        n = this.render()
-                        this._placeContainer(n)
-                        t = this.options.get('selectionAdapter')
-                            ; (this.selection = new t(e, this.options)),
-                                (this.$selection = this.selection.render()),
-                                this.selection.position(this.$selection, n)
-                        t = this.options.get('dropdownAdapter')
-                            ; (this.dropdown = new t(e, this.options)), (this.$dropdown = this.dropdown.render()), this.dropdown.position(this.$dropdown, n)
-                        n = this.options.get('resultsAdapter')
-                            ; (this.results = new n(e, this.options, this.dataAdapter)),
-                                (this.$results = this.results.render()),
-                                this.results.position(this.$results, this.$dropdown)
-                        var s = this
-                        this._bindAdapters(),
-                            this._registerDomEvents(),
-                            this._registerDataEvents(),
-                            this._registerSelectionEvents(),
-                            this._registerDropdownEvents(),
-                            this._registerResultsEvents(),
-                            this._registerEvents(),
-                            this.dataAdapter.current(function (e) {
-                                s.trigger('selection:update', { data: e })
-                            }),
-                            e[0].classList.add('select2-hidden-accessible'),
-                            e.attr('aria-hidden', 'true'),
-                            this._syncAttributes(),
-                            r.StoreData(e[0], 'select2', this),
-                            e.data('select2', this)
-                    }
-                    return (
-                        r.Extend(o, r.Observable),
-                        (o.prototype._generateId = function (e) {
-                            return (
-                                'select2-' +
-                                (null != e.attr('id')
-                                    ? e.attr('id')
-                                    : null != e.attr('name')
-                                        ? e.attr('name') + '-' + r.generateChars(2)
-                                        : r.generateChars(4)
-                                ).replace(/(:|\.|\[|\]|,)/g, '')
-                            )
-                        }),
-                        (o.prototype._placeContainer = function (e) {
-                            e.insertAfter(this.$element)
-                            var t = this._resolveWidth(this.$element, this.options.get('width'))
-                            null != t && e.css('width', t)
-                        }),
-                        (o.prototype._resolveWidth = function (e, t) {
-                            var n = /^width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/i
-                            if ('resolve' == t) {
-                                var s = this._resolveWidth(e, 'style')
-                                return null != s ? s : this._resolveWidth(e, 'element')
-                            }
-                            if ('element' == t) {
-                                s = e.outerWidth(!1)
-                                return s <= 0 ? 'auto' : s + 'px'
-                            }
-                            if ('style' != t) return 'computedstyle' != t ? t : window.getComputedStyle(e[0]).width
-                            e = e.attr('style')
-                            if ('string' != typeof e) return null
-                            for (var i = e.split(';'), r = 0, o = i.length; r < o; r += 1) {
-                                var a = i[r].replace(/\s/g, '').match(n)
-                                if (null !== a && 1 <= a.length) return a[1]
-                            }
-                            return null
-                        }),
-                        (o.prototype._bindAdapters = function () {
-                            this.dataAdapter.bind(this, this.$container),
-                                this.selection.bind(this, this.$container),
-                                this.dropdown.bind(this, this.$container),
-                                this.results.bind(this, this.$container)
-                        }),
-                        (o.prototype._registerDomEvents = function () {
-                            var t = this
-                            this.$element.on('change.select2', function () {
-                                t.dataAdapter.current(function (e) {
-                                    t.trigger('selection:update', { data: e })
-                                })
-                            }),
-                                this.$element.on('focus.select2', function (e) {
-                                    t.trigger('focus', e)
-                                }),
-                                (this._syncA = r.bind(this._syncAttributes, this)),
-                                (this._syncS = r.bind(this._syncSubtree, this)),
-                                (this._observer = new window.MutationObserver(function (e) {
-                                    t._syncA(), t._syncS(e)
-                                })),
-                                this._observer.observe(this.$element[0], {
-                                    attributes: !0,
-                                    childList: !0,
-                                    subtree: !1,
-                                })
-                        }),
-                        (o.prototype._registerDataEvents = function () {
-                            var n = this
-                            this.dataAdapter.on('*', function (e, t) {
-                                n.trigger(e, t)
-                            })
-                        }),
-                        (o.prototype._registerSelectionEvents = function () {
-                            var n = this,
-                                s = ['toggle', 'focus']
-                            this.selection.on('toggle', function () {
-                                n.toggleDropdown()
-                            }),
-                                this.selection.on('focus', function (e) {
-                                    n.focus(e)
-                                }),
-                                this.selection.on('*', function (e, t) {
-                                    ; -1 === s.indexOf(e) && n.trigger(e, t)
-                                })
-                        }),
-                        (o.prototype._registerDropdownEvents = function () {
-                            var n = this
-                            this.dropdown.on('*', function (e, t) {
-                                n.trigger(e, t)
-                            })
-                        }),
-                        (o.prototype._registerResultsEvents = function () {
-                            var n = this
-                            this.results.on('*', function (e, t) {
-                                n.trigger(e, t)
-                            })
-                        }),
-                        (o.prototype._registerEvents = function () {
-                            var n = this
-                            this.on('open', function () {
-                                n.$container[0].classList.add('select2-container--open')
-                            }),
-                                this.on('close', function () {
-                                    n.$container[0].classList.remove('select2-container--open')
-                                }),
-                                this.on('enable', function () {
-                                    n.$container[0].classList.remove('select2-container--disabled')
-                                }),
-                                this.on('disable', function () {
-                                    n.$container[0].classList.add('select2-container--disabled')
-                                }),
-                                this.on('blur', function () {
-                                    n.$container[0].classList.remove('select2-container--focus')
-                                }),
-                                this.on('query', function (t) {
-                                    n.isOpen() || n.trigger('open', {}),
-                                        this.dataAdapter.query(t, function (e) {
-                                            n.trigger('results:all', { data: e, query: t })
-                                        })
-                                }),
-                                this.on('query:append', function (t) {
-                                    this.dataAdapter.query(t, function (e) {
-                                        n.trigger('results:append', { data: e, query: t })
-                                    })
-                                }),
-                                this.on('keypress', function (e) {
-                                    var t = e.which
-                                    n.isOpen()
-                                        ? t === s.ESC || (t === s.UP && e.altKey)
-                                            ? (n.close(e), e.preventDefault())
-                                            : t === s.ENTER || t === s.TAB
-                                                ? (n.trigger('results:select', {}), e.preventDefault())
-                                                : t === s.SPACE && e.ctrlKey
-                                                    ? (n.trigger('results:toggle', {}), e.preventDefault())
-                                                    : t === s.UP
-                                                        ? (n.trigger('results:previous', {}), e.preventDefault())
-                                                        : t === s.DOWN && (n.trigger('results:next', {}), e.preventDefault())
-                                        : (t === s.ENTER || t === s.SPACE || (t === s.DOWN && e.altKey)) && (n.open(), e.preventDefault())
-                                })
-                        }),
-                        (o.prototype._syncAttributes = function () {
-                            this.options.set('disabled', this.$element.prop('disabled')),
-                                this.isDisabled() ? (this.isOpen() && this.close(), this.trigger('disable', {})) : this.trigger('enable', {})
-                        }),
-                        (o.prototype._isChangeMutation = function (e) {
-                            var t = this
-                            if (e.addedNodes && 0 < e.addedNodes.length) {
-                                for (var n = 0; n < e.addedNodes.length; n++) if (e.addedNodes[n].selected) return !0
-                            } else {
-                                if (e.removedNodes && 0 < e.removedNodes.length) return !0
-                                if (Array.isArray(e))
-                                    return e.some(function (e) {
-                                        return t._isChangeMutation(e)
-                                    })
-                            }
-                            return !1
-                        }),
-                        (o.prototype._syncSubtree = function (e) {
-                            var e = this._isChangeMutation(e),
-                                t = this
-                            e &&
-                                this.dataAdapter.current(function (e) {
-                                    t.trigger('selection:update', { data: e })
-                                })
-                        }),
-                        (o.prototype.trigger = function (e, t) {
-                            var n = o.__super__.trigger,
-                                s = {
-                                    open: 'opening',
-                                    close: 'closing',
-                                    select: 'selecting',
-                                    unselect: 'unselecting',
-                                    clear: 'clearing',
-                                }
-                            if ((void 0 === t && (t = {}), e in s)) {
-                                var i = s[e],
-                                    s = { prevented: !1, name: e, args: t }
-                                if ((n.call(this, i, s), s.prevented)) return void (t.prevented = !0)
-                            }
-                            n.call(this, e, t)
-                        }),
-                        (o.prototype.toggleDropdown = function () {
-                            this.isDisabled() || (this.isOpen() ? this.close() : this.open())
-                        }),
-                        (o.prototype.open = function () {
-                            this.isOpen() || this.isDisabled() || this.trigger('query', {})
-                        }),
-                        (o.prototype.close = function (e) {
-                            this.isOpen() && this.trigger('close', { originalEvent: e })
-                        }),
-                        (o.prototype.isEnabled = function () {
-                            return !this.isDisabled()
-                        }),
-                        (o.prototype.isDisabled = function () {
-                            return this.options.get('disabled')
-                        }),
-                        (o.prototype.isOpen = function () {
-                            return this.$container[0].classList.contains('select2-container--open')
-                        }),
-                        (o.prototype.hasFocus = function () {
-                            return this.$container[0].classList.contains('select2-container--focus')
-                        }),
-                        (o.prototype.focus = function (e) {
-                            this.hasFocus() || (this.$container[0].classList.add('select2-container--focus'), this.trigger('focus', {}))
-                        }),
-                        (o.prototype.enable = function (e) {
-                            this.options.get('debug') &&
-                                window.console &&
-                                console.warn &&
-                                console.warn(
-                                    'Select2: The `select2("enable")` method has been deprecated and will be removed in later Select2 versions. Use $element.prop("disabled") instead.',
-                                )
-                            e = !(e = null == e || 0 === e.length ? [!0] : e)[0]
-                            this.$element.prop('disabled', e)
-                        }),
-                        (o.prototype.data = function () {
-                            this.options.get('debug') &&
-                                0 < arguments.length &&
-                                window.console &&
-                                console.warn &&
-                                console.warn(
-                                    'Select2: Data can no longer be set using `select2("data")`. You should consider setting the value instead using `$element.val()`.',
-                                )
-                            var t = []
-                            return (
-                                this.dataAdapter.current(function (e) {
-                                    t = e
-                                }),
-                                t
-                            )
-                        }),
-                        (o.prototype.val = function (e) {
-                            if (
-                                (this.options.get('debug') &&
-                                    window.console &&
-                                    console.warn &&
-                                    console.warn(
-                                        'Select2: The `select2("val")` method has been deprecated and will be removed in later Select2 versions. Use $element.val() instead.',
-                                    ),
-                                    null == e || 0 === e.length)
-                            )
-                                return this.$element.val()
-                            e = e[0]
-                            Array.isArray(e) &&
-                                (e = e.map(function (e) {
-                                    return e.toString()
-                                })),
-                                this.$element.val(e).trigger('input').trigger('change')
-                        }),
-                        (o.prototype.destroy = function () {
-                            r.RemoveData(this.$container[0]),
-                                this.$container.remove(),
-                                this._observer.disconnect(),
-                                (this._observer = null),
-                                (this._syncA = null),
-                                (this._syncS = null),
-                                this.$element.off('.select2'),
-                                this.$element.attr('tabindex', r.GetData(this.$element[0], 'old-tabindex')),
-                                this.$element[0].classList.remove('select2-hidden-accessible'),
-                                this.$element.attr('aria-hidden', 'false'),
-                                r.RemoveData(this.$element[0]),
-                                this.$element.removeData('select2'),
-                                this.dataAdapter.destroy(),
-                                this.selection.destroy(),
-                                this.dropdown.destroy(),
-                                this.results.destroy(),
-                                (this.dataAdapter = null),
-                                (this.selection = null),
-                                (this.dropdown = null),
-                                (this.results = null)
-                        }),
-                        (o.prototype.render = function () {
-                            var e = t(
-                                '<span class="select2 select2-container"><span class="selection"></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>',
-                            )
-                            return (
-                                e.attr('dir', this.options.get('dir')),
-                                (this.$container = e),
-                                this.$container[0].classList.add('select2-container--' + this.options.get('theme')),
-                                r.StoreData(e[0], 'element', this.$element),
-                                e
-                            )
-                        }),
-                        o
-                    )
-                }),
-                u.define('jquery-mousewheel', ['jquery'], function (e) {
-                    return e
-                }),
-                u.define(
-                    'jquery.select2',
-                    ['jquery', 'jquery-mousewheel', './select2/core', './select2/defaults', './select2/utils'],
-                    function (i, e, r, t, o) {
-                        var a
+                        e[0].classList.add('select2-hidden-accessible'),
+                        e.attr('aria-hidden', 'true'),
+                        this._syncAttributes(),
+                        r.StoreData(e[0], 'select2', this),
+                        e.data('select2', this)
+                }
+                return (
+                    r.Extend(o, r.Observable),
+                    (o.prototype._generateId = function (e) {
                         return (
-                            null == i.fn.select2 &&
+                            'select2-' +
+                            (null != e.attr('id')
+                                ? e.attr('id')
+                                : null != e.attr('name')
+                                  ? e.attr('name') + '-' + r.generateChars(2)
+                                  : r.generateChars(4)
+                            ).replace(/(:|\.|\[|\]|,)/g, '')
+                        )
+                    }),
+                    (o.prototype._placeContainer = function (e) {
+                        e.insertAfter(this.$element)
+                        var t = this._resolveWidth(this.$element, this.options.get('width'))
+                        null != t && e.css('width', t)
+                    }),
+                    (o.prototype._resolveWidth = function (e, t) {
+                        var n = /^width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/i
+                        if ('resolve' == t) {
+                            var s = this._resolveWidth(e, 'style')
+                            return null != s ? s : this._resolveWidth(e, 'element')
+                        }
+                        if ('element' == t) {
+                            s = e.outerWidth(!1)
+                            return s <= 0 ? 'auto' : s + 'px'
+                        }
+                        if ('style' != t) return 'computedstyle' != t ? t : window.getComputedStyle(e[0]).width
+                        e = e.attr('style')
+                        if ('string' != typeof e) return null
+                        for (var i = e.split(';'), r = 0, o = i.length; r < o; r += 1) {
+                            var a = i[r].replace(/\s/g, '').match(n)
+                            if (null !== a && 1 <= a.length) return a[1]
+                        }
+                        return null
+                    }),
+                    (o.prototype._bindAdapters = function () {
+                        this.dataAdapter.bind(this, this.$container),
+                            this.selection.bind(this, this.$container),
+                            this.dropdown.bind(this, this.$container),
+                            this.results.bind(this, this.$container)
+                    }),
+                    (o.prototype._registerDomEvents = function () {
+                        var t = this
+                        this.$element.on('change.select2', function () {
+                            t.dataAdapter.current(function (e) {
+                                t.trigger('selection:update', { data: e })
+                            })
+                        }),
+                            this.$element.on('focus.select2', function (e) {
+                                t.trigger('focus', e)
+                            }),
+                            (this._syncA = r.bind(this._syncAttributes, this)),
+                            (this._syncS = r.bind(this._syncSubtree, this)),
+                            (this._observer = new window.MutationObserver(function (e) {
+                                t._syncA(), t._syncS(e)
+                            })),
+                            this._observer.observe(this.$element[0], {
+                                attributes: !0,
+                                childList: !0,
+                                subtree: !1,
+                            })
+                    }),
+                    (o.prototype._registerDataEvents = function () {
+                        var n = this
+                        this.dataAdapter.on('*', function (e, t) {
+                            n.trigger(e, t)
+                        })
+                    }),
+                    (o.prototype._registerSelectionEvents = function () {
+                        var n = this,
+                            s = ['toggle', 'focus']
+                        this.selection.on('toggle', function () {
+                            n.toggleDropdown()
+                        }),
+                            this.selection.on('focus', function (e) {
+                                n.focus(e)
+                            }),
+                            this.selection.on('*', function (e, t) {
+                                ;-1 === s.indexOf(e) && n.trigger(e, t)
+                            })
+                    }),
+                    (o.prototype._registerDropdownEvents = function () {
+                        var n = this
+                        this.dropdown.on('*', function (e, t) {
+                            n.trigger(e, t)
+                        })
+                    }),
+                    (o.prototype._registerResultsEvents = function () {
+                        var n = this
+                        this.results.on('*', function (e, t) {
+                            n.trigger(e, t)
+                        })
+                    }),
+                    (o.prototype._registerEvents = function () {
+                        var n = this
+                        this.on('open', function () {
+                            n.$container[0].classList.add('select2-container--open')
+                        }),
+                            this.on('close', function () {
+                                n.$container[0].classList.remove('select2-container--open')
+                            }),
+                            this.on('enable', function () {
+                                n.$container[0].classList.remove('select2-container--disabled')
+                            }),
+                            this.on('disable', function () {
+                                n.$container[0].classList.add('select2-container--disabled')
+                            }),
+                            this.on('blur', function () {
+                                n.$container[0].classList.remove('select2-container--focus')
+                            }),
+                            this.on('query', function (t) {
+                                n.isOpen() || n.trigger('open', {}),
+                                    this.dataAdapter.query(t, function (e) {
+                                        n.trigger('results:all', { data: e, query: t })
+                                    })
+                            }),
+                            this.on('query:append', function (t) {
+                                this.dataAdapter.query(t, function (e) {
+                                    n.trigger('results:append', { data: e, query: t })
+                                })
+                            }),
+                            this.on('keypress', function (e) {
+                                var t = e.which
+                                n.isOpen()
+                                    ? t === s.ESC || (t === s.UP && e.altKey)
+                                        ? (n.close(e), e.preventDefault())
+                                        : t === s.ENTER || t === s.TAB
+                                          ? (n.trigger('results:select', {}), e.preventDefault())
+                                          : t === s.SPACE && e.ctrlKey
+                                            ? (n.trigger('results:toggle', {}), e.preventDefault())
+                                            : t === s.UP
+                                              ? (n.trigger('results:previous', {}), e.preventDefault())
+                                              : t === s.DOWN && (n.trigger('results:next', {}), e.preventDefault())
+                                    : (t === s.ENTER || t === s.SPACE || (t === s.DOWN && e.altKey)) && (n.open(), e.preventDefault())
+                            })
+                    }),
+                    (o.prototype._syncAttributes = function () {
+                        this.options.set('disabled', this.$element.prop('disabled')),
+                            this.isDisabled() ? (this.isOpen() && this.close(), this.trigger('disable', {})) : this.trigger('enable', {})
+                    }),
+                    (o.prototype._isChangeMutation = function (e) {
+                        var t = this
+                        if (e.addedNodes && 0 < e.addedNodes.length) {
+                            for (var n = 0; n < e.addedNodes.length; n++) if (e.addedNodes[n].selected) return !0
+                        } else {
+                            if (e.removedNodes && 0 < e.removedNodes.length) return !0
+                            if (Array.isArray(e))
+                                return e.some(function (e) {
+                                    return t._isChangeMutation(e)
+                                })
+                        }
+                        return !1
+                    }),
+                    (o.prototype._syncSubtree = function (e) {
+                        var e = this._isChangeMutation(e),
+                            t = this
+                        e &&
+                            this.dataAdapter.current(function (e) {
+                                t.trigger('selection:update', { data: e })
+                            })
+                    }),
+                    (o.prototype.trigger = function (e, t) {
+                        var n = o.__super__.trigger,
+                            s = {
+                                open: 'opening',
+                                close: 'closing',
+                                select: 'selecting',
+                                unselect: 'unselecting',
+                                clear: 'clearing',
+                            }
+                        if ((void 0 === t && (t = {}), e in s)) {
+                            var i = s[e],
+                                s = { prevented: !1, name: e, args: t }
+                            if ((n.call(this, i, s), s.prevented)) return void (t.prevented = !0)
+                        }
+                        n.call(this, e, t)
+                    }),
+                    (o.prototype.toggleDropdown = function () {
+                        this.isDisabled() || (this.isOpen() ? this.close() : this.open())
+                    }),
+                    (o.prototype.open = function () {
+                        this.isOpen() || this.isDisabled() || this.trigger('query', {})
+                    }),
+                    (o.prototype.close = function (e) {
+                        this.isOpen() && this.trigger('close', { originalEvent: e })
+                    }),
+                    (o.prototype.isEnabled = function () {
+                        return !this.isDisabled()
+                    }),
+                    (o.prototype.isDisabled = function () {
+                        return this.options.get('disabled')
+                    }),
+                    (o.prototype.isOpen = function () {
+                        return this.$container[0].classList.contains('select2-container--open')
+                    }),
+                    (o.prototype.hasFocus = function () {
+                        return this.$container[0].classList.contains('select2-container--focus')
+                    }),
+                    (o.prototype.focus = function (e) {
+                        this.hasFocus() || (this.$container[0].classList.add('select2-container--focus'), this.trigger('focus', {}))
+                    }),
+                    (o.prototype.enable = function (e) {
+                        this.options.get('debug') &&
+                            window.console &&
+                            console.warn &&
+                            console.warn(
+                                'Select2: The `select2("enable")` method has been deprecated and will be removed in later Select2 versions. Use $element.prop("disabled") instead.',
+                            )
+                        e = !(e = null == e || 0 === e.length ? [!0] : e)[0]
+                        this.$element.prop('disabled', e)
+                    }),
+                    (o.prototype.data = function () {
+                        this.options.get('debug') &&
+                            0 < arguments.length &&
+                            window.console &&
+                            console.warn &&
+                            console.warn(
+                                'Select2: Data can no longer be set using `select2("data")`. You should consider setting the value instead using `$element.val()`.',
+                            )
+                        var t = []
+                        return (
+                            this.dataAdapter.current(function (e) {
+                                t = e
+                            }),
+                            t
+                        )
+                    }),
+                    (o.prototype.val = function (e) {
+                        if (
+                            (this.options.get('debug') &&
+                                window.console &&
+                                console.warn &&
+                                console.warn(
+                                    'Select2: The `select2("val")` method has been deprecated and will be removed in later Select2 versions. Use $element.val() instead.',
+                                ),
+                            null == e || 0 === e.length)
+                        )
+                            return this.$element.val()
+                        e = e[0]
+                        Array.isArray(e) &&
+                            (e = e.map(function (e) {
+                                return e.toString()
+                            })),
+                            this.$element.val(e).trigger('input').trigger('change')
+                    }),
+                    (o.prototype.destroy = function () {
+                        r.RemoveData(this.$container[0]),
+                            this.$container.remove(),
+                            this._observer.disconnect(),
+                            (this._observer = null),
+                            (this._syncA = null),
+                            (this._syncS = null),
+                            this.$element.off('.select2'),
+                            this.$element.attr('tabindex', r.GetData(this.$element[0], 'old-tabindex')),
+                            this.$element[0].classList.remove('select2-hidden-accessible'),
+                            this.$element.attr('aria-hidden', 'false'),
+                            r.RemoveData(this.$element[0]),
+                            this.$element.removeData('select2'),
+                            this.dataAdapter.destroy(),
+                            this.selection.destroy(),
+                            this.dropdown.destroy(),
+                            this.results.destroy(),
+                            (this.dataAdapter = null),
+                            (this.selection = null),
+                            (this.dropdown = null),
+                            (this.results = null)
+                    }),
+                    (o.prototype.render = function () {
+                        var e = t(
+                            '<span class="select2 select2-container"><span class="selection"></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>',
+                        )
+                        return (
+                            e.attr('dir', this.options.get('dir')),
+                            (this.$container = e),
+                            this.$container[0].classList.add('select2-container--' + this.options.get('theme')),
+                            r.StoreData(e[0], 'element', this.$element),
+                            e
+                        )
+                    }),
+                    o
+                )
+            }),
+            u.define('jquery-mousewheel', ['jquery'], function (e) {
+                return e
+            }),
+            u.define(
+                'jquery.select2',
+                ['jquery', 'jquery-mousewheel', './select2/core', './select2/defaults', './select2/utils'],
+                function (i, e, r, t, o) {
+                    var a
+                    return (
+                        null == i.fn.select2 &&
                             ((a = ['open', 'close', 'destroy']),
-                                (i.fn.select2 = function (t) {
-                                    if ('object' == typeof (t = t || {}))
-                                        return (
-                                            this.each(function () {
-                                                var e = i.extend(!0, {}, t)
-                                                new r(i(this), e)
-                                            }),
-                                            this
-                                        )
-                                    if ('string' != typeof t) throw new Error('Invalid arguments for Select2: ' + t)
-                                    var n,
-                                        s = Array.prototype.slice.call(arguments, 1)
+                            (i.fn.select2 = function (t) {
+                                if ('object' == typeof (t = t || {}))
                                     return (
                                         this.each(function () {
-                                            var e = o.GetData(this, 'select2')
-                                            null == e &&
-                                                window.console &&
-                                                console.error &&
-                                                console.error("The select2('" + t + "') method was called on an element that is not using Select2."),
-                                                (n = e[t].apply(e, s))
+                                            var e = i.extend(!0, {}, t)
+                                            new r(i(this), e)
                                         }),
-                                        -1 < a.indexOf(t) ? this : n
+                                        this
                                     )
-                                })),
-                            null == i.fn.select2.defaults && (i.fn.select2.defaults = t),
-                            r
-                        )
-                    },
-                ),
-                { define: u.define, require: u.require })
+                                if ('string' != typeof t) throw new Error('Invalid arguments for Select2: ' + t)
+                                var n,
+                                    s = Array.prototype.slice.call(arguments, 1)
+                                return (
+                                    this.each(function () {
+                                        var e = o.GetData(this, 'select2')
+                                        null == e &&
+                                            window.console &&
+                                            console.error &&
+                                            console.error("The select2('" + t + "') method was called on an element that is not using Select2."),
+                                            (n = e[t].apply(e, s))
+                                    }),
+                                    -1 < a.indexOf(t) ? this : n
+                                )
+                            })),
+                        null == i.fn.select2.defaults && (i.fn.select2.defaults = t),
+                        r
+                    )
+                },
+            ),
+            { define: u.define, require: u.require })
+
     function b(e, t) {
         return i.call(e, t)
     }
+
     function l(e, t) {
         var n,
             s,
@@ -3370,9 +3418,9 @@ const URL_PATTERN_REGEX =
         if (e) {
             for (
                 t = (e = e.split('/')).length - 1,
-                y.nodeIdCompat && _.test(e[t]) && (e[t] = e[t].replace(_, '')),
-                '.' === e[0].charAt(0) && p && (e = p.slice(0, p.length - 1).concat(e)),
-                c = 0;
+                    y.nodeIdCompat && _.test(e[t]) && (e[t] = e[t].replace(_, '')),
+                    '.' === e[0].charAt(0) && p && (e = p.slice(0, p.length - 1).concat(e)),
+                    c = 0;
                 c < e.length;
                 c++
             )
@@ -3386,7 +3434,7 @@ const URL_PATTERN_REGEX =
                 if (((s = n.slice(0, c).join('/')), p))
                     for (u = p.length; 0 < u; --u)
                         if (((i = h[p.slice(0, u).join('/')]), (i = i && i[s]))) {
-                            ; (r = i), (o = c)
+                            ;(r = i), (o = c)
                             break
                         }
                 if (r) break
@@ -3396,25 +3444,30 @@ const URL_PATTERN_REGEX =
         }
         return e
     }
+
     function w(t, n) {
         return function () {
             var e = a.call(arguments, 0)
             return 'string' != typeof e[0] && 1 === e.length && e.push(null), o.apply(p, e.concat([t, n]))
         }
     }
+
     function x(e) {
         var t
         if ((b(m, e) && ((t = m[e]), delete m[e], (v[e] = !0), r.apply(p, t)), !b(g, e) && !b(v, e))) throw new Error('No ' + e)
         return g[e]
     }
+
     function c(e) {
         var t,
             n = e ? e.indexOf('!') : -1
         return -1 < n && ((t = e.substring(0, n)), (e = e.substring(n + 1, e.length))), [t, e]
     }
+
     function A(e) {
         return e ? c(e) : []
     }
+
     var u = s.require('jquery.select2')
     return (t.fn.select2.amd = s), u
 })
@@ -3426,50 +3479,62 @@ const URL_PATTERN_REGEX =
     'object' == typeof exports && 'undefined' != typeof module
         ? e(exports)
         : 'function' == typeof define && define.amd
-            ? define(['exports'], e)
-            : e(((t = 'undefined' != typeof globalThis ? globalThis : t || self).noUiSlider = {}))
+          ? define(['exports'], e)
+          : e(((t = 'undefined' != typeof globalThis ? globalThis : t || self).noUiSlider = {}))
 })(this, function (ot) {
     'use strict'
+
     function n(t) {
         return 'object' == typeof t && 'function' == typeof t.to
     }
+
     function st(t) {
         t.parentElement.removeChild(t)
     }
+
     function at(t) {
         return null != t
     }
+
     function lt(t) {
         t.preventDefault()
     }
+
     function i(t) {
         return 'number' == typeof t && !isNaN(t) && isFinite(t)
     }
+
     function ut(t, e, r) {
         0 < r &&
             (ft(t, e),
-                setTimeout(function () {
-                    dt(t, e)
-                }, r))
+            setTimeout(function () {
+                dt(t, e)
+            }, r))
     }
+
     function ct(t) {
         return Math.max(Math.min(t, 100), 0)
     }
+
     function pt(t) {
         return Array.isArray(t) ? t : [t]
     }
+
     function e(t) {
         t = (t = String(t)).split('.')
         return 1 < t.length ? t[1].length : 0
     }
+
     function ft(t, e) {
         t.classList && !/\s/.test(e) ? t.classList.add(e) : (t.className += ' ' + e)
     }
+
     function dt(t, e) {
         t.classList && !/\s/.test(e)
             ? t.classList.remove(e)
             : (t.className = t.className.replace(new RegExp('(^|\\b)' + e.split(' ').join('|') + '(\\b|$)', 'gi'), ' '))
     }
+
     function ht(t) {
         var e = void 0 !== window.pageXOffset,
             r = 'CSS1Compat' === (t.compatMode || '')
@@ -3478,16 +3543,20 @@ const URL_PATTERN_REGEX =
             y: e ? window.pageYOffset : (r ? t.documentElement : t.body).scrollTop,
         }
     }
+
     function s(t, e) {
         return 100 / (e - t)
     }
+
     function a(t, e, r) {
         return (100 * e) / (t[r + 1] - t[r])
     }
+
     function l(t, e) {
-        for (var r = 1; t >= e[r];) r += 1
+        for (var r = 1; t >= e[r]; ) r += 1
         return r
     }
+
     function r(t, e, r) {
         if (r >= t.slice(-1)[0]) return 100
         var n = l(r, t),
@@ -3497,6 +3566,7 @@ const URL_PATTERN_REGEX =
             n = e[n]
         return t + ((r = r), a((o = [i, o]), o[0] < 0 ? r + Math.abs(o[0]) : r - o[0], 0) / s(t, n))
     }
+
     function o(t, e, r, n) {
         if (100 === n) return n
         var i = l(n, t),
@@ -3504,7 +3574,7 @@ const URL_PATTERN_REGEX =
             s = t[i]
         return r ? ((s - o) / 2 < n - o ? s : o) : e[i - 1] ? t[i - 1] + ((t = n - t[i - 1]), (i = e[i - 1]), Math.round(t / i) * i) : n
     }
-    ; (ot.PipsMode = void 0),
+    ;(ot.PipsMode = void 0),
         ((H = ot.PipsMode || (ot.PipsMode = {})).Range = 'range'),
         (H.Steps = 'steps'),
         (H.Positions = 'positions'),
@@ -3520,130 +3590,132 @@ const URL_PATTERN_REGEX =
             for (var e = [], r = 0; r < this.xNumSteps.length - 1; r++) e[r] = a(this.xVal, t, r)
             return e
         }),
-            (t.prototype.getAbsoluteDistance = function (t, e, r) {
-                var n = 0
-                if (t < this.xPct[this.xPct.length - 1]) for (; t > this.xPct[n + 1];) n++
-                else t === this.xPct[this.xPct.length - 1] && (n = this.xPct.length - 2)
-                r || t !== this.xPct[n + 1] || n++
-                for (
-                    var i,
+        (t.prototype.getAbsoluteDistance = function (t, e, r) {
+            var n = 0
+            if (t < this.xPct[this.xPct.length - 1]) for (; t > this.xPct[n + 1]; ) n++
+            else t === this.xPct[this.xPct.length - 1] && (n = this.xPct.length - 2)
+            r || t !== this.xPct[n + 1] || n++
+            for (
+                var i,
                     o = 1,
                     s = (e = null === e ? [] : e)[n],
                     a = 0,
                     l = 0,
                     u = 0,
                     c = r ? (t - this.xPct[n]) / (this.xPct[n + 1] - this.xPct[n]) : (this.xPct[n + 1] - t) / (this.xPct[n + 1] - this.xPct[n]);
-                    0 < s;
+                0 < s;
 
-                )
-                    (i = this.xPct[n + 1 + u] - this.xPct[n + u]),
-                        100 < e[n + u] * o + 100 - 100 * c
-                            ? ((a = i * c), (o = (s - 100 * c) / e[n + u]), (c = 1))
-                            : ((a = ((e[n + u] * i) / 100) * o), (o = 0)),
-                        r ? ((l -= a), 1 <= this.xPct.length + u && u--) : ((l += a), 1 <= this.xPct.length - u && u++),
-                        (s = e[n + u] * o)
-                return t + l
-            }),
-            (t.prototype.toStepping = function (t) {
-                return (t = r(this.xVal, this.xPct, t))
-            }),
-            (t.prototype.fromStepping = function (t) {
-                return (function (t, e, r) {
-                    if (100 <= r) return t.slice(-1)[0]
-                    var n = l(r, e),
-                        i = t[n - 1],
-                        o = t[n],
-                        t = e[n - 1],
-                        n = e[n]
-                    return ((r - t) * s(t, n) * ((o = [i, o])[1] - o[0])) / 100 + o[0]
-                })(this.xVal, this.xPct, t)
-            }),
-            (t.prototype.getStep = function (t) {
-                return (t = o(this.xPct, this.xSteps, this.snap, t))
-            }),
-            (t.prototype.getDefaultStep = function (t, e, r) {
-                var n = l(t, this.xPct)
-                return (100 === t || (e && t === this.xPct[n - 1])) && (n = Math.max(n - 1, 1)), (this.xVal[n] - this.xVal[n - 1]) / r
-            }),
-            (t.prototype.getNearbySteps = function (t) {
-                t = l(t, this.xPct)
-                return {
-                    stepBefore: {
-                        startValue: this.xVal[t - 2],
-                        step: this.xNumSteps[t - 2],
-                        highestStep: this.xHighestCompleteStep[t - 2],
-                    },
-                    thisStep: {
-                        startValue: this.xVal[t - 1],
-                        step: this.xNumSteps[t - 1],
-                        highestStep: this.xHighestCompleteStep[t - 1],
-                    },
-                    stepAfter: {
-                        startValue: this.xVal[t],
-                        step: this.xNumSteps[t],
-                        highestStep: this.xHighestCompleteStep[t],
-                    },
-                }
-            }),
-            (t.prototype.countStepDecimals = function () {
-                var t = this.xNumSteps.map(e)
-                return Math.max.apply(null, t)
-            }),
-            (t.prototype.hasNoSize = function () {
-                return this.xVal[0] === this.xVal[this.xVal.length - 1]
-            }),
-            (t.prototype.convert = function (t) {
-                return this.getStep(this.toStepping(t))
-            }),
-            (t.prototype.handleEntryPoint = function (t, e) {
-                t = 'min' === t ? 0 : 'max' === t ? 100 : parseFloat(t)
-                if (!i(t) || !i(e[0])) throw new Error("noUiSlider: 'range' value isn't numeric.")
-                this.xPct.push(t), this.xVal.push(e[0])
-                e = Number(e[1])
-                t ? this.xSteps.push(!isNaN(e) && e) : isNaN(e) || (this.xSteps[0] = e), this.xHighestCompleteStep.push(0)
-            }),
-            (t.prototype.handleStepPoint = function (t, e) {
-                e &&
-                    (this.xVal[t] !== this.xVal[t + 1]
-                        ? ((this.xSteps[t] = a([this.xVal[t], this.xVal[t + 1]], e, 0) / s(this.xPct[t], this.xPct[t + 1])),
-                            (e = (this.xVal[t + 1] - this.xVal[t]) / this.xNumSteps[t]),
-                            (e = Math.ceil(Number(e.toFixed(3)) - 1)),
-                            (e = this.xVal[t] + this.xNumSteps[t] * e),
-                            (this.xHighestCompleteStep[t] = e))
-                        : (this.xSteps[t] = this.xHighestCompleteStep[t] = this.xVal[t]))
-            }),
-            t)
+            )
+                (i = this.xPct[n + 1 + u] - this.xPct[n + u]),
+                    100 < e[n + u] * o + 100 - 100 * c
+                        ? ((a = i * c), (o = (s - 100 * c) / e[n + u]), (c = 1))
+                        : ((a = ((e[n + u] * i) / 100) * o), (o = 0)),
+                    r ? ((l -= a), 1 <= this.xPct.length + u && u--) : ((l += a), 1 <= this.xPct.length - u && u++),
+                    (s = e[n + u] * o)
+            return t + l
+        }),
+        (t.prototype.toStepping = function (t) {
+            return (t = r(this.xVal, this.xPct, t))
+        }),
+        (t.prototype.fromStepping = function (t) {
+            return (function (t, e, r) {
+                if (100 <= r) return t.slice(-1)[0]
+                var n = l(r, e),
+                    i = t[n - 1],
+                    o = t[n],
+                    t = e[n - 1],
+                    n = e[n]
+                return ((r - t) * s(t, n) * ((o = [i, o])[1] - o[0])) / 100 + o[0]
+            })(this.xVal, this.xPct, t)
+        }),
+        (t.prototype.getStep = function (t) {
+            return (t = o(this.xPct, this.xSteps, this.snap, t))
+        }),
+        (t.prototype.getDefaultStep = function (t, e, r) {
+            var n = l(t, this.xPct)
+            return (100 === t || (e && t === this.xPct[n - 1])) && (n = Math.max(n - 1, 1)), (this.xVal[n] - this.xVal[n - 1]) / r
+        }),
+        (t.prototype.getNearbySteps = function (t) {
+            t = l(t, this.xPct)
+            return {
+                stepBefore: {
+                    startValue: this.xVal[t - 2],
+                    step: this.xNumSteps[t - 2],
+                    highestStep: this.xHighestCompleteStep[t - 2],
+                },
+                thisStep: {
+                    startValue: this.xVal[t - 1],
+                    step: this.xNumSteps[t - 1],
+                    highestStep: this.xHighestCompleteStep[t - 1],
+                },
+                stepAfter: {
+                    startValue: this.xVal[t],
+                    step: this.xNumSteps[t],
+                    highestStep: this.xHighestCompleteStep[t],
+                },
+            }
+        }),
+        (t.prototype.countStepDecimals = function () {
+            var t = this.xNumSteps.map(e)
+            return Math.max.apply(null, t)
+        }),
+        (t.prototype.hasNoSize = function () {
+            return this.xVal[0] === this.xVal[this.xVal.length - 1]
+        }),
+        (t.prototype.convert = function (t) {
+            return this.getStep(this.toStepping(t))
+        }),
+        (t.prototype.handleEntryPoint = function (t, e) {
+            t = 'min' === t ? 0 : 'max' === t ? 100 : parseFloat(t)
+            if (!i(t) || !i(e[0])) throw new Error("noUiSlider: 'range' value isn't numeric.")
+            this.xPct.push(t), this.xVal.push(e[0])
+            e = Number(e[1])
+            t ? this.xSteps.push(!isNaN(e) && e) : isNaN(e) || (this.xSteps[0] = e), this.xHighestCompleteStep.push(0)
+        }),
+        (t.prototype.handleStepPoint = function (t, e) {
+            e &&
+                (this.xVal[t] !== this.xVal[t + 1]
+                    ? ((this.xSteps[t] = a([this.xVal[t], this.xVal[t + 1]], e, 0) / s(this.xPct[t], this.xPct[t + 1])),
+                      (e = (this.xVal[t + 1] - this.xVal[t]) / this.xNumSteps[t]),
+                      (e = Math.ceil(Number(e.toFixed(3)) - 1)),
+                      (e = this.xVal[t] + this.xNumSteps[t] * e),
+                      (this.xHighestCompleteStep[t] = e))
+                    : (this.xSteps[t] = this.xHighestCompleteStep[t] = this.xVal[t]))
+        }),
+        t)
+
     function t(e, t, r) {
         var n
-            ; (this.xPct = []),
-                (this.xVal = []),
-                (this.xSteps = []),
-                (this.xNumSteps = []),
-                (this.xHighestCompleteStep = []),
-                (this.xSteps = [r || !1]),
-                (this.xNumSteps = [!1]),
-                (this.snap = t)
+        ;(this.xPct = []),
+            (this.xVal = []),
+            (this.xSteps = []),
+            (this.xNumSteps = []),
+            (this.xHighestCompleteStep = []),
+            (this.xSteps = [r || !1]),
+            (this.xNumSteps = [!1]),
+            (this.snap = t)
         var i = []
         for (
             Object.keys(e).forEach(function (t) {
                 i.push([pt(e[t]), t])
             }),
-            i.sort(function (t, e) {
-                return t[0][0] - e[0][0]
-            }),
-            n = 0;
+                i.sort(function (t, e) {
+                    return t[0][0] - e[0][0]
+                }),
+                n = 0;
             n < i.length;
             n++
         )
             this.handleEntryPoint(i[n][1], i[n][0])
         for (this.xNumSteps = this.xSteps.slice(0), n = 0; n < this.xNumSteps.length; n++) this.handleStepPoint(n, this.xNumSteps[n])
     }
+
     var c = {
-        to: function (t) {
-            return void 0 === t ? '' : t.toFixed(2)
+            to: function (t) {
+                return void 0 === t ? '' : t.toFixed(2)
+            },
+            from: Number,
         },
-        from: Number,
-    },
         p = {
             target: 'target',
             base: 'base',
@@ -3683,43 +3755,53 @@ const URL_PATTERN_REGEX =
             valueSub: 'value-sub',
         },
         mt = { tooltips: '.__tooltips', aria: '.__aria' }
+
     function f(t, e) {
         if (!i(e)) throw new Error("noUiSlider: 'step' is not numeric.")
         t.singleStep = e
     }
+
     function d(t, e) {
         if (!i(e)) throw new Error("noUiSlider: 'keyboardPageMultiplier' is not numeric.")
         t.keyboardPageMultiplier = e
     }
+
     function h(t, e) {
         if (!i(e)) throw new Error("noUiSlider: 'keyboardMultiplier' is not numeric.")
         t.keyboardMultiplier = e
     }
+
     function m(t, e) {
         if (!i(e)) throw new Error("noUiSlider: 'keyboardDefaultStep' is not numeric.")
         t.keyboardDefaultStep = e
     }
+
     function g(t, e) {
         if ('object' != typeof e || Array.isArray(e)) throw new Error("noUiSlider: 'range' is not an object.")
         if (void 0 === e.min || void 0 === e.max) throw new Error("noUiSlider: Missing 'min' or 'max' in 'range'.")
         t.spectrum = new u(e, t.snap || !1, t.singleStep)
     }
+
     function v(t, e) {
         if (((e = pt(e)), !Array.isArray(e) || !e.length)) throw new Error("noUiSlider: 'start' option is incorrect.")
-            ; (t.handles = e.length), (t.start = e)
+        ;(t.handles = e.length), (t.start = e)
     }
+
     function b(t, e) {
         if ('boolean' != typeof e) throw new Error("noUiSlider: 'snap' option must be a boolean.")
         t.snap = e
     }
+
     function S(t, e) {
         if ('boolean' != typeof e) throw new Error("noUiSlider: 'animate' option must be a boolean.")
         t.animate = e
     }
+
     function x(t, e) {
         if ('number' != typeof e) throw new Error("noUiSlider: 'animationDuration' option must be a number.")
         t.animationDuration = e
     }
+
     function y(t, e) {
         var r,
             n = [!1]
@@ -3733,6 +3815,7 @@ const URL_PATTERN_REGEX =
         }
         t.connect = n
     }
+
     function w(t, e) {
         switch (e) {
             case 'horizontal':
@@ -3745,15 +3828,18 @@ const URL_PATTERN_REGEX =
                 throw new Error("noUiSlider: 'orientation' option is invalid.")
         }
     }
+
     function E(t, e) {
         if (!i(e)) throw new Error("noUiSlider: 'margin' option must be numeric.")
         0 !== e && (t.margin = t.spectrum.getDistance(e))
     }
+
     function P(t, e) {
         if (!i(e)) throw new Error("noUiSlider: 'limit' option must be numeric.")
         if (((t.limit = t.spectrum.getDistance(e)), !t.limit || t.handles < 2))
             throw new Error("noUiSlider: 'limit' option is only supported on linear sliders with 2 or more handles.")
     }
+
     function C(t, e) {
         var r
         if (!i(e) && !Array.isArray(e)) throw new Error("noUiSlider: 'padding' option must be numeric or array of exactly 2 numbers.")
@@ -3772,6 +3858,7 @@ const URL_PATTERN_REGEX =
                 throw new Error("noUiSlider: 'padding' option must not exceed 100% of the range.")
         }
     }
+
     function N(t, e) {
         switch (e) {
             case 'ltr':
@@ -3784,6 +3871,7 @@ const URL_PATTERN_REGEX =
                 throw new Error("noUiSlider: 'direction' option was not recognized.")
         }
     }
+
     function V(t, e) {
         if ('string' != typeof e) throw new Error("noUiSlider: 'behaviour' must be a string containing options.")
         var r = 0 <= e.indexOf('tap'),
@@ -3810,6 +3898,7 @@ const URL_PATTERN_REGEX =
             unconstrained: a,
         }
     }
+
     function A(t, e) {
         if (!1 !== e)
             if (!0 === e || n(e)) {
@@ -3823,49 +3912,57 @@ const URL_PATTERN_REGEX =
                     (t.tooltips = e)
             }
     }
+
     function k(t, e) {
         if (e.length !== t.handles) throw new Error('noUiSlider: must pass a attributes for all handles.')
         t.handleAttributes = e
     }
+
     function M(t, e) {
         if (!n(e)) throw new Error("noUiSlider: 'ariaFormat' requires 'to' method.")
         t.ariaFormat = e
     }
+
     function U(t, e) {
         if (!n((r = e)) || 'function' != typeof r.from) throw new Error("noUiSlider: 'format' requires 'to' and 'from' methods.")
         var r
         t.format = e
     }
+
     function D(t, e) {
         if ('boolean' != typeof e) throw new Error("noUiSlider: 'keyboardSupport' option must be a boolean.")
         t.keyboardSupport = e
     }
+
     function O(t, e) {
         t.documentElement = e
     }
+
     function L(t, e) {
         if ('string' != typeof e && !1 !== e) throw new Error("noUiSlider: 'cssPrefix' must be a string or `false`.")
         t.cssPrefix = e
     }
+
     function T(e, r) {
         if ('object' != typeof r) throw new Error("noUiSlider: 'cssClasses' must be an object.")
         'string' == typeof e.cssPrefix
             ? ((e.cssClasses = {}),
-                Object.keys(r).forEach(function (t) {
-                    e.cssClasses[t] = e.cssPrefix + r[t]
-                }))
+              Object.keys(r).forEach(function (t) {
+                  e.cssClasses[t] = e.cssPrefix + r[t]
+              }))
             : (e.cssClasses = r)
     }
+
     function gt(e) {
         var r = {
-            margin: null,
-            limit: null,
-            padding: null,
-            animate: !0,
-            animationDuration: 300,
-            ariaFormat: c,
-            format: c,
-        },
+                margin: null,
+                limit: null,
+                padding: null,
+                animate: !0,
+                animationDuration: 300,
+                ariaFormat: c,
+                format: c,
+            },
             n = {
                 step: { r: !1, t: f },
                 keyboardPageMultiplier: { r: !1, t: d },
@@ -3922,6 +4019,7 @@ const URL_PATTERN_REGEX =
             r
         )
     }
+
     function j(t, f, o) {
         var i,
             l,
@@ -3932,8 +4030,8 @@ const URL_PATTERN_REGEX =
             c = window.navigator.pointerEnabled
                 ? { start: 'pointerdown', move: 'pointermove', end: 'pointerup' }
                 : window.navigator.msPointerEnabled
-                    ? { start: 'MSPointerDown', move: 'MSPointerMove', end: 'MSPointerUp' }
-                    : {
+                  ? { start: 'MSPointerDown', move: 'MSPointerMove', end: 'MSPointerUp' }
+                  : {
                         start: 'mousedown touchstart',
                         move: 'mousemove touchmove',
                         end: 'mouseup touchend',
@@ -3951,7 +4049,7 @@ const URL_PATTERN_REGEX =
                             },
                         })
                         window.addEventListener('test', null, e)
-                    } catch (t) { }
+                    } catch (t) {}
                     return t
                 })(),
             d = t,
@@ -3965,10 +4063,12 @@ const URL_PATTERN_REGEX =
             y = f.documentElement || x.documentElement,
             w = x.body,
             E = 'rtl' === x.dir || 1 === f.ort ? 0 : 100
+
         function P(t, e) {
             var r = x.createElement('div')
             return e && ft(r, e), t.appendChild(r), r
         }
+
         function C(t, e) {
             var r,
                 t = P(t, f.cssClasses.origin),
@@ -3977,7 +4077,7 @@ const URL_PATTERN_REGEX =
                 P(n, f.cssClasses.touchArea),
                 n.setAttribute('data-handle', String(e)),
                 f.keyboardSupport &&
-                (n.setAttribute('tabindex', '0'),
+                    (n.setAttribute('tabindex', '0'),
                     n.addEventListener('keydown', function (t) {
                         return (function (t, e) {
                             if (V() || A(e)) return !1
@@ -4008,7 +4108,7 @@ const URL_PATTERN_REGEX =
                         })(t, e)
                     })),
                 void 0 !== f.handleAttributes &&
-                ((r = f.handleAttributes[e]),
+                    ((r = f.handleAttributes[e]),
                     Object.keys(r).forEach(function (t) {
                         n.setAttribute(t, r[t])
                     })),
@@ -4019,26 +4119,32 @@ const URL_PATTERN_REGEX =
                 t
             )
         }
+
         function N(t, e) {
             return !!e && P(t, f.cssClasses.connect)
         }
+
         function e(t, e) {
             return !(!f.tooltips || !f.tooltips[e]) && P(t.firstChild, f.cssClasses.tooltip)
         }
+
         function V() {
             return d.hasAttribute('disabled')
         }
+
         function A(t) {
             return l[t].hasAttribute('disabled')
         }
+
         function k() {
             s &&
                 (Y('update' + mt.tooltips),
-                    s.forEach(function (t) {
-                        t && st(t)
-                    }),
-                    (s = null))
+                s.forEach(function (t) {
+                    t && st(t)
+                }),
+                (s = null))
         }
+
         function M() {
             k(),
                 (s = l.map(e)),
@@ -4046,28 +4152,30 @@ const URL_PATTERN_REGEX =
                     s && f.tooltips && !1 !== s[e] && ((t = t[e]), !0 !== f.tooltips[e] && (t = f.tooltips[e].to(r[e])), (s[e].innerHTML = t))
                 })
         }
+
         function U(t, e) {
             return t.map(function (t) {
                 return S.fromStepping(e ? S.getStep(t) : t)
             })
         }
+
         function D(d) {
             var h = (function (t) {
-                if (t.mode === ot.PipsMode.Range || t.mode === ot.PipsMode.Steps) return S.xVal
-                if (t.mode !== ot.PipsMode.Count)
-                    return t.mode === ot.PipsMode.Positions
-                        ? U(t.values, t.stepped)
-                        : t.mode === ot.PipsMode.Values
-                            ? t.stepped
-                                ? t.values.map(function (t) {
-                                    return S.fromStepping(S.getStep(S.toStepping(t)))
-                                })
-                                : t.values
-                            : []
-                if (t.values < 2) throw new Error("noUiSlider: 'values' (>= 2) required for mode 'count'.")
-                for (var e = t.values - 1, r = 100 / e, n = []; e--;) n[e] = e * r
-                return n.push(100), U(n, t.stepped)
-            })(d),
+                    if (t.mode === ot.PipsMode.Range || t.mode === ot.PipsMode.Steps) return S.xVal
+                    if (t.mode !== ot.PipsMode.Count)
+                        return t.mode === ot.PipsMode.Positions
+                            ? U(t.values, t.stepped)
+                            : t.mode === ot.PipsMode.Values
+                              ? t.stepped
+                                  ? t.values.map(function (t) {
+                                        return S.fromStepping(S.getStep(S.toStepping(t)))
+                                    })
+                                  : t.values
+                              : []
+                    if (t.values < 2) throw new Error("noUiSlider: 'values' (>= 2) required for mode 'count'.")
+                    for (var e = t.values - 1, r = 100 / e, n = []; e--; ) n[e] = e * r
+                    return n.push(100), U(n, t.stepped)
+                })(d),
                 m = {},
                 t = S.xVal[0],
                 e = S.xVal[S.xVal.length - 1],
@@ -4100,58 +4208,63 @@ const URL_PATTERN_REGEX =
                     for (void 0 === c && (c = t), f = Math.max(f, 1e-7), r = t; r <= c; r = Number((r + f).toFixed(7))) {
                         for (a = (o = (i = S.toStepping(r)) - b) / (d.density || 1), u = o / (l = Math.round(a)), n = 1; n <= l; n += 1)
                             m[(s = b + n * u).toFixed(5)] = [S.fromStepping(s), 0]
-                                ; (a = -1 < h.indexOf(r) ? ot.PipsType.LargeValue : p ? ot.PipsType.SmallValue : ot.PipsType.NoValue),
-                                    !e && g && r !== c && (a = 0),
-                                    (r === c && v) || (m[i.toFixed(5)] = [r, a]),
-                                    (b = i)
+                        ;(a = -1 < h.indexOf(r) ? ot.PipsType.LargeValue : p ? ot.PipsType.SmallValue : ot.PipsType.NoValue),
+                            !e && g && r !== c && (a = 0),
+                            (r === c && v) || (m[i.toFixed(5)] = [r, a]),
+                            (b = i)
                     }
                 }),
                 m
             )
         }
+
         function O(i, o, s) {
             var t,
                 a = x.createElement('div'),
                 n =
                     (((t = {})[ot.PipsType.None] = ''),
-                        (t[ot.PipsType.NoValue] = f.cssClasses.valueNormal),
-                        (t[ot.PipsType.LargeValue] = f.cssClasses.valueLarge),
-                        (t[ot.PipsType.SmallValue] = f.cssClasses.valueSub),
-                        t),
+                    (t[ot.PipsType.NoValue] = f.cssClasses.valueNormal),
+                    (t[ot.PipsType.LargeValue] = f.cssClasses.valueLarge),
+                    (t[ot.PipsType.SmallValue] = f.cssClasses.valueSub),
+                    t),
                 l =
                     (((t = {})[ot.PipsType.None] = ''),
-                        (t[ot.PipsType.NoValue] = f.cssClasses.markerNormal),
-                        (t[ot.PipsType.LargeValue] = f.cssClasses.markerLarge),
-                        (t[ot.PipsType.SmallValue] = f.cssClasses.markerSub),
-                        t),
+                    (t[ot.PipsType.NoValue] = f.cssClasses.markerNormal),
+                    (t[ot.PipsType.LargeValue] = f.cssClasses.markerLarge),
+                    (t[ot.PipsType.SmallValue] = f.cssClasses.markerSub),
+                    t),
                 u = [f.cssClasses.valueHorizontal, f.cssClasses.valueVertical],
                 c = [f.cssClasses.markerHorizontal, f.cssClasses.markerVertical]
+
             function p(t, e) {
                 var r = e === f.cssClasses.value
                 return e + ' ' + (r ? u : c)[f.ort] + ' ' + (r ? n : l)[t]
             }
+
             return (
                 ft(a, f.cssClasses.pips),
                 ft(a, 0 === f.ort ? f.cssClasses.pipsHorizontal : f.cssClasses.pipsVertical),
                 Object.keys(i).forEach(function (t) {
                     var e, r, n
-                        ; (r = i[(e = t)][0]),
-                            (n = i[t][1]),
-                            (n = o ? o(r, n) : n) !== ot.PipsType.None &&
+                    ;(r = i[(e = t)][0]),
+                        (n = i[t][1]),
+                        (n = o ? o(r, n) : n) !== ot.PipsType.None &&
                             (((t = P(a, !1)).className = p(n, f.cssClasses.marker)),
-                                (t.style[f.style] = e + '%'),
-                                n > ot.PipsType.NoValue &&
+                            (t.style[f.style] = e + '%'),
+                            n > ot.PipsType.NoValue &&
                                 (((t = P(a, !1)).className = p(n, f.cssClasses.value)),
-                                    t.setAttribute('data-value', String(r)),
-                                    (t.style[f.style] = e + '%'),
-                                    (t.innerHTML = String(s.to(r)))))
+                                t.setAttribute('data-value', String(r)),
+                                (t.style[f.style] = e + '%'),
+                                (t.innerHTML = String(s.to(r)))))
                 }),
                 a
             )
         }
+
         function L() {
             n && (st(n), (n = null))
         }
+
         function T(t) {
             L()
             var e = D(t),
@@ -4163,11 +4276,13 @@ const URL_PATTERN_REGEX =
                 }
             return (n = d.appendChild(O(e, r, t)))
         }
+
         function j() {
             var t = i.getBoundingClientRect(),
                 e = 'offset' + ['Width', 'Height'][f.ort]
             return 0 === f.ort ? t.width || i[e] : t.height || i[e]
         }
+
         function z(n, i, o, s) {
             function e(t) {
                 var e,
@@ -4187,27 +4302,28 @@ const URL_PATTERN_REGEX =
                             if ('touchstart' === e.type) {
                                 n = Array.prototype.filter.call(e.touches, l)
                                 if (1 < n.length) return !1
-                                    ; (s = n[0].pageX), (a = n[0].pageY)
+                                ;(s = n[0].pageX), (a = n[0].pageY)
                             } else {
                                 l = Array.prototype.find.call(e.changedTouches, l)
                                 if (!l) return !1
-                                    ; (s = l.pageX), (a = l.pageY)
+                                ;(s = l.pageX), (a = l.pageY)
                             }
                         }
-                        ; (t = t || ht(x)), (i || o) && ((s = e.clientX + t.x), (a = e.clientY + t.y))
+                        ;(t = t || ht(x)), (i || o) && ((s = e.clientX + t.x), (a = e.clientY + t.y))
                         return (e.pageOffset = t), (e.points = [s, a]), (e.cursor = i || o), e
                     })(t, s.pageOffset, s.target || i)
                 return (
                     !!r &&
                     !(V() && !s.doNotReject) &&
                     ((e = d),
-                        (t = f.cssClasses.tap),
-                        !((e.classList ? e.classList.contains(t) : new RegExp('\\b' + t + '\\b').test(e.className)) && !s.doNotReject) &&
+                    (t = f.cssClasses.tap),
+                    !((e.classList ? e.classList.contains(t) : new RegExp('\\b' + t + '\\b').test(e.className)) && !s.doNotReject) &&
                         !(n === c.start && void 0 !== r.buttons && 1 < r.buttons) &&
                         (!s.hover || !r.buttons) &&
                         (p || r.preventDefault(), (r.calcPoint = r.points[f.ort]), void o(r, s)))
                 )
             }
+
             var r = []
             return (
                 n.split(' ').forEach(function (t) {
@@ -4216,6 +4332,7 @@ const URL_PATTERN_REGEX =
                 r
             )
         }
+
         function H(t) {
             var e,
                 r,
@@ -4224,24 +4341,27 @@ const URL_PATTERN_REGEX =
                         (100 *
                             (t -
                                 ((n = i),
-                                    (e = f.ort),
-                                    (r = n.getBoundingClientRect()),
-                                    (n = (t = n.ownerDocument).documentElement),
-                                    (t = ht(t)),
-                                    /webkit.*Chrome.*Mobile/i.test(navigator.userAgent) && (t.x = 0),
-                                    e ? r.top + t.y - n.clientTop : r.left + t.x - n.clientLeft))) /
+                                (e = f.ort),
+                                (r = n.getBoundingClientRect()),
+                                (n = (t = n.ownerDocument).documentElement),
+                                (t = ht(t)),
+                                /webkit.*Chrome.*Mobile/i.test(navigator.userAgent) && (t.x = 0),
+                                e ? r.top + t.y - n.clientTop : r.left + t.x - n.clientLeft))) /
                         j()),
                 )
             return f.dir ? 100 - n : n
         }
+
         function F(t, e) {
             'mouseout' === t.type && 'HTML' === t.target.nodeName && null === t.relatedTarget && _(t, e)
         }
+
         function R(t, e) {
             if (-1 === navigator.appVersion.indexOf('MSIE 9') && 0 === t.buttons && 0 !== e.buttonsProperty) return _(t, e)
             t = (f.dir ? -1 : 1) * (t.calcPoint - e.startCalcPoint)
             G(0 < t, (100 * t) / e.baseSize, e.locations, e.handleNumbers, e.connect)
         }
+
         function _(t, e) {
             e.handle && (dt(e.handle, f.cssClasses.active), --v),
                 e.listeners.forEach(function (t) {
@@ -4249,9 +4369,9 @@ const URL_PATTERN_REGEX =
                 }),
                 0 === v && (dt(d, f.cssClasses.drag), K(), t.cursor && ((w.style.cursor = ''), w.removeEventListener('selectstart', lt))),
                 f.events.smoothSteps &&
-                (e.handleNumbers.forEach(function (t) {
-                    Q(t, m[t], !0, !0, !1, !1)
-                }),
+                    (e.handleNumbers.forEach(function (t) {
+                        Q(t, m[t], !0, !0, !1, !1)
+                    }),
                     e.handleNumbers.forEach(function (t) {
                         I('update', t)
                     })),
@@ -4259,46 +4379,48 @@ const URL_PATTERN_REGEX =
                     I('change', t), I('set', t), I('end', t)
                 })
         }
+
         function B(t, e) {
             var r, n, i, o
             e.handleNumbers.some(A) ||
                 (1 === e.handleNumbers.length && ((o = l[e.handleNumbers[0]].children[0]), (v += 1), ft(o, f.cssClasses.active)),
-                    t.stopPropagation(),
-                    (n = z(c.move, y, R, {
-                        target: t.target,
-                        handle: o,
-                        connect: e.connect,
-                        listeners: (r = []),
-                        startCalcPoint: t.calcPoint,
-                        baseSize: j(),
-                        pageOffset: t.pageOffset,
-                        handleNumbers: e.handleNumbers,
-                        buttonsProperty: t.buttons,
-                        locations: m.slice(),
-                    })),
-                    (i = z(c.end, y, _, {
-                        target: t.target,
-                        handle: o,
-                        listeners: r,
-                        doNotReject: !0,
-                        handleNumbers: e.handleNumbers,
-                    })),
-                    (o = z('mouseout', y, F, {
-                        target: t.target,
-                        handle: o,
-                        listeners: r,
-                        doNotReject: !0,
-                        handleNumbers: e.handleNumbers,
-                    })),
-                    r.push.apply(r, n.concat(i, o)),
-                    t.cursor &&
+                t.stopPropagation(),
+                (n = z(c.move, y, R, {
+                    target: t.target,
+                    handle: o,
+                    connect: e.connect,
+                    listeners: (r = []),
+                    startCalcPoint: t.calcPoint,
+                    baseSize: j(),
+                    pageOffset: t.pageOffset,
+                    handleNumbers: e.handleNumbers,
+                    buttonsProperty: t.buttons,
+                    locations: m.slice(),
+                })),
+                (i = z(c.end, y, _, {
+                    target: t.target,
+                    handle: o,
+                    listeners: r,
+                    doNotReject: !0,
+                    handleNumbers: e.handleNumbers,
+                })),
+                (o = z('mouseout', y, F, {
+                    target: t.target,
+                    handle: o,
+                    listeners: r,
+                    doNotReject: !0,
+                    handleNumbers: e.handleNumbers,
+                })),
+                r.push.apply(r, n.concat(i, o)),
+                t.cursor &&
                     ((w.style.cursor = getComputedStyle(t.target).cursor),
-                        1 < l.length && ft(d, f.cssClasses.drag),
-                        w.addEventListener('selectstart', lt, !1)),
-                    e.handleNumbers.forEach(function (t) {
-                        I('start', t)
-                    }))
+                    1 < l.length && ft(d, f.cssClasses.drag),
+                    w.addEventListener('selectstart', lt, !1)),
+                e.handleNumbers.forEach(function (t) {
+                    I('start', t)
+                }))
         }
+
         function r(t) {
             t.stopPropagation()
             var i,
@@ -4307,20 +4429,21 @@ const URL_PATTERN_REGEX =
                 e = H(t.calcPoint),
                 r =
                     ((i = e),
-                        (s = !(o = 100)),
-                        l.forEach(function (t, e) {
-                            var r, n
-                            A(e) || ((r = m[e]), ((n = Math.abs(r - i)) < o || (n <= o && r < i) || (100 === n && 100 === o)) && ((s = e), (o = n)))
-                        }),
-                        s)
+                    (s = !(o = 100)),
+                    l.forEach(function (t, e) {
+                        var r, n
+                        A(e) || ((r = m[e]), ((n = Math.abs(r - i)) < o || (n <= o && r < i) || (100 === n && 100 === o)) && ((s = e), (o = n)))
+                    }),
+                    s)
             !1 !== r &&
                 (f.events.snap || ut(d, f.cssClasses.tap, f.animationDuration),
-                    Q(r, e, !0, !0),
-                    K(),
-                    I('slide', r, !0),
-                    I('update', r, !0),
-                    f.events.snap ? B(t, { handleNumbers: [r] }) : (I('change', r, !0), I('set', r, !0)))
+                Q(r, e, !0, !0),
+                K(),
+                I('slide', r, !0),
+                I('update', r, !0),
+                f.events.snap ? B(t, { handleNumbers: [r] }) : (I('change', r, !0), I('set', r, !0)))
         }
+
         function q(t) {
             var t = H(t.calcPoint),
                 t = S.getStep(t),
@@ -4332,23 +4455,26 @@ const URL_PATTERN_REGEX =
                     })
             })
         }
+
         function X(t, e) {
-            ; (b[t] = b[t] || []),
+            ;(b[t] = b[t] || []),
                 b[t].push(e),
                 'update' === t.split('.')[0] &&
-                l.forEach(function (t, e) {
-                    I('update', e)
-                })
+                    l.forEach(function (t, e) {
+                        I('update', e)
+                    })
         }
+
         function Y(t) {
             var n = t && t.split('.')[0],
                 i = n ? t.substring(n.length) : t
             Object.keys(b).forEach(function (t) {
                 var e = t.split('.')[0],
                     r = t.substring(e.length)
-                    ; (n && n !== e) || (i && i !== r) || ((((e = r) !== mt.aria && e !== mt.tooltips) || i === r) && delete b[t])
+                ;(n && n !== e) || (i && i !== r) || ((((e = r) !== mt.aria && e !== mt.tooltips) || i === r) && delete b[t])
             })
         }
+
         function I(r, n, i) {
             Object.keys(b).forEach(function (t) {
                 var e = t.split('.')[0]
@@ -4358,54 +4484,59 @@ const URL_PATTERN_REGEX =
                     })
             })
         }
+
         function W(t, e, r, n, i, o, s) {
             var a
             return (
                 1 < l.length &&
-                !f.events.unconstrained &&
-                (n && 0 < e && ((a = S.getAbsoluteDistance(t[e - 1], f.margin, !1)), (r = Math.max(r, a))),
+                    !f.events.unconstrained &&
+                    (n && 0 < e && ((a = S.getAbsoluteDistance(t[e - 1], f.margin, !1)), (r = Math.max(r, a))),
                     i && e < l.length - 1 && ((a = S.getAbsoluteDistance(t[e + 1], f.margin, !0)), (r = Math.min(r, a)))),
                 1 < l.length &&
-                f.limit &&
-                (n && 0 < e && ((a = S.getAbsoluteDistance(t[e - 1], f.limit, !1)), (r = Math.min(r, a))),
+                    f.limit &&
+                    (n && 0 < e && ((a = S.getAbsoluteDistance(t[e - 1], f.limit, !1)), (r = Math.min(r, a))),
                     i && e < l.length - 1 && ((a = S.getAbsoluteDistance(t[e + 1], f.limit, !0)), (r = Math.max(r, a)))),
                 f.padding &&
-                (0 === e && ((a = S.getAbsoluteDistance(0, f.padding[0], !1)), (r = Math.max(r, a))),
+                    (0 === e && ((a = S.getAbsoluteDistance(0, f.padding[0], !1)), (r = Math.max(r, a))),
                     e === l.length - 1 && ((a = S.getAbsoluteDistance(100, f.padding[1], !0)), (r = Math.min(r, a)))),
                 !((r = ct((r = !s ? S.getStep(r) : r))) === t[e] && !o) && r
             )
         }
+
         function $(t, e) {
             var r = f.ort
             return (r ? e : t) + ', ' + (r ? t : e)
         }
+
         function G(t, r, n, e, i) {
             var o = n.slice(),
                 s = e[0],
                 a = f.events.smoothSteps,
                 l = [!t, t],
                 u = [t, !t]
-                ; (e = e.slice()),
-                    t && e.reverse(),
-                    1 < e.length
-                        ? e.forEach(function (t, e) {
-                            e = W(o, t, o[t] + r, l[e], u[e], !1, a)
-                            !1 === e ? (r = 0) : ((r = e - o[t]), (o[t] = e))
-                        })
-                        : (l = u = [!0])
+            ;(e = e.slice()),
+                t && e.reverse(),
+                1 < e.length
+                    ? e.forEach(function (t, e) {
+                          e = W(o, t, o[t] + r, l[e], u[e], !1, a)
+                          !1 === e ? (r = 0) : ((r = e - o[t]), (o[t] = e))
+                      })
+                    : (l = u = [!0])
             var c = !1
             e.forEach(function (t, e) {
                 c = Q(t, n[t] + r, l[e], u[e], !1, a) || c
             }),
                 c &&
-                (e.forEach(function (t) {
-                    I('update', t), I('slide', t)
-                }),
+                    (e.forEach(function (t) {
+                        I('update', t), I('slide', t)
+                    }),
                     null != i && I('drag', s))
         }
+
         function J(t, e) {
             return f.dir ? 100 - t - e : t
         }
+
         function K() {
             g.forEach(function (t) {
                 var e = 50 < m[t] ? -1 : 1,
@@ -4413,52 +4544,56 @@ const URL_PATTERN_REGEX =
                 l[t].style.zIndex = String(e)
             })
         }
+
         function Q(t, e, r, n, i, o) {
             return (
                 !1 !== (e = i ? e : W(m, t, e, r, n, !1, o)) &&
                 ((e = e),
-                    (m[(t = t)] = e),
-                    (h[t] = S.fromStepping(e)),
-                    (e = 'translate(' + $(J(e, 0) - E + '%', '0') + ')'),
-                    (l[t].style[f.transformRule] = e),
-                    Z(t),
-                    Z(t + 1),
-                    !0)
+                (m[(t = t)] = e),
+                (h[t] = S.fromStepping(e)),
+                (e = 'translate(' + $(J(e, 0) - E + '%', '0') + ')'),
+                (l[t].style[f.transformRule] = e),
+                Z(t),
+                Z(t + 1),
+                !0)
             )
         }
+
         function Z(t) {
             var e, r
             a[t] &&
                 ((r = 100),
-                    (e = 'translate(' + $(J((e = (e = 0) !== t ? m[t - 1] : e), (r = (r = t !== a.length - 1 ? m[t] : r) - e)) + '%', '0') + ')'),
-                    (r = 'scale(' + $(r / 100, '1') + ')'),
-                    (a[t].style[f.transformRule] = e + ' ' + r))
+                (e = 'translate(' + $(J((e = (e = 0) !== t ? m[t - 1] : e), (r = (r = t !== a.length - 1 ? m[t] : r) - e)) + '%', '0') + ')'),
+                (r = 'scale(' + $(r / 100, '1') + ')'),
+                (a[t].style[f.transformRule] = e + ' ' + r))
         }
+
         function tt(t, e) {
             return null === t || !1 === t || void 0 === t
                 ? m[e]
                 : ('number' == typeof t && (t = String(t)), !1 === (t = !1 !== (t = f.format.from(t)) ? S.toStepping(t) : t) || isNaN(t) ? m[e] : t)
         }
+
         function et(t, e, r) {
             var n = pt(t),
                 t = void 0 === m[0]
-                ; (e = void 0 === e || e),
-                    f.animate && !t && ut(d, f.cssClasses.tap, f.animationDuration),
-                    g.forEach(function (t) {
-                        Q(t, tt(n[t], t), !0, !1, r)
-                    })
+            ;(e = void 0 === e || e),
+                f.animate && !t && ut(d, f.cssClasses.tap, f.animationDuration),
+                g.forEach(function (t) {
+                    Q(t, tt(n[t], t), !0, !1, r)
+                })
             var i,
                 o = 1 === g.length ? 0 : 1
             for (
                 t &&
                 S.hasNoSize() &&
                 ((r = !0),
-                    (m[0] = 0),
-                    1 < g.length &&
+                (m[0] = 0),
+                1 < g.length &&
                     ((i = 100 / (g.length - 1)),
-                        g.forEach(function (t) {
-                            m[t] = t * i
-                        })));
+                    g.forEach(function (t) {
+                        m[t] = t * i
+                    })));
                 o < g.length;
                 ++o
             )
@@ -4470,11 +4605,13 @@ const URL_PATTERN_REGEX =
                     I('update', t), null !== n[t] && e && I('set', t)
                 })
         }
+
         function rt(t) {
             if ((t = void 0 === t ? !1 : t)) return 1 === h.length ? h[0] : h.slice(0)
             t = h.map(f.format.to)
             return 1 === t.length ? t[0] : t
         }
+
         function nt(t) {
             var e = m[t],
                 r = S.getNearbySteps(e),
@@ -4488,6 +4625,7 @@ const URL_PATTERN_REGEX =
             e = S.countStepDecimals()
             return null !== i && !1 !== i && (i = Number(i.toFixed(e))), [(t = null !== t && !1 !== t ? Number(t.toFixed(e)) : t), i]
         }
+
         ft((t = d), f.cssClasses.target),
             0 === f.dir ? ft(t, f.cssClasses.ltr) : ft(t, f.cssClasses.rtl),
             0 === f.ort ? ft(t, f.cssClasses.horizontal) : ft(t, f.cssClasses.vertical),
@@ -4495,22 +4633,22 @@ const URL_PATTERN_REGEX =
             (i = P(t, f.cssClasses.base)),
             (function (t, e) {
                 var r = P(e, f.cssClasses.connects)
-                    ; (l = []), (a = []).push(N(r, t[0]))
+                ;(l = []), (a = []).push(N(r, t[0]))
                 for (var n = 0; n < f.handles; n++) l.push(C(e, n)), (g[n] = n), a.push(N(r, t[n + 1]))
             })(f.connect, i),
             (u = f.events).fixed ||
-            l.forEach(function (t, e) {
-                z(c.start, t.children[0], B, { handleNumbers: [e] })
-            }),
+                l.forEach(function (t, e) {
+                    z(c.start, t.children[0], B, { handleNumbers: [e] })
+                }),
             u.tap && z(c.start, i, r, {}),
             u.hover && z(c.move, i, q, { hover: !0 }),
             u.drag &&
-            a.forEach(function (e, t) {
-                var r, n, i, o, s
-                !1 !== e &&
-                    0 !== t &&
-                    t !== a.length - 1 &&
-                    ((r = l[t - 1]),
+                a.forEach(function (e, t) {
+                    var r, n, i, o, s
+                    !1 !== e &&
+                        0 !== t &&
+                        t !== a.length - 1 &&
+                        ((r = l[t - 1]),
                         (n = l[t]),
                         (i = [e]),
                         (o = [r, n]),
@@ -4521,7 +4659,7 @@ const URL_PATTERN_REGEX =
                         i.forEach(function (t) {
                             z(c.start, t, B, { handles: o, handleNumbers: s, connect: e })
                         }))
-            }),
+                }),
             et(f.start),
             f.pips && T(f.pips),
             f.tooltips && M(),
@@ -4546,10 +4684,10 @@ const URL_PATTERN_REGEX =
             destroy: function () {
                 for (
                     Y(mt.aria),
-                    Y(mt.tooltips),
-                    Object.keys(f.cssClasses).forEach(function (t) {
-                        dt(d, f.cssClasses[t])
-                    });
+                        Y(mt.tooltips),
+                        Object.keys(f.cssClasses).forEach(function (t) {
+                            dt(d, f.cssClasses[t])
+                        });
                     d.firstChild;
 
                 )
@@ -4574,17 +4712,17 @@ const URL_PATTERN_REGEX =
                 null != t
                     ? (l[t].setAttribute('disabled', ''), l[t].handle.removeAttribute('tabindex'))
                     : (d.setAttribute('disabled', ''),
-                        l.forEach(function (t) {
-                            t.handle.removeAttribute('tabindex')
-                        }))
+                      l.forEach(function (t) {
+                          t.handle.removeAttribute('tabindex')
+                      }))
             },
             enable: function (t) {
                 null != t
                     ? (l[t].removeAttribute('disabled'), l[t].handle.setAttribute('tabindex', '0'))
                     : (d.removeAttribute('disabled'),
-                        l.forEach(function (t) {
-                            t.removeAttribute('disabled'), t.handle.setAttribute('tabindex', '0')
-                        }))
+                      l.forEach(function (t) {
+                          t.removeAttribute('disabled'), t.handle.setAttribute('tabindex', '0')
+                      }))
             },
             __moveHandles: function (t, e, r) {
                 G(t, e, m, r)
@@ -4625,14 +4763,16 @@ const URL_PATTERN_REGEX =
         }
         return it
     }
+
     function z(t, e) {
         if (!t || !t.nodeName) throw new Error('noUiSlider: create requires a single element, got: ' + t)
         if (t.noUiSlider) throw new Error('noUiSlider: Slider was already initialized.')
         e = j(t, gt(e), e)
         return (t.noUiSlider = e)
     }
+
     var H = { __spectrum: u, cssClasses: p, create: z }
-        ; (ot.create = z), (ot.cssClasses = p), (ot.default = H), Object.defineProperty(ot, '__esModule', { value: !0 })
+    ;(ot.create = z), (ot.cssClasses = p), (ot.default = H), Object.defineProperty(ot, '__esModule', { value: !0 })
 })
 
 /**
@@ -4647,52 +4787,65 @@ const URL_PATTERN_REGEX =
     'object' == typeof exports && 'undefined' != typeof module
         ? (module.exports = b())
         : 'function' == typeof define && define.amd
-            ? define(b)
-            : (a.moment = b())
+          ? define(b)
+          : (a.moment = b())
 })(this, function () {
     'use strict'
+
     function a() {
         return sd.apply(null, arguments)
     }
+
     function b(a) {
         sd = a
     }
+
     function c(a) {
         return a instanceof Array || '[object Array]' === Object.prototype.toString.call(a)
     }
+
     function d(a) {
         return null != a && '[object Object]' === Object.prototype.toString.call(a)
     }
+
     function e(a) {
         var b
         for (b in a) return !1
         return !0
     }
+
     function f(a) {
         return void 0 === a
     }
+
     function g(a) {
         return 'number' == typeof a || '[object Number]' === Object.prototype.toString.call(a)
     }
+
     function h(a) {
         return a instanceof Date || '[object Date]' === Object.prototype.toString.call(a)
     }
+
     function i(a, b) {
         var c,
             d = []
         for (c = 0; c < a.length; ++c) d.push(b(a[c], c))
         return d
     }
+
     function j(a, b) {
         return Object.prototype.hasOwnProperty.call(a, b)
     }
+
     function k(a, b) {
         for (var c in b) j(b, c) && (a[c] = b[c])
         return j(b, 'toString') && (a.toString = b.toString), j(b, 'valueOf') && (a.valueOf = b.valueOf), a
     }
+
     function l(a, b, c, d) {
         return sb(a, b, c, d, !0).utc()
     }
+
     function m() {
         return {
             empty: !1,
@@ -4711,9 +4864,11 @@ const URL_PATTERN_REGEX =
             weekdayMismatch: !1,
         }
     }
+
     function n(a) {
         return null == a._pf && (a._pf = m()), a._pf
     }
+
     function o(a) {
         if (null == a._isValid) {
             var b = n(a),
@@ -4732,52 +4887,59 @@ const URL_PATTERN_REGEX =
                     (!b.meridiem || (b.meridiem && c))
             if (
                 (a._strict && (d = d && 0 === b.charsLeftOver && 0 === b.unusedTokens.length && void 0 === b.bigHour),
-                    null != Object.isFrozen && Object.isFrozen(a))
+                null != Object.isFrozen && Object.isFrozen(a))
             )
                 return d
             a._isValid = d
         }
         return a._isValid
     }
+
     function p(a) {
         var b = l(NaN)
         return null != a ? k(n(b), a) : (n(b).userInvalidated = !0), b
     }
+
     function q(a, b) {
         var c, d, e
         if (
             (f(b._isAMomentObject) || (a._isAMomentObject = b._isAMomentObject),
-                f(b._i) || (a._i = b._i),
-                f(b._f) || (a._f = b._f),
-                f(b._l) || (a._l = b._l),
-                f(b._strict) || (a._strict = b._strict),
-                f(b._tzm) || (a._tzm = b._tzm),
-                f(b._isUTC) || (a._isUTC = b._isUTC),
-                f(b._offset) || (a._offset = b._offset),
-                f(b._pf) || (a._pf = n(b)),
-                f(b._locale) || (a._locale = b._locale),
-                vd.length > 0)
+            f(b._i) || (a._i = b._i),
+            f(b._f) || (a._f = b._f),
+            f(b._l) || (a._l = b._l),
+            f(b._strict) || (a._strict = b._strict),
+            f(b._tzm) || (a._tzm = b._tzm),
+            f(b._isUTC) || (a._isUTC = b._isUTC),
+            f(b._offset) || (a._offset = b._offset),
+            f(b._pf) || (a._pf = n(b)),
+            f(b._locale) || (a._locale = b._locale),
+            vd.length > 0)
         )
             for (c = 0; c < vd.length; c++) (d = vd[c]), (e = b[d]), f(e) || (a[d] = e)
         return a
     }
+
     function r(b) {
         q(this, b),
             (this._d = new Date(null != b._d ? b._d.getTime() : NaN)),
             this.isValid() || (this._d = new Date(NaN)),
             wd === !1 && ((wd = !0), a.updateOffset(this), (wd = !1))
     }
+
     function s(a) {
         return a instanceof r || (null != a && null != a._isAMomentObject)
     }
+
     function t(a) {
         return a < 0 ? Math.ceil(a) || 0 : Math.floor(a)
     }
+
     function u(a) {
         var b = +a,
             c = 0
         return 0 !== b && isFinite(b) && (c = t(b)), c
     }
+
     function v(a, b, c) {
         var d,
             e = Math.min(a.length, b.length),
@@ -4786,9 +4948,11 @@ const URL_PATTERN_REGEX =
         for (d = 0; d < e; d++) ((c && a[d] !== b[d]) || (!c && u(a[d]) !== u(b[d]))) && g++
         return g + f
     }
+
     function w(b) {
         a.suppressDeprecationWarnings === !1 && 'undefined' != typeof console && console.warn && console.warn('Deprecation warning: ' + b)
     }
+
     function x(b, c) {
         var d = !0
         return k(function () {
@@ -4806,20 +4970,24 @@ const URL_PATTERN_REGEX =
             return c.apply(this, arguments)
         }, c)
     }
+
     function y(b, c) {
         null != a.deprecationHandler && a.deprecationHandler(b, c), xd[b] || (w(c), (xd[b] = !0))
     }
+
     function z(a) {
         return a instanceof Function || '[object Function]' === Object.prototype.toString.call(a)
     }
+
     function A(a) {
         var b, c
         for (c in a) (b = a[c]), z(b) ? (this[c] = b) : (this['_' + c] = b)
-            ; (this._config = a),
-                (this._dayOfMonthOrdinalParseLenient = new RegExp(
-                    (this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) + '|' + /\d{1,2}/.source,
-                ))
+        ;(this._config = a),
+            (this._dayOfMonthOrdinalParseLenient = new RegExp(
+                (this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) + '|' + /\d{1,2}/.source,
+            ))
     }
+
     function B(a, b) {
         var c,
             e = k({}, a)
@@ -4827,44 +4995,54 @@ const URL_PATTERN_REGEX =
         for (c in a) j(a, c) && !j(b, c) && d(a[c]) && (e[c] = k({}, e[c]))
         return e
     }
+
     function C(a) {
         null != a && this.set(a)
     }
+
     function D(a, b, c) {
         var d = this._calendar[a] || this._calendar.sameElse
         return z(d) ? d.call(b, c) : d
     }
+
     function E(a) {
         var b = this._longDateFormat[a],
             c = this._longDateFormat[a.toUpperCase()]
         return b || !c
             ? b
             : ((this._longDateFormat[a] = c.replace(/MMMM|MM|DD|dddd/g, function (a) {
-                return a.slice(1)
-            })),
-                this._longDateFormat[a])
+                  return a.slice(1)
+              })),
+              this._longDateFormat[a])
     }
+
     function F() {
         return this._invalidDate
     }
+
     function G(a) {
         return this._ordinal.replace('%d', a)
     }
+
     function H(a, b, c, d) {
         var e = this._relativeTime[c]
         return z(e) ? e(a, b, c, d) : e.replace(/%d/i, a)
     }
+
     function I(a, b) {
         var c = this._relativeTime[a > 0 ? 'future' : 'past']
         return z(c) ? c(b) : c.replace(/%s/i, b)
     }
+
     function J(a, b) {
         var c = a.toLowerCase()
         Hd[c] = Hd[c + 's'] = Hd[b] = a
     }
+
     function K(a) {
         return 'string' == typeof a ? Hd[a] || Hd[a.toLowerCase()] : void 0
     }
+
     function L(a) {
         var b,
             c,
@@ -4872,9 +5050,11 @@ const URL_PATTERN_REGEX =
         for (c in a) j(a, c) && ((b = K(c)), b && (d[b] = a[c]))
         return d
     }
+
     function M(a, b) {
         Id[a] = b
     }
+
     function N(a) {
         var b = []
         for (var c in a) b.push({ unit: c, priority: Id[c] })
@@ -4885,20 +5065,25 @@ const URL_PATTERN_REGEX =
             b
         )
     }
+
     function O(b, c) {
         return function (d) {
             return null != d ? (Q(this, b, d), a.updateOffset(this, c), this) : P(this, b)
         }
     }
+
     function P(a, b) {
         return a.isValid() ? a._d['get' + (a._isUTC ? 'UTC' : '') + b]() : NaN
     }
+
     function Q(a, b, c) {
         a.isValid() && a._d['set' + (a._isUTC ? 'UTC' : '') + b](c)
     }
+
     function R(a) {
         return (a = K(a)), z(this[a]) ? this[a]() : this
     }
+
     function S(a, b) {
         if ('object' == typeof a) {
             a = L(a)
@@ -4906,12 +5091,14 @@ const URL_PATTERN_REGEX =
         } else if (((a = K(a)), z(this[a]))) return this[a](b)
         return this
     }
+
     function T(a, b, c) {
         var d = '' + Math.abs(a),
             e = b - d.length,
             f = a >= 0
         return (f ? (c ? '+' : '') : '-') + Math.pow(10, Math.max(0, e)).toString().substr(1) + d
     }
+
     function U(a, b, c, d) {
         var e = d
         'string' == typeof d &&
@@ -4920,17 +5107,19 @@ const URL_PATTERN_REGEX =
             }),
             a && (Md[a] = e),
             b &&
-            (Md[b[0]] = function () {
-                return T(e.apply(this, arguments), b[1], b[2])
-            }),
+                (Md[b[0]] = function () {
+                    return T(e.apply(this, arguments), b[1], b[2])
+                }),
             c &&
-            (Md[c] = function () {
-                return this.localeData().ordinal(e.apply(this, arguments), a)
-            })
+                (Md[c] = function () {
+                    return this.localeData().ordinal(e.apply(this, arguments), a)
+                })
     }
+
     function V(a) {
         return a.match(/\[[\s\S]/) ? a.replace(/^\[|\]$/g, '') : a.replace(/\\/g, '')
     }
+
     function W(a) {
         var b,
             c,
@@ -4943,27 +5132,33 @@ const URL_PATTERN_REGEX =
             return f
         }
     }
+
     function X(a, b) {
         return a.isValid() ? ((b = Y(b, a.localeData())), (Ld[b] = Ld[b] || W(b)), Ld[b](a)) : a.localeData().invalidDate()
     }
+
     function Y(a, b) {
         function c(a) {
             return b.longDateFormat(a) || a
         }
+
         var d = 5
-        for (Kd.lastIndex = 0; d >= 0 && Kd.test(a);) (a = a.replace(Kd, c)), (Kd.lastIndex = 0), (d -= 1)
+        for (Kd.lastIndex = 0; d >= 0 && Kd.test(a); ) (a = a.replace(Kd, c)), (Kd.lastIndex = 0), (d -= 1)
         return a
     }
+
     function Z(a, b, c) {
         ce[a] = z(b)
             ? b
             : function (a, d) {
-                return a && c ? c : b
-            }
+                  return a && c ? c : b
+              }
     }
+
     function $(a, b) {
         return j(ce, a) ? ce[a](b._strict, b._locale) : new RegExp(_(a))
     }
+
     function _(a) {
         return aa(
             a.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (a, b, c, d, e) {
@@ -4971,53 +5166,61 @@ const URL_PATTERN_REGEX =
             }),
         )
     }
+
     function aa(a) {
         return a.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
     }
+
     function ba(a, b) {
         var c,
             d = b
         for (
             'string' == typeof a && (a = [a]),
-            g(b) &&
-            (d = function (a, c) {
-                c[b] = u(a)
-            }),
-            c = 0;
+                g(b) &&
+                    (d = function (a, c) {
+                        c[b] = u(a)
+                    }),
+                c = 0;
             c < a.length;
             c++
         )
             de[a[c]] = d
     }
+
     function ca(a, b) {
         ba(a, function (a, c, d, e) {
-            ; (d._w = d._w || {}), b(a, d._w, d, e)
+            ;(d._w = d._w || {}), b(a, d._w, d, e)
         })
     }
+
     function da(a, b, c) {
         null != b && j(de, a) && de[a](b, c._a, c, a)
     }
+
     function ea(a, b) {
         return new Date(Date.UTC(a, b + 1, 0)).getUTCDate()
     }
+
     function fa(a, b) {
         return a
             ? c(this._months)
                 ? this._months[a.month()]
                 : this._months[(this._months.isFormat || oe).test(b) ? 'format' : 'standalone'][a.month()]
             : c(this._months)
-                ? this._months
-                : this._months.standalone
+              ? this._months
+              : this._months.standalone
     }
+
     function ga(a, b) {
         return a
             ? c(this._monthsShort)
                 ? this._monthsShort[a.month()]
                 : this._monthsShort[oe.test(b) ? 'format' : 'standalone'][a.month()]
             : c(this._monthsShort)
-                ? this._monthsShort
-                : this._monthsShort.standalone
+              ? this._monthsShort
+              : this._monthsShort.standalone
     }
+
     function ha(a, b, c) {
         var d,
             e,
@@ -5033,29 +5236,31 @@ const URL_PATTERN_REGEX =
                 ? ((e = ne.call(this._shortMonthsParse, g)), e !== -1 ? e : null)
                 : ((e = ne.call(this._longMonthsParse, g)), e !== -1 ? e : null)
             : 'MMM' === b
-                ? ((e = ne.call(this._shortMonthsParse, g)), e !== -1 ? e : ((e = ne.call(this._longMonthsParse, g)), e !== -1 ? e : null))
-                : ((e = ne.call(this._longMonthsParse, g)), e !== -1 ? e : ((e = ne.call(this._shortMonthsParse, g)), e !== -1 ? e : null))
+              ? ((e = ne.call(this._shortMonthsParse, g)), e !== -1 ? e : ((e = ne.call(this._longMonthsParse, g)), e !== -1 ? e : null))
+              : ((e = ne.call(this._longMonthsParse, g)), e !== -1 ? e : ((e = ne.call(this._shortMonthsParse, g)), e !== -1 ? e : null))
     }
+
     function ia(a, b, c) {
         var d, e, f
         if (this._monthsParseExact) return ha.call(this, a, b, c)
         for (this._monthsParse || ((this._monthsParse = []), (this._longMonthsParse = []), (this._shortMonthsParse = [])), d = 0; d < 12; d++) {
             if (
                 ((e = l([2e3, d])),
-                    c &&
+                c &&
                     !this._longMonthsParse[d] &&
                     ((this._longMonthsParse[d] = new RegExp('^' + this.months(e, '').replace('.', '') + '$', 'i')),
-                        (this._shortMonthsParse[d] = new RegExp('^' + this.monthsShort(e, '').replace('.', '') + '$', 'i'))),
-                    c ||
+                    (this._shortMonthsParse[d] = new RegExp('^' + this.monthsShort(e, '').replace('.', '') + '$', 'i'))),
+                c ||
                     this._monthsParse[d] ||
                     ((f = '^' + this.months(e, '') + '|^' + this.monthsShort(e, '')), (this._monthsParse[d] = new RegExp(f.replace('.', ''), 'i'))),
-                    c && 'MMMM' === b && this._longMonthsParse[d].test(a))
+                c && 'MMMM' === b && this._longMonthsParse[d].test(a))
             )
                 return d
             if (c && 'MMM' === b && this._shortMonthsParse[d].test(a)) return d
             if (!c && this._monthsParse[d].test(a)) return d
         }
     }
+
     function ja(a, b) {
         var c
         if (!a.isValid()) return a
@@ -5064,27 +5269,33 @@ const URL_PATTERN_REGEX =
             else if (((b = a.localeData().monthsParse(b)), !g(b))) return a
         return (c = Math.min(a.date(), ea(a.year(), b))), a._d['set' + (a._isUTC ? 'UTC' : '') + 'Month'](b, c), a
     }
+
     function ka(b) {
         return null != b ? (ja(this, b), a.updateOffset(this, !0), this) : P(this, 'Month')
     }
+
     function la() {
         return ea(this.year(), this.month())
     }
+
     function ma(a) {
         return this._monthsParseExact
             ? (j(this, '_monthsRegex') || oa.call(this), a ? this._monthsShortStrictRegex : this._monthsShortRegex)
             : (j(this, '_monthsShortRegex') || (this._monthsShortRegex = re),
-                this._monthsShortStrictRegex && a ? this._monthsShortStrictRegex : this._monthsShortRegex)
+              this._monthsShortStrictRegex && a ? this._monthsShortStrictRegex : this._monthsShortRegex)
     }
+
     function na(a) {
         return this._monthsParseExact
             ? (j(this, '_monthsRegex') || oa.call(this), a ? this._monthsStrictRegex : this._monthsRegex)
             : (j(this, '_monthsRegex') || (this._monthsRegex = se), this._monthsStrictRegex && a ? this._monthsStrictRegex : this._monthsRegex)
     }
+
     function oa() {
         function a(a, b) {
             return b.length - a.length
         }
+
         var b,
             c,
             d = [],
@@ -5098,41 +5309,55 @@ const URL_PATTERN_REGEX =
                 f.push(this.monthsShort(c, ''))
         for (d.sort(a), e.sort(a), f.sort(a), b = 0; b < 12; b++) (d[b] = aa(d[b])), (e[b] = aa(e[b]))
         for (b = 0; b < 24; b++) f[b] = aa(f[b])
-            ; (this._monthsRegex = new RegExp('^(' + f.join('|') + ')', 'i')),
-                (this._monthsShortRegex = this._monthsRegex),
-                (this._monthsStrictRegex = new RegExp('^(' + e.join('|') + ')', 'i')),
-                (this._monthsShortStrictRegex = new RegExp('^(' + d.join('|') + ')', 'i'))
+        ;(this._monthsRegex = new RegExp('^(' + f.join('|') + ')', 'i')),
+            (this._monthsShortRegex = this._monthsRegex),
+            (this._monthsStrictRegex = new RegExp('^(' + e.join('|') + ')', 'i')),
+            (this._monthsShortStrictRegex = new RegExp('^(' + d.join('|') + ')', 'i'))
     }
+
     function pa(a) {
         return qa(a) ? 366 : 365
     }
+
     function qa(a) {
         return (a % 4 === 0 && a % 100 !== 0) || a % 400 === 0
     }
+
     function ra() {
         return qa(this.year())
     }
+
     function sa(a, b, c, d, e, f, g) {
         var h = new Date(a, b, c, d, e, f, g)
         return a < 100 && a >= 0 && isFinite(h.getFullYear()) && h.setFullYear(a), h
     }
+
     function ta(a) {
         var b = new Date(Date.UTC.apply(null, arguments))
         return a < 100 && a >= 0 && isFinite(b.getUTCFullYear()) && b.setUTCFullYear(a), b
     }
+
     function ua(a, b, c) {
         var d = 7 + b - c,
             e = (7 + ta(a, 0, d).getUTCDay() - b) % 7
         return -e + d - 1
     }
+
     function va(a, b, c, d, e) {
         var f,
             g,
             h = (7 + c - d) % 7,
             i = ua(a, d, e),
             j = 1 + 7 * (b - 1) + h + i
-        return j <= 0 ? ((f = a - 1), (g = pa(f) + j)) : j > pa(a) ? ((f = a + 1), (g = j - pa(a))) : ((f = a), (g = j)), { year: f, dayOfYear: g }
+        return (
+            j <= 0 ? ((f = a - 1), (g = pa(f) + j)) : j > pa(a) ? ((f = a + 1), (g = j - pa(a))) : ((f = a), (g = j)),
+            {
+                year: f,
+                dayOfYear: g,
+            }
+        )
     }
+
     function wa(a, b, c) {
         var d,
             e,
@@ -5142,54 +5367,66 @@ const URL_PATTERN_REGEX =
             g < 1
                 ? ((e = a.year() - 1), (d = g + xa(e, b, c)))
                 : g > xa(a.year(), b, c)
-                    ? ((d = g - xa(a.year(), b, c)), (e = a.year() + 1))
-                    : ((e = a.year()), (d = g)),
+                  ? ((d = g - xa(a.year(), b, c)), (e = a.year() + 1))
+                  : ((e = a.year()), (d = g)),
             { week: d, year: e }
         )
     }
+
     function xa(a, b, c) {
         var d = ua(a, b, c),
             e = ua(a + 1, b, c)
         return (pa(a) - d + e) / 7
     }
+
     function ya(a) {
         return wa(a, this._week.dow, this._week.doy).week
     }
+
     function za() {
         return this._week.dow
     }
+
     function Aa() {
         return this._week.doy
     }
+
     function Ba(a) {
         var b = this.localeData().week(this)
         return null == a ? b : this.add(7 * (a - b), 'd')
     }
+
     function Ca(a) {
         var b = wa(this, 1, 4).week
         return null == a ? b : this.add(7 * (a - b), 'd')
     }
+
     function Da(a, b) {
         return 'string' != typeof a ? a : isNaN(a) ? ((a = b.weekdaysParse(a)), 'number' == typeof a ? a : null) : parseInt(a, 10)
     }
+
     function Ea(a, b) {
         return 'string' == typeof a ? b.weekdaysParse(a) % 7 || 7 : isNaN(a) ? null : a
     }
+
     function Fa(a, b) {
         return a
             ? c(this._weekdays)
                 ? this._weekdays[a.day()]
                 : this._weekdays[this._weekdays.isFormat.test(b) ? 'format' : 'standalone'][a.day()]
             : c(this._weekdays)
-                ? this._weekdays
-                : this._weekdays.standalone
+              ? this._weekdays
+              : this._weekdays.standalone
     }
+
     function Ga(a) {
         return a ? this._weekdaysShort[a.day()] : this._weekdaysShort
     }
+
     function Ha(a) {
         return a ? this._weekdaysMin[a.day()] : this._weekdaysMin
     }
+
     function Ia(a, b, c) {
         var d,
             e,
@@ -5205,44 +5442,45 @@ const URL_PATTERN_REGEX =
             ? 'dddd' === b
                 ? ((e = ne.call(this._weekdaysParse, g)), e !== -1 ? e : null)
                 : 'ddd' === b
-                    ? ((e = ne.call(this._shortWeekdaysParse, g)), e !== -1 ? e : null)
-                    : ((e = ne.call(this._minWeekdaysParse, g)), e !== -1 ? e : null)
+                  ? ((e = ne.call(this._shortWeekdaysParse, g)), e !== -1 ? e : null)
+                  : ((e = ne.call(this._minWeekdaysParse, g)), e !== -1 ? e : null)
             : 'dddd' === b
-                ? ((e = ne.call(this._weekdaysParse, g)),
-                    e !== -1
-                        ? e
-                        : ((e = ne.call(this._shortWeekdaysParse, g)), e !== -1 ? e : ((e = ne.call(this._minWeekdaysParse, g)), e !== -1 ? e : null)))
-                : 'ddd' === b
-                    ? ((e = ne.call(this._shortWeekdaysParse, g)),
-                        e !== -1
-                            ? e
-                            : ((e = ne.call(this._weekdaysParse, g)), e !== -1 ? e : ((e = ne.call(this._minWeekdaysParse, g)), e !== -1 ? e : null)))
-                    : ((e = ne.call(this._minWeekdaysParse, g)),
-                        e !== -1
-                            ? e
-                            : ((e = ne.call(this._weekdaysParse, g)), e !== -1 ? e : ((e = ne.call(this._shortWeekdaysParse, g)), e !== -1 ? e : null)))
+              ? ((e = ne.call(this._weekdaysParse, g)),
+                e !== -1
+                    ? e
+                    : ((e = ne.call(this._shortWeekdaysParse, g)), e !== -1 ? e : ((e = ne.call(this._minWeekdaysParse, g)), e !== -1 ? e : null)))
+              : 'ddd' === b
+                ? ((e = ne.call(this._shortWeekdaysParse, g)),
+                  e !== -1
+                      ? e
+                      : ((e = ne.call(this._weekdaysParse, g)), e !== -1 ? e : ((e = ne.call(this._minWeekdaysParse, g)), e !== -1 ? e : null)))
+                : ((e = ne.call(this._minWeekdaysParse, g)),
+                  e !== -1
+                      ? e
+                      : ((e = ne.call(this._weekdaysParse, g)), e !== -1 ? e : ((e = ne.call(this._shortWeekdaysParse, g)), e !== -1 ? e : null)))
     }
+
     function Ja(a, b, c) {
         var d, e, f
         if (this._weekdaysParseExact) return Ia.call(this, a, b, c)
         for (
             this._weekdaysParse ||
-            ((this._weekdaysParse = []), (this._minWeekdaysParse = []), (this._shortWeekdaysParse = []), (this._fullWeekdaysParse = [])),
-            d = 0;
+                ((this._weekdaysParse = []), (this._minWeekdaysParse = []), (this._shortWeekdaysParse = []), (this._fullWeekdaysParse = [])),
+                d = 0;
             d < 7;
             d++
         ) {
             if (
                 ((e = l([2e3, 1]).day(d)),
-                    c &&
+                c &&
                     !this._fullWeekdaysParse[d] &&
                     ((this._fullWeekdaysParse[d] = new RegExp('^' + this.weekdays(e, '').replace('.', '.?') + '$', 'i')),
-                        (this._shortWeekdaysParse[d] = new RegExp('^' + this.weekdaysShort(e, '').replace('.', '.?') + '$', 'i')),
-                        (this._minWeekdaysParse[d] = new RegExp('^' + this.weekdaysMin(e, '').replace('.', '.?') + '$', 'i'))),
-                    this._weekdaysParse[d] ||
+                    (this._shortWeekdaysParse[d] = new RegExp('^' + this.weekdaysShort(e, '').replace('.', '.?') + '$', 'i')),
+                    (this._minWeekdaysParse[d] = new RegExp('^' + this.weekdaysMin(e, '').replace('.', '.?') + '$', 'i'))),
+                this._weekdaysParse[d] ||
                     ((f = '^' + this.weekdays(e, '') + '|^' + this.weekdaysShort(e, '') + '|^' + this.weekdaysMin(e, '')),
-                        (this._weekdaysParse[d] = new RegExp(f.replace('.', ''), 'i'))),
-                    c && 'dddd' === b && this._fullWeekdaysParse[d].test(a))
+                    (this._weekdaysParse[d] = new RegExp(f.replace('.', ''), 'i'))),
+                c && 'dddd' === b && this._fullWeekdaysParse[d].test(a))
             )
                 return d
             if (c && 'ddd' === b && this._shortWeekdaysParse[d].test(a)) return d
@@ -5250,16 +5488,19 @@ const URL_PATTERN_REGEX =
             if (!c && this._weekdaysParse[d].test(a)) return d
         }
     }
+
     function Ka(a) {
         if (!this.isValid()) return null != a ? this : NaN
         var b = this._isUTC ? this._d.getUTCDay() : this._d.getDay()
         return null != a ? ((a = Da(a, this.localeData())), this.add(a - b, 'd')) : b
     }
+
     function La(a) {
         if (!this.isValid()) return null != a ? this : NaN
         var b = (this.day() + 7 - this.localeData()._week.dow) % 7
         return null == a ? b : this.add(a - b, 'd')
     }
+
     function Ma(a) {
         if (!this.isValid()) return null != a ? this : NaN
         if (null != a) {
@@ -5268,28 +5509,33 @@ const URL_PATTERN_REGEX =
         }
         return this.day() || 7
     }
+
     function Na(a) {
         return this._weekdaysParseExact
             ? (j(this, '_weekdaysRegex') || Qa.call(this), a ? this._weekdaysStrictRegex : this._weekdaysRegex)
             : (j(this, '_weekdaysRegex') || (this._weekdaysRegex = ye),
-                this._weekdaysStrictRegex && a ? this._weekdaysStrictRegex : this._weekdaysRegex)
+              this._weekdaysStrictRegex && a ? this._weekdaysStrictRegex : this._weekdaysRegex)
     }
+
     function Oa(a) {
         return this._weekdaysParseExact
             ? (j(this, '_weekdaysRegex') || Qa.call(this), a ? this._weekdaysShortStrictRegex : this._weekdaysShortRegex)
             : (j(this, '_weekdaysShortRegex') || (this._weekdaysShortRegex = ze),
-                this._weekdaysShortStrictRegex && a ? this._weekdaysShortStrictRegex : this._weekdaysShortRegex)
+              this._weekdaysShortStrictRegex && a ? this._weekdaysShortStrictRegex : this._weekdaysShortRegex)
     }
+
     function Pa(a) {
         return this._weekdaysParseExact
             ? (j(this, '_weekdaysRegex') || Qa.call(this), a ? this._weekdaysMinStrictRegex : this._weekdaysMinRegex)
             : (j(this, '_weekdaysMinRegex') || (this._weekdaysMinRegex = Ae),
-                this._weekdaysMinStrictRegex && a ? this._weekdaysMinStrictRegex : this._weekdaysMinRegex)
+              this._weekdaysMinStrictRegex && a ? this._weekdaysMinStrictRegex : this._weekdaysMinRegex)
     }
+
     function Qa() {
         function a(a, b) {
             return b.length - a.length
         }
+
         var b,
             c,
             d,
@@ -5311,39 +5557,47 @@ const URL_PATTERN_REGEX =
                 j.push(e),
                 j.push(f)
         for (g.sort(a), h.sort(a), i.sort(a), j.sort(a), b = 0; b < 7; b++) (h[b] = aa(h[b])), (i[b] = aa(i[b])), (j[b] = aa(j[b]))
-            ; (this._weekdaysRegex = new RegExp('^(' + j.join('|') + ')', 'i')),
-                (this._weekdaysShortRegex = this._weekdaysRegex),
-                (this._weekdaysMinRegex = this._weekdaysRegex),
-                (this._weekdaysStrictRegex = new RegExp('^(' + i.join('|') + ')', 'i')),
-                (this._weekdaysShortStrictRegex = new RegExp('^(' + h.join('|') + ')', 'i')),
-                (this._weekdaysMinStrictRegex = new RegExp('^(' + g.join('|') + ')', 'i'))
+        ;(this._weekdaysRegex = new RegExp('^(' + j.join('|') + ')', 'i')),
+            (this._weekdaysShortRegex = this._weekdaysRegex),
+            (this._weekdaysMinRegex = this._weekdaysRegex),
+            (this._weekdaysStrictRegex = new RegExp('^(' + i.join('|') + ')', 'i')),
+            (this._weekdaysShortStrictRegex = new RegExp('^(' + h.join('|') + ')', 'i')),
+            (this._weekdaysMinStrictRegex = new RegExp('^(' + g.join('|') + ')', 'i'))
     }
+
     function Ra() {
         return this.hours() % 12 || 12
     }
+
     function Sa() {
         return this.hours() || 24
     }
+
     function Ta(a, b) {
         U(a, 0, 0, function () {
             return this.localeData().meridiem(this.hours(), this.minutes(), b)
         })
     }
+
     function Ua(a, b) {
         return b._meridiemParse
     }
+
     function Va(a) {
         return 'p' === (a + '').toLowerCase().charAt(0)
     }
+
     function Wa(a, b, c) {
         return a > 11 ? (c ? 'pm' : 'PM') : c ? 'am' : 'AM'
     }
+
     function Xa(a) {
         return a ? a.toLowerCase().replace('_', '-') : a
     }
+
     function Ya(a) {
-        for (var b, c, d, e, f = 0; f < a.length;) {
-            for (e = Xa(a[f]).split('-'), b = e.length, c = Xa(a[f + 1]), c = c ? c.split('-') : null; b > 0;) {
+        for (var b, c, d, e, f = 0; f < a.length; ) {
+            for (e = Xa(a[f]).split('-'), b = e.length, c = Xa(a[f + 1]), c = c ? c.split('-') : null; b > 0; ) {
                 if ((d = Za(e.slice(0, b).join('-')))) return d
                 if (c && c.length >= b && v(e, c, !0) >= b - 1) break
                 b--
@@ -5352,18 +5606,21 @@ const URL_PATTERN_REGEX =
         }
         return null
     }
+
     function Za(a) {
         var b = null
         if (!Fe[a] && 'undefined' != typeof module && module && module.exports)
             try {
-                ; (b = Be._abbr), require('./locale/' + a), $a(b)
-            } catch (a) { }
+                ;(b = Be._abbr), require('./locale/' + a), $a(b)
+            } catch (a) {}
         return Fe[a]
     }
+
     function $a(a, b) {
         var c
         return a && ((c = f(b) ? bb(a) : _a(a, b)), c && (Be = c)), Be._abbr
     }
+
     function _a(a, b) {
         if (null !== b) {
             var c = Ee
@@ -5375,21 +5632,29 @@ const URL_PATTERN_REGEX =
                     (c = Fe[a]._config)
             else if (null != b.parentLocale) {
                 if (null == Fe[b.parentLocale])
-                    return Ge[b.parentLocale] || (Ge[b.parentLocale] = []), Ge[b.parentLocale].push({ name: a, config: b }), null
+                    return (
+                        Ge[b.parentLocale] || (Ge[b.parentLocale] = []),
+                        Ge[b.parentLocale].push({
+                            name: a,
+                            config: b,
+                        }),
+                        null
+                    )
                 c = Fe[b.parentLocale]._config
             }
             return (
                 (Fe[a] = new C(B(c, b))),
                 Ge[a] &&
-                Ge[a].forEach(function (a) {
-                    _a(a.name, a.config)
-                }),
+                    Ge[a].forEach(function (a) {
+                        _a(a.name, a.config)
+                    }),
                 $a(a),
                 Fe[a]
             )
         }
         return delete Fe[a], null
     }
+
     function ab(a, b) {
         if (null != b) {
             var c,
@@ -5398,6 +5663,7 @@ const URL_PATTERN_REGEX =
         } else null != Fe[a] && (null != Fe[a].parentLocale ? (Fe[a] = Fe[a].parentLocale) : null != Fe[a] && delete Fe[a])
         return Fe[a]
     }
+
     function bb(a) {
         var b
         if ((a && a._locale && a._locale._abbr && (a = a._locale._abbr), !a)) return Be
@@ -5407,29 +5673,31 @@ const URL_PATTERN_REGEX =
         }
         return Ya(a)
     }
+
     function cb() {
         return Ad(Fe)
     }
+
     function db(a) {
         var b,
             c = a._a
         return (
             c &&
-            n(a).overflow === -2 &&
-            ((b =
-                c[fe] < 0 || c[fe] > 11
-                    ? fe
-                    : c[ge] < 1 || c[ge] > ea(c[ee], c[fe])
-                        ? ge
-                        : c[he] < 0 || c[he] > 24 || (24 === c[he] && (0 !== c[ie] || 0 !== c[je] || 0 !== c[ke]))
+                n(a).overflow === -2 &&
+                ((b =
+                    c[fe] < 0 || c[fe] > 11
+                        ? fe
+                        : c[ge] < 1 || c[ge] > ea(c[ee], c[fe])
+                          ? ge
+                          : c[he] < 0 || c[he] > 24 || (24 === c[he] && (0 !== c[ie] || 0 !== c[je] || 0 !== c[ke]))
                             ? he
                             : c[ie] < 0 || c[ie] > 59
-                                ? ie
-                                : c[je] < 0 || c[je] > 59
-                                    ? je
-                                    : c[ke] < 0 || c[ke] > 999
-                                        ? ke
-                                        : -1),
+                              ? ie
+                              : c[je] < 0 || c[je] > 59
+                                ? je
+                                : c[ke] < 0 || c[ke] > 999
+                                  ? ke
+                                  : -1),
                 n(a)._overflowDayOfYear && (b < ee || b > ge) && (b = ge),
                 n(a)._overflowWeeks && b === -1 && (b = le),
                 n(a)._overflowWeekday && b === -1 && (b = me),
@@ -5437,6 +5705,7 @@ const URL_PATTERN_REGEX =
             a
         )
     }
+
     function eb(a) {
         var b,
             c,
@@ -5449,7 +5718,7 @@ const URL_PATTERN_REGEX =
         if (i) {
             for (n(a).iso = !0, b = 0, c = Ke.length; b < c; b++)
                 if (Ke[b][1].exec(i[1])) {
-                    ; (e = Ke[b][0]), (d = Ke[b][2] !== !1)
+                    ;(e = Ke[b][0]), (d = Ke[b][2] !== !1)
                     break
                 }
             if (null == e) return void (a._isValid = !1)
@@ -5466,9 +5735,10 @@ const URL_PATTERN_REGEX =
                 if (!Je.exec(i[4])) return void (a._isValid = !1)
                 g = 'Z'
             }
-            ; (a._f = e + (f || '') + (g || '')), lb(a)
+            ;(a._f = e + (f || '') + (g || '')), lb(a)
         } else a._isValid = !1
     }
+
     function fb(a) {
         var b,
             c,
@@ -5495,13 +5765,13 @@ const URL_PATTERN_REGEX =
                 .replace(/\([^\)]*\)|[\n\t]/g, ' ')
                 .replace(/(\s\s+)/g, ' ')
                 .replace(/^\s|\s$/g, '')),
-                (c = Ne.exec(b)))
+            (c = Ne.exec(b)))
         ) {
             if (
                 ((d = c[1] ? 'ddd' + (5 === c[1].length ? ', ' : ' ') : ''),
-                    (e = 'D MMM ' + (c[2].length > 10 ? 'YYYY ' : 'YY ')),
-                    (f = 'HH:mm' + (c[4] ? ':ss' : '')),
-                    c[1])
+                (e = 'D MMM ' + (c[2].length > 10 ? 'YYYY ' : 'YY ')),
+                (f = 'HH:mm' + (c[4] ? ':ss' : '')),
+                c[1])
             ) {
                 var l = new Date(c[2]),
                     m = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][l.getDay()]
@@ -5512,7 +5782,7 @@ const URL_PATTERN_REGEX =
                     0 === i
                         ? (h = ' +0000')
                         : ((i = k.indexOf(c[5][1].toUpperCase()) - 12),
-                            (h = (i < 0 ? ' -' : ' +') + ('' + i).replace(/^-?/, '0').match(/..$/)[0] + '00'))
+                          (h = (i < 0 ? ' -' : ' +') + ('' + i).replace(/^-?/, '0').match(/..$/)[0] + '00'))
                     break
                 case 4:
                     h = j[c[5]]
@@ -5520,22 +5790,26 @@ const URL_PATTERN_REGEX =
                 default:
                     h = j[' GMT']
             }
-            ; (c[5] = h), (a._i = c.splice(1).join('')), (g = ' ZZ'), (a._f = d + e + f + g), lb(a), (n(a).rfc2822 = !0)
+            ;(c[5] = h), (a._i = c.splice(1).join('')), (g = ' ZZ'), (a._f = d + e + f + g), lb(a), (n(a).rfc2822 = !0)
         } else a._isValid = !1
     }
+
     function gb(b) {
         var c = Me.exec(b._i)
         return null !== c
             ? void (b._d = new Date(+c[1]))
             : (eb(b), void (b._isValid === !1 && (delete b._isValid, fb(b), b._isValid === !1 && (delete b._isValid, a.createFromInputFallback(b)))))
     }
+
     function hb(a, b, c) {
         return null != a ? a : null != b ? b : c
     }
+
     function ib(b) {
         var c = new Date(a.now())
         return b._useUTC ? [c.getUTCFullYear(), c.getUTCMonth(), c.getUTCDate()] : [c.getFullYear(), c.getMonth(), c.getDate()]
     }
+
     function jb(a) {
         var b,
             c,
@@ -5545,14 +5819,14 @@ const URL_PATTERN_REGEX =
         if (!a._d) {
             for (
                 d = ib(a),
-                a._w && null == a._a[ge] && null == a._a[fe] && kb(a),
-                null != a._dayOfYear &&
-                ((e = hb(a._a[ee], d[ee])),
-                    (a._dayOfYear > pa(e) || 0 === a._dayOfYear) && (n(a)._overflowDayOfYear = !0),
-                    (c = ta(e, 0, a._dayOfYear)),
-                    (a._a[fe] = c.getUTCMonth()),
-                    (a._a[ge] = c.getUTCDate())),
-                b = 0;
+                    a._w && null == a._a[ge] && null == a._a[fe] && kb(a),
+                    null != a._dayOfYear &&
+                        ((e = hb(a._a[ee], d[ee])),
+                        (a._dayOfYear > pa(e) || 0 === a._dayOfYear) && (n(a)._overflowDayOfYear = !0),
+                        (c = ta(e, 0, a._dayOfYear)),
+                        (a._a[fe] = c.getUTCMonth()),
+                        (a._a[ge] = c.getUTCDate())),
+                    b = 0;
                 b < 3 && null == a._a[b];
                 ++b
             )
@@ -5564,27 +5838,29 @@ const URL_PATTERN_REGEX =
                 a._nextDay && (a._a[he] = 24)
         }
     }
+
     function kb(a) {
         var b, c, d, e, f, g, h, i
         if (((b = a._w), null != b.GG || null != b.W || null != b.E))
             (f = 1), (g = 4), (c = hb(b.GG, a._a[ee], wa(tb(), 1, 4).year)), (d = hb(b.W, 1)), (e = hb(b.E, 1)), (e < 1 || e > 7) && (i = !0)
         else {
-            ; (f = a._locale._week.dow), (g = a._locale._week.doy)
+            ;(f = a._locale._week.dow), (g = a._locale._week.doy)
             var j = wa(tb(), f, g)
-                ; (c = hb(b.gg, a._a[ee], j.year)),
-                    (d = hb(b.w, j.week)),
-                    null != b.d ? ((e = b.d), (e < 0 || e > 6) && (i = !0)) : null != b.e ? ((e = b.e + f), (b.e < 0 || b.e > 6) && (i = !0)) : (e = f)
+            ;(c = hb(b.gg, a._a[ee], j.year)),
+                (d = hb(b.w, j.week)),
+                null != b.d ? ((e = b.d), (e < 0 || e > 6) && (i = !0)) : null != b.e ? ((e = b.e + f), (b.e < 0 || b.e > 6) && (i = !0)) : (e = f)
         }
         d < 1 || d > xa(c, f, g)
             ? (n(a)._overflowWeeks = !0)
             : null != i
-                ? (n(a)._overflowWeekday = !0)
-                : ((h = va(c, d, e, f, g)), (a._a[ee] = h.year), (a._dayOfYear = h.dayOfYear))
+              ? (n(a)._overflowWeekday = !0)
+              : ((h = va(c, d, e, f, g)), (a._a[ee] = h.year), (a._dayOfYear = h.dayOfYear))
     }
+
     function lb(b) {
         if (b._f === a.ISO_8601) return void eb(b)
         if (b._f === a.RFC_2822) return void fb(b)
-            ; (b._a = []), (n(b).empty = !0)
+        ;(b._a = []), (n(b).empty = !0)
         var c,
             d,
             e,
@@ -5597,30 +5873,32 @@ const URL_PATTERN_REGEX =
             (f = e[c]),
                 (d = (h.match($(f, b)) || [])[0]),
                 d &&
-                ((g = h.substr(0, h.indexOf(d))),
+                    ((g = h.substr(0, h.indexOf(d))),
                     g.length > 0 && n(b).unusedInput.push(g),
                     (h = h.slice(h.indexOf(d) + d.length)),
                     (j += d.length)),
                 Md[f] ? (d ? (n(b).empty = !1) : n(b).unusedTokens.push(f), da(f, d, b)) : b._strict && !d && n(b).unusedTokens.push(f)
-                ; (n(b).charsLeftOver = i - j),
-                    h.length > 0 && n(b).unusedInput.push(h),
-                    b._a[he] <= 12 && n(b).bigHour === !0 && b._a[he] > 0 && (n(b).bigHour = void 0),
-                    (n(b).parsedDateParts = b._a.slice(0)),
-                    (n(b).meridiem = b._meridiem),
-                    (b._a[he] = mb(b._locale, b._a[he], b._meridiem)),
-                    jb(b),
-                    db(b)
+        ;(n(b).charsLeftOver = i - j),
+            h.length > 0 && n(b).unusedInput.push(h),
+            b._a[he] <= 12 && n(b).bigHour === !0 && b._a[he] > 0 && (n(b).bigHour = void 0),
+            (n(b).parsedDateParts = b._a.slice(0)),
+            (n(b).meridiem = b._meridiem),
+            (b._a[he] = mb(b._locale, b._a[he], b._meridiem)),
+            jb(b),
+            db(b)
     }
+
     function mb(a, b, c) {
         var d
         return null == c
             ? b
             : null != a.meridiemHour
-                ? a.meridiemHour(b, c)
-                : null != a.isPM
-                    ? ((d = a.isPM(c)), d && b < 12 && (b += 12), d || 12 !== b || (b = 0), b)
-                    : b
+              ? a.meridiemHour(b, c)
+              : null != a.isPM
+                ? ((d = a.isPM(c)), d && b < 12 && (b += 12), d || 12 !== b || (b = 0), b)
+                : b
     }
+
     function nb(a) {
         var b, c, d, e, f
         if (0 === a._f.length) return (n(a).invalidFormat = !0), void (a._d = new Date(NaN))
@@ -5631,22 +5909,25 @@ const URL_PATTERN_REGEX =
                 (b._f = a._f[e]),
                 lb(b),
                 o(b) &&
-                ((f += n(b).charsLeftOver), (f += 10 * n(b).unusedTokens.length), (n(b).score = f), (null == d || f < d) && ((d = f), (c = b)))
+                    ((f += n(b).charsLeftOver), (f += 10 * n(b).unusedTokens.length), (n(b).score = f), (null == d || f < d) && ((d = f), (c = b)))
         k(a, c || b)
     }
+
     function ob(a) {
         if (!a._d) {
             var b = L(a._i)
-                ; (a._a = i([b.year, b.month, b.day || b.date, b.hour, b.minute, b.second, b.millisecond], function (a) {
-                    return a && parseInt(a, 10)
-                })),
-                    jb(a)
+            ;(a._a = i([b.year, b.month, b.day || b.date, b.hour, b.minute, b.second, b.millisecond], function (a) {
+                return a && parseInt(a, 10)
+            })),
+                jb(a)
         }
     }
+
     function pb(a) {
         var b = new r(db(qb(a)))
         return b._nextDay && (b.add(1, 'd'), (b._nextDay = void 0)), b
     }
+
     function qb(a) {
         var b = a._i,
             d = a._f
@@ -5655,28 +5936,30 @@ const URL_PATTERN_REGEX =
             null === b || (void 0 === d && '' === b)
                 ? p({ nullInput: !0 })
                 : ('string' == typeof b && (a._i = b = a._locale.preparse(b)),
-                    s(b) ? new r(db(b)) : (h(b) ? (a._d = b) : c(d) ? nb(a) : d ? lb(a) : rb(a), o(a) || (a._d = null), a))
+                  s(b) ? new r(db(b)) : (h(b) ? (a._d = b) : c(d) ? nb(a) : d ? lb(a) : rb(a), o(a) || (a._d = null), a))
         )
     }
+
     function rb(b) {
         var e = b._i
         f(e)
             ? (b._d = new Date(a.now()))
             : h(e)
-                ? (b._d = new Date(e.valueOf()))
-                : 'string' == typeof e
-                    ? gb(b)
-                    : c(e)
-                        ? ((b._a = i(e.slice(0), function (a) {
-                            return parseInt(a, 10)
-                        })),
-                            jb(b))
-                        : d(e)
-                            ? ob(b)
-                            : g(e)
-                                ? (b._d = new Date(e))
-                                : a.createFromInputFallback(b)
+              ? (b._d = new Date(e.valueOf()))
+              : 'string' == typeof e
+                ? gb(b)
+                : c(e)
+                  ? ((b._a = i(e.slice(0), function (a) {
+                        return parseInt(a, 10)
+                    })),
+                    jb(b))
+                  : d(e)
+                    ? ob(b)
+                    : g(e)
+                      ? (b._d = new Date(e))
+                      : a.createFromInputFallback(b)
     }
+
     function sb(a, b, f, g, h) {
         var i = {}
         return (
@@ -5691,23 +5974,28 @@ const URL_PATTERN_REGEX =
             pb(i)
         )
     }
+
     function tb(a, b, c, d) {
         return sb(a, b, c, d, !1)
     }
+
     function ub(a, b) {
         var d, e
         if ((1 === b.length && c(b[0]) && (b = b[0]), !b.length)) return tb()
         for (d = b[0], e = 1; e < b.length; ++e) (b[e].isValid() && !b[e][a](d)) || (d = b[e])
         return d
     }
+
     function vb() {
         var a = [].slice.call(arguments, 0)
         return ub('isBefore', a)
     }
+
     function wb() {
         var a = [].slice.call(arguments, 0)
         return ub('isAfter', a)
     }
+
     function xb(a) {
         for (var b in a) if (Re.indexOf(b) === -1 || (null != a[b] && isNaN(a[b]))) return !1
         for (var c = !1, d = 0; d < Re.length; ++d)
@@ -5717,12 +6005,15 @@ const URL_PATTERN_REGEX =
             }
         return !0
     }
+
     function yb() {
         return this._isValid
     }
+
     function zb() {
         return Sb(NaN)
     }
+
     function Ab(a) {
         var b = L(a),
             c = b.year || 0,
@@ -5734,20 +6025,23 @@ const URL_PATTERN_REGEX =
             i = b.minute || 0,
             j = b.second || 0,
             k = b.millisecond || 0
-            ; (this._isValid = xb(b)),
-                (this._milliseconds = +k + 1e3 * j + 6e4 * i + 1e3 * h * 60 * 60),
-                (this._days = +g + 7 * f),
-                (this._months = +e + 3 * d + 12 * c),
-                (this._data = {}),
-                (this._locale = bb()),
-                this._bubble()
+        ;(this._isValid = xb(b)),
+            (this._milliseconds = +k + 1e3 * j + 6e4 * i + 1e3 * h * 60 * 60),
+            (this._days = +g + 7 * f),
+            (this._months = +e + 3 * d + 12 * c),
+            (this._data = {}),
+            (this._locale = bb()),
+            this._bubble()
     }
+
     function Bb(a) {
         return a instanceof Ab
     }
+
     function Cb(a) {
         return a < 0 ? Math.round(-1 * a) * -1 : Math.round(a)
     }
+
     function Db(a, b) {
         U(a, 0, 0, function () {
             var a = this.utcOffset(),
@@ -5755,6 +6049,7 @@ const URL_PATTERN_REGEX =
             return a < 0 && ((a = -a), (c = '-')), c + T(~~(a / 60), 2) + b + T(~~a % 60, 2)
         })
     }
+
     function Eb(a, b) {
         var c = (b || '').match(a)
         if (null === c) return null
@@ -5763,19 +6058,22 @@ const URL_PATTERN_REGEX =
             f = +(60 * e[1]) + u(e[2])
         return 0 === f ? 0 : '+' === e[0] ? f : -f
     }
+
     function Fb(b, c) {
         var d, e
         return c._isUTC
             ? ((d = c.clone()),
-                (e = (s(b) || h(b) ? b.valueOf() : tb(b).valueOf()) - d.valueOf()),
-                d._d.setTime(d._d.valueOf() + e),
-                a.updateOffset(d, !1),
-                d)
+              (e = (s(b) || h(b) ? b.valueOf() : tb(b).valueOf()) - d.valueOf()),
+              d._d.setTime(d._d.valueOf() + e),
+              a.updateOffset(d, !1),
+              d)
             : tb(b).local()
     }
+
     function Gb(a) {
         return 15 * -Math.round(a._d.getTimezoneOffset() / 15)
     }
+
     function Hb(b, c, d) {
         var e,
             f = this._offset || 0
@@ -5790,23 +6088,27 @@ const URL_PATTERN_REGEX =
                 (this._isUTC = !0),
                 null != e && this.add(e, 'm'),
                 f !== b &&
-                (!c || this._changeInProgress
-                    ? Xb(this, Sb(b - f, 'm'), 1, !1)
-                    : this._changeInProgress || ((this._changeInProgress = !0), a.updateOffset(this, !0), (this._changeInProgress = null))),
+                    (!c || this._changeInProgress
+                        ? Xb(this, Sb(b - f, 'm'), 1, !1)
+                        : this._changeInProgress || ((this._changeInProgress = !0), a.updateOffset(this, !0), (this._changeInProgress = null))),
                 this
             )
         }
         return this._isUTC ? f : Gb(this)
     }
+
     function Ib(a, b) {
         return null != a ? ('string' != typeof a && (a = -a), this.utcOffset(a, b), this) : -this.utcOffset()
     }
+
     function Jb(a) {
         return this.utcOffset(0, a)
     }
+
     function Kb(a) {
         return this._isUTC && (this.utcOffset(0, a), (this._isUTC = !1), a && this.subtract(Gb(this), 'm')), this
     }
+
     function Lb() {
         if (null != this._tzm) this.utcOffset(this._tzm, !1, !0)
         else if ('string' == typeof this._i) {
@@ -5815,12 +6117,15 @@ const URL_PATTERN_REGEX =
         }
         return this
     }
+
     function Mb(a) {
         return !!this.isValid() && ((a = a ? tb(a).utcOffset() : 0), (this.utcOffset() - a) % 60 === 0)
     }
+
     function Nb() {
         return this.utcOffset() > this.clone().month(0).utcOffset() || this.utcOffset() > this.clone().month(5).utcOffset()
     }
+
     function Ob() {
         if (!f(this._isDSTShifted)) return this._isDSTShifted
         var a = {}
@@ -5830,15 +6135,19 @@ const URL_PATTERN_REGEX =
         } else this._isDSTShifted = !1
         return this._isDSTShifted
     }
+
     function Pb() {
         return !!this.isValid() && !this._isUTC
     }
+
     function Qb() {
         return !!this.isValid() && this._isUTC
     }
+
     function Rb() {
         return !!this.isValid() && this._isUTC && 0 === this._offset
     }
+
     function Sb(a, b) {
         var c,
             d,
@@ -5849,42 +6158,44 @@ const URL_PATTERN_REGEX =
             Bb(a)
                 ? (f = { ms: a._milliseconds, d: a._days, M: a._months })
                 : g(a)
-                    ? ((f = {}), b ? (f[b] = a) : (f.milliseconds = a))
-                    : (h = Te.exec(a))
-                        ? ((c = '-' === h[1] ? -1 : 1),
-                            (f = {
-                                y: 0,
-                                d: u(h[ge]) * c,
-                                h: u(h[he]) * c,
-                                m: u(h[ie]) * c,
-                                s: u(h[je]) * c,
-                                ms: u(Cb(1e3 * h[ke])) * c,
-                            }))
-                        : (h = Ue.exec(a))
-                            ? ((c = '-' === h[1] ? -1 : 1),
-                                (f = {
-                                    y: Tb(h[2], c),
-                                    M: Tb(h[3], c),
-                                    w: Tb(h[4], c),
-                                    d: Tb(h[5], c),
-                                    h: Tb(h[6], c),
-                                    m: Tb(h[7], c),
-                                    s: Tb(h[8], c),
-                                }))
-                            : null == f
-                                ? (f = {})
-                                : 'object' == typeof f &&
-                                ('from' in f || 'to' in f) &&
-                                ((e = Vb(tb(f.from), tb(f.to))), (f = {}), (f.ms = e.milliseconds), (f.M = e.months)),
+                  ? ((f = {}), b ? (f[b] = a) : (f.milliseconds = a))
+                  : (h = Te.exec(a))
+                    ? ((c = '-' === h[1] ? -1 : 1),
+                      (f = {
+                          y: 0,
+                          d: u(h[ge]) * c,
+                          h: u(h[he]) * c,
+                          m: u(h[ie]) * c,
+                          s: u(h[je]) * c,
+                          ms: u(Cb(1e3 * h[ke])) * c,
+                      }))
+                    : (h = Ue.exec(a))
+                      ? ((c = '-' === h[1] ? -1 : 1),
+                        (f = {
+                            y: Tb(h[2], c),
+                            M: Tb(h[3], c),
+                            w: Tb(h[4], c),
+                            d: Tb(h[5], c),
+                            h: Tb(h[6], c),
+                            m: Tb(h[7], c),
+                            s: Tb(h[8], c),
+                        }))
+                      : null == f
+                        ? (f = {})
+                        : 'object' == typeof f &&
+                          ('from' in f || 'to' in f) &&
+                          ((e = Vb(tb(f.from), tb(f.to))), (f = {}), (f.ms = e.milliseconds), (f.M = e.months)),
             (d = new Ab(f)),
             Bb(a) && j(a, '_locale') && (d._locale = a._locale),
             d
         )
     }
+
     function Tb(a, b) {
         var c = a && parseFloat(a.replace(',', '.'))
         return (isNaN(c) ? 0 : c) * b
     }
+
     function Ub(a, b) {
         var c = { milliseconds: 0, months: 0 }
         return (
@@ -5894,26 +6205,28 @@ const URL_PATTERN_REGEX =
             c
         )
     }
+
     function Vb(a, b) {
         var c
         return a.isValid() && b.isValid()
             ? ((b = Fb(b, a)), a.isBefore(b) ? (c = Ub(a, b)) : ((c = Ub(b, a)), (c.milliseconds = -c.milliseconds), (c.months = -c.months)), c)
             : { milliseconds: 0, months: 0 }
     }
+
     function Wb(a, b) {
         return function (c, d) {
             var e, f
             return (
                 null === d ||
-                isNaN(+d) ||
-                (y(
-                    b,
-                    'moment().' +
-                    b +
-                    '(period, number) is deprecated. Please use moment().' +
-                    b +
-                    '(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.',
-                ),
+                    isNaN(+d) ||
+                    (y(
+                        b,
+                        'moment().' +
+                            b +
+                            '(period, number) is deprecated. Please use moment().' +
+                            b +
+                            '(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.',
+                    ),
                     (f = c),
                     (c = d),
                     (d = f)),
@@ -5924,21 +6237,24 @@ const URL_PATTERN_REGEX =
             )
         }
     }
+
     function Xb(b, c, d, e) {
         var f = c._milliseconds,
             g = Cb(c._days),
             h = Cb(c._months)
         b.isValid() &&
             ((e = null == e || e),
-                f && b._d.setTime(b._d.valueOf() + f * d),
-                g && Q(b, 'Date', P(b, 'Date') + g * d),
-                h && ja(b, P(b, 'Month') + h * d),
-                e && a.updateOffset(b, g || h))
+            f && b._d.setTime(b._d.valueOf() + f * d),
+            g && Q(b, 'Date', P(b, 'Date') + g * d),
+            h && ja(b, P(b, 'Month') + h * d),
+            e && a.updateOffset(b, g || h))
     }
+
     function Yb(a, b) {
         var c = a.diff(b, 'days', !0)
         return c < -6 ? 'sameElse' : c < -1 ? 'lastWeek' : c < 0 ? 'lastDay' : c < 1 ? 'sameDay' : c < 2 ? 'nextDay' : c < 7 ? 'nextWeek' : 'sameElse'
     }
+
     function Zb(b, c) {
         var d = b || tb(),
             e = Fb(d, this).startOf('day'),
@@ -5946,9 +6262,11 @@ const URL_PATTERN_REGEX =
             g = c && (z(c[f]) ? c[f].call(this, d) : c[f])
         return this.format(g || this.localeData().calendar(f, this, tb(d)))
     }
+
     function $b() {
         return new r(this)
     }
+
     function _b(a, b) {
         var c = s(a) ? a : tb(a)
         return (
@@ -5956,6 +6274,7 @@ const URL_PATTERN_REGEX =
             ((b = K(f(b) ? 'millisecond' : b)), 'millisecond' === b ? this.valueOf() > c.valueOf() : c.valueOf() < this.clone().startOf(b).valueOf())
         )
     }
+
     function ac(a, b) {
         var c = s(a) ? a : tb(a)
         return (
@@ -5963,54 +6282,60 @@ const URL_PATTERN_REGEX =
             ((b = K(f(b) ? 'millisecond' : b)), 'millisecond' === b ? this.valueOf() < c.valueOf() : this.clone().endOf(b).valueOf() < c.valueOf())
         )
     }
+
     function bc(a, b, c, d) {
         return (
             (d = d || '()'), ('(' === d[0] ? this.isAfter(a, c) : !this.isBefore(a, c)) && (')' === d[1] ? this.isBefore(b, c) : !this.isAfter(b, c))
         )
     }
+
     function cc(a, b) {
         var c,
             d = s(a) ? a : tb(a)
         return (
             !(!this.isValid() || !d.isValid()) &&
             ((b = K(b || 'millisecond')),
-                'millisecond' === b
-                    ? this.valueOf() === d.valueOf()
-                    : ((c = d.valueOf()), this.clone().startOf(b).valueOf() <= c && c <= this.clone().endOf(b).valueOf()))
+            'millisecond' === b
+                ? this.valueOf() === d.valueOf()
+                : ((c = d.valueOf()), this.clone().startOf(b).valueOf() <= c && c <= this.clone().endOf(b).valueOf()))
         )
     }
+
     function dc(a, b) {
         return this.isSame(a, b) || this.isAfter(a, b)
     }
+
     function ec(a, b) {
         return this.isSame(a, b) || this.isBefore(a, b)
     }
+
     function fc(a, b, c) {
         var d, e, f, g
         return this.isValid()
             ? ((d = Fb(a, this)),
-                d.isValid()
-                    ? ((e = 6e4 * (d.utcOffset() - this.utcOffset())),
-                        (b = K(b)),
-                        'year' === b || 'month' === b || 'quarter' === b
-                            ? ((g = gc(this, d)), 'quarter' === b ? (g /= 3) : 'year' === b && (g /= 12))
-                            : ((f = this - d),
-                                (g =
-                                    'second' === b
-                                        ? f / 1e3
-                                        : 'minute' === b
-                                            ? f / 6e4
-                                            : 'hour' === b
-                                                ? f / 36e5
-                                                : 'day' === b
-                                                    ? (f - e) / 864e5
-                                                    : 'week' === b
-                                                        ? (f - e) / 6048e5
-                                                        : f)),
-                        c ? g : t(g))
-                    : NaN)
+              d.isValid()
+                  ? ((e = 6e4 * (d.utcOffset() - this.utcOffset())),
+                    (b = K(b)),
+                    'year' === b || 'month' === b || 'quarter' === b
+                        ? ((g = gc(this, d)), 'quarter' === b ? (g /= 3) : 'year' === b && (g /= 12))
+                        : ((f = this - d),
+                          (g =
+                              'second' === b
+                                  ? f / 1e3
+                                  : 'minute' === b
+                                    ? f / 6e4
+                                    : 'hour' === b
+                                      ? f / 36e5
+                                      : 'day' === b
+                                        ? (f - e) / 864e5
+                                        : 'week' === b
+                                          ? (f - e) / 6048e5
+                                          : f)),
+                    c ? g : t(g))
+                  : NaN)
             : NaN
     }
+
     function gc(a, b) {
         var c,
             d,
@@ -6023,18 +6348,21 @@ const URL_PATTERN_REGEX =
             -(e + d) || 0
         )
     }
+
     function hc() {
         return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ')
     }
+
     function ic() {
         if (!this.isValid()) return null
         var a = this.clone().utc()
         return a.year() < 0 || a.year() > 9999
             ? X(a, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]')
             : z(Date.prototype.toISOString)
-                ? this.toDate().toISOString()
-                : X(a, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]')
+              ? this.toDate().toISOString()
+              : X(a, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]')
     }
+
     function jc() {
         if (!this.isValid()) return 'moment.invalid(/* ' + this._i + ' */)'
         var a = 'moment',
@@ -6046,34 +6374,42 @@ const URL_PATTERN_REGEX =
             f = b + '[")]'
         return this.format(c + d + e + f)
     }
+
     function kc(b) {
         b || (b = this.isUtc() ? a.defaultFormatUtc : a.defaultFormat)
         var c = X(this, b)
         return this.localeData().postformat(c)
     }
+
     function lc(a, b) {
         return this.isValid() && ((s(a) && a.isValid()) || tb(a).isValid())
             ? Sb({ to: this, from: a }).locale(this.locale()).humanize(!b)
             : this.localeData().invalidDate()
     }
+
     function mc(a) {
         return this.from(tb(), a)
     }
+
     function nc(a, b) {
         return this.isValid() && ((s(a) && a.isValid()) || tb(a).isValid())
             ? Sb({ from: this, to: a }).locale(this.locale()).humanize(!b)
             : this.localeData().invalidDate()
     }
+
     function oc(a) {
         return this.to(tb(), a)
     }
+
     function pc(a) {
         var b
         return void 0 === a ? this._locale._abbr : ((b = bb(a)), null != b && (this._locale = b), this)
     }
+
     function qc() {
         return this._locale
     }
+
     function rc(a) {
         switch ((a = K(a))) {
             case 'year':
@@ -6100,30 +6436,36 @@ const URL_PATTERN_REGEX =
             this
         )
     }
+
     function sc(a) {
         return (
             (a = K(a)),
             void 0 === a || 'millisecond' === a
                 ? this
                 : ('date' === a && (a = 'day'),
-                    this.startOf(a)
-                        .add(1, 'isoWeek' === a ? 'week' : a)
-                        .subtract(1, 'ms'))
+                  this.startOf(a)
+                      .add(1, 'isoWeek' === a ? 'week' : a)
+                      .subtract(1, 'ms'))
         )
     }
+
     function tc() {
         return this._d.valueOf() - 6e4 * (this._offset || 0)
     }
+
     function uc() {
         return Math.floor(this.valueOf() / 1e3)
     }
+
     function vc() {
         return new Date(this.valueOf())
     }
+
     function wc() {
         var a = this
         return [a.year(), a.month(), a.date(), a.hour(), a.minute(), a.second(), a.millisecond()]
     }
+
     function xc() {
         var a = this
         return {
@@ -6136,18 +6478,23 @@ const URL_PATTERN_REGEX =
             milliseconds: a.milliseconds(),
         }
     }
+
     function yc() {
         return this.isValid() ? this.toISOString() : null
     }
+
     function zc() {
         return o(this)
     }
+
     function Ac() {
         return k({}, n(this))
     }
+
     function Bc() {
         return n(this).overflow
     }
+
     function Cc() {
         return {
             input: this._i,
@@ -6157,61 +6504,78 @@ const URL_PATTERN_REGEX =
             strict: this._strict,
         }
     }
+
     function Dc(a, b) {
         U(0, [a, a.length], 0, b)
     }
+
     function Ec(a) {
         return Ic.call(this, a, this.week(), this.weekday(), this.localeData()._week.dow, this.localeData()._week.doy)
     }
+
     function Fc(a) {
         return Ic.call(this, a, this.isoWeek(), this.isoWeekday(), 1, 4)
     }
+
     function Gc() {
         return xa(this.year(), 1, 4)
     }
+
     function Hc() {
         var a = this.localeData()._week
         return xa(this.year(), a.dow, a.doy)
     }
+
     function Ic(a, b, c, d, e) {
         var f
         return null == a ? wa(this, d, e).year : ((f = xa(a, d, e)), b > f && (b = f), Jc.call(this, a, b, c, d, e))
     }
+
     function Jc(a, b, c, d, e) {
         var f = va(a, b, c, d, e),
             g = ta(f.year, 0, f.dayOfYear)
         return this.year(g.getUTCFullYear()), this.month(g.getUTCMonth()), this.date(g.getUTCDate()), this
     }
+
     function Kc(a) {
         return null == a ? Math.ceil((this.month() + 1) / 3) : this.month(3 * (a - 1) + (this.month() % 3))
     }
+
     function Lc(a) {
         var b = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1
         return null == a ? b : this.add(a - b, 'd')
     }
+
     function Mc(a, b) {
         b[ke] = u(1e3 * ('0.' + a))
     }
+
     function Nc() {
         return this._isUTC ? 'UTC' : ''
     }
+
     function Oc() {
         return this._isUTC ? 'Coordinated Universal Time' : ''
     }
+
     function Pc(a) {
         return tb(1e3 * a)
     }
+
     function Qc() {
         return tb.apply(null, arguments).parseZone()
     }
+
     function Rc(a) {
         return a
     }
+
     function Sc(a, b, c, d) {
         var e = bb(),
             f = l().set(d, b)
         return e[c](f, a)
     }
+
     function Tc(a, b, c) {
         if ((g(a) && ((b = a), (a = void 0)), (a = a || ''), null != b)) return Sc(a, b, c, 'month')
         var d,
@@ -6219,6 +6583,7 @@ const URL_PATTERN_REGEX =
         for (d = 0; d < 12; d++) e[d] = Sc(a, d, c, 'month')
         return e
     }
+
     function Uc(a, b, c, d) {
         'boolean' == typeof a
             ? (g(b) && ((c = b), (b = void 0)), (b = b || ''))
@@ -6231,21 +6596,27 @@ const URL_PATTERN_REGEX =
         for (h = 0; h < 7; h++) i[h] = Sc(b, (h + f) % 7, d, 'day')
         return i
     }
+
     function Vc(a, b) {
         return Tc(a, b, 'months')
     }
+
     function Wc(a, b) {
         return Tc(a, b, 'monthsShort')
     }
+
     function Xc(a, b, c) {
         return Uc(a, b, c, 'weekdays')
     }
+
     function Yc(a, b, c) {
         return Uc(a, b, c, 'weekdaysShort')
     }
+
     function Zc(a, b, c) {
         return Uc(a, b, c, 'weekdaysMin')
     }
+
     function $c() {
         var a = this._data
         return (
@@ -6261,19 +6632,24 @@ const URL_PATTERN_REGEX =
             this
         )
     }
+
     function _c(a, b, c, d) {
         var e = Sb(b, c)
         return (a._milliseconds += d * e._milliseconds), (a._days += d * e._days), (a._months += d * e._months), a._bubble()
     }
+
     function ad(a, b) {
         return _c(this, a, b, 1)
     }
+
     function bd(a, b) {
         return _c(this, a, b, -1)
     }
+
     function cd(a) {
         return a < 0 ? Math.floor(a) : Math.ceil(a)
     }
+
     function dd() {
         var a,
             b,
@@ -6305,12 +6681,15 @@ const URL_PATTERN_REGEX =
             this
         )
     }
+
     function ed(a) {
         return (4800 * a) / 146097
     }
+
     function fd(a) {
         return (146097 * a) / 4800
     }
+
     function gd(a) {
         if (!this.isValid()) return NaN
         var b,
@@ -6334,28 +6713,35 @@ const URL_PATTERN_REGEX =
                 throw new Error('Unknown unit ' + a)
         }
     }
+
     function hd() {
         return this.isValid() ? this._milliseconds + 864e5 * this._days + (this._months % 12) * 2592e6 + 31536e6 * u(this._months / 12) : NaN
     }
+
     function id(a) {
         return function () {
             return this.as(a)
         }
     }
+
     function jd(a) {
         return (a = K(a)), this.isValid() ? this[a + 's']() : NaN
     }
+
     function kd(a) {
         return function () {
             return this.isValid() ? this._data[a] : NaN
         }
     }
+
     function ld() {
         return t(this.days() / 7)
     }
+
     function md(a, b, c, d, e) {
         return e.relativeTime(b || 1, !!c, a, d)
     }
+
     function nd(a, b, c) {
         var d = Sb(a).abs(),
             e = uf(d.as('s')),
@@ -6377,18 +6763,22 @@ const URL_PATTERN_REGEX =
                 (j <= 1 && ['y']) || ['yy', j]
         return (k[2] = b), (k[3] = +a > 0), (k[4] = c), md.apply(null, k)
     }
+
     function od(a) {
         return void 0 === a ? uf : 'function' == typeof a && ((uf = a), !0)
     }
+
     function pd(a, b) {
         return void 0 !== vf[a] && (void 0 === b ? vf[a] : ((vf[a] = b), 's' === a && (vf.ss = b - 1), !0))
     }
+
     function qd(a) {
         if (!this.isValid()) return this.localeData().invalidDate()
         var b = this.localeData(),
             c = nd(this, !a, b)
         return a && (c = b.pastFuture(+this, c)), b.postformat(c)
     }
+
     function rd() {
         if (!this.isValid()) return this.localeData().invalidDate()
         var a,
@@ -6397,7 +6787,7 @@ const URL_PATTERN_REGEX =
             d = wf(this._milliseconds) / 1e3,
             e = wf(this._days),
             f = wf(this._months)
-            ; (a = t(d / 60)), (b = t(a / 60)), (d %= 60), (a %= 60), (c = t(f / 12)), (f %= 12)
+        ;(a = t(d / 60)), (b = t(a / 60)), (d %= 60), (a %= 60), (c = t(f / 12)), (f %= 12)
         var g = c,
             h = f,
             i = e,
@@ -6407,37 +6797,38 @@ const URL_PATTERN_REGEX =
             m = this.asSeconds()
         return m
             ? (m < 0 ? '-' : '') +
-            'P' +
-            (g ? g + 'Y' : '') +
-            (h ? h + 'M' : '') +
-            (i ? i + 'D' : '') +
-            (j || k || l ? 'T' : '') +
-            (j ? j + 'H' : '') +
-            (k ? k + 'M' : '') +
-            (l ? l + 'S' : '')
+                  'P' +
+                  (g ? g + 'Y' : '') +
+                  (h ? h + 'M' : '') +
+                  (i ? i + 'D' : '') +
+                  (j || k || l ? 'T' : '') +
+                  (j ? j + 'H' : '') +
+                  (k ? k + 'M' : '') +
+                  (l ? l + 'S' : '')
             : 'P0D'
     }
+
     var sd, td
     td = Array.prototype.some
         ? Array.prototype.some
         : function (a) {
-            for (var b = Object(this), c = b.length >>> 0, d = 0; d < c; d++) if (d in b && a.call(this, b[d], d, b)) return !0
-            return !1
-        }
+              for (var b = Object(this), c = b.length >>> 0, d = 0; d < c; d++) if (d in b && a.call(this, b[d], d, b)) return !0
+              return !1
+          }
     var ud = td,
         vd = (a.momentProperties = []),
         wd = !1,
         xd = {}
-        ; (a.suppressDeprecationWarnings = !1), (a.deprecationHandler = null)
+    ;(a.suppressDeprecationWarnings = !1), (a.deprecationHandler = null)
     var yd
     yd = Object.keys
         ? Object.keys
         : function (a) {
-            var b,
-                c = []
-            for (b in a) j(a, b) && c.push(b)
-            return c
-        }
+              var b,
+                  c = []
+              for (b in a) j(a, b) && c.push(b)
+              return c
+          }
     var zd,
         Ad = yd,
         Bd = {
@@ -6513,10 +6904,10 @@ const URL_PATTERN_REGEX =
     zd = Array.prototype.indexOf
         ? Array.prototype.indexOf
         : function (a) {
-            var b
-            for (b = 0; b < this.length; ++b) if (this[b] === a) return b
-            return -1
-        }
+              var b
+              for (b = 0; b < this.length; ++b) if (this[b] === a) return b
+              return -1
+          }
     var ne = zd
     U('M', ['MM', 2], 'Mo', function () {
         return this.month() + 1
@@ -6674,28 +7065,28 @@ const URL_PATTERN_REGEX =
             b[he] = 24 === d ? 0 : d
         }),
         ba(['a', 'A'], function (a, b, c) {
-            ; (c._isPm = c._locale.isPM(a)), (c._meridiem = a)
+            ;(c._isPm = c._locale.isPM(a)), (c._meridiem = a)
         }),
         ba(['h', 'hh'], function (a, b, c) {
-            ; (b[he] = u(a)), (n(c).bigHour = !0)
+            ;(b[he] = u(a)), (n(c).bigHour = !0)
         }),
         ba('hmm', function (a, b, c) {
             var d = a.length - 2
-                ; (b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d))), (n(c).bigHour = !0)
+            ;(b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d))), (n(c).bigHour = !0)
         }),
         ba('hmmss', function (a, b, c) {
             var d = a.length - 4,
                 e = a.length - 2
-                ; (b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d, 2))), (b[je] = u(a.substr(e))), (n(c).bigHour = !0)
+            ;(b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d, 2))), (b[je] = u(a.substr(e))), (n(c).bigHour = !0)
         }),
         ba('Hmm', function (a, b, c) {
             var d = a.length - 2
-                ; (b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d)))
+            ;(b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d)))
         }),
         ba('Hmmss', function (a, b, c) {
             var d = a.length - 4,
                 e = a.length - 2
-                ; (b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d, 2))), (b[je] = u(a.substr(e)))
+            ;(b[he] = u(a.substr(0, d))), (b[ie] = u(a.substr(d, 2))), (b[je] = u(a.substr(e)))
         })
     var Be,
         Ce = /[ap]\.?m?\.?/i,
@@ -6749,18 +7140,18 @@ const URL_PATTERN_REGEX =
         Me = /^\/?Date\((\-?\d+)/i,
         Ne =
             /^((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d?\d\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(?:\d\d)?\d\d\s)(\d\d:\d\d)(\:\d\d)?(\s(?:UT|GMT|[ECMP][SD]T|[A-IK-Za-ik-z]|[+-]\d{4}))$/
-        ; (a.createFromInputFallback = x(
-            'value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged and will be removed in an upcoming major release. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.',
-            function (a) {
-                a._d = new Date(a._i + (a._useUTC ? ' UTC' : ''))
-            },
-        )),
-            (a.ISO_8601 = function () { }),
-            (a.RFC_2822 = function () { })
+    ;(a.createFromInputFallback = x(
+        'value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged and will be removed in an upcoming major release. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.',
+        function (a) {
+            a._d = new Date(a._i + (a._useUTC ? ' UTC' : ''))
+        },
+    )),
+        (a.ISO_8601 = function () {}),
+        (a.RFC_2822 = function () {})
     var Oe = x('moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/', function () {
-        var a = tb.apply(null, arguments)
-        return this.isValid() && a.isValid() ? (a < this ? this : a) : p()
-    }),
+            var a = tb.apply(null, arguments)
+            return this.isValid() && a.isValid() ? (a < this ? this : a) : p()
+        }),
         Pe = x('moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/', function () {
             var a = tb.apply(null, arguments)
             return this.isValid() && a.isValid() ? (a > this ? this : a) : p()
@@ -6774,17 +7165,17 @@ const URL_PATTERN_REGEX =
         Z('Z', _d),
         Z('ZZ', _d),
         ba(['Z', 'ZZ'], function (a, b, c) {
-            ; (c._useUTC = !0), (c._tzm = Eb(_d, a))
+            ;(c._useUTC = !0), (c._tzm = Eb(_d, a))
         })
     var Se = /([\+\-]|\d\d)/gi
-    a.updateOffset = function () { }
+    a.updateOffset = function () {}
     var Te = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/,
         Ue =
             /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/
-        ; (Sb.fn = Ab.prototype), (Sb.invalid = zb)
+    ;(Sb.fn = Ab.prototype), (Sb.invalid = zb)
     var Ve = Wb(1, 'add'),
         We = Wb(-1, 'subtract')
-        ; (a.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ'), (a.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]')
+    ;(a.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ'), (a.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]')
     var Xe = x(
         'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
         function (a) {
@@ -6892,118 +7283,118 @@ const URL_PATTERN_REGEX =
     var af = O('Milliseconds', !1)
     U('z', 0, 0, 'zoneAbbr'), U('zz', 0, 0, 'zoneName')
     var bf = r.prototype
-        ; (bf.add = Ve),
-            (bf.calendar = Zb),
-            (bf.clone = $b),
-            (bf.diff = fc),
-            (bf.endOf = sc),
-            (bf.format = kc),
-            (bf.from = lc),
-            (bf.fromNow = mc),
-            (bf.to = nc),
-            (bf.toNow = oc),
-            (bf.get = R),
-            (bf.invalidAt = Bc),
-            (bf.isAfter = _b),
-            (bf.isBefore = ac),
-            (bf.isBetween = bc),
-            (bf.isSame = cc),
-            (bf.isSameOrAfter = dc),
-            (bf.isSameOrBefore = ec),
-            (bf.isValid = zc),
-            (bf.lang = Xe),
-            (bf.locale = pc),
-            (bf.localeData = qc),
-            (bf.max = Pe),
-            (bf.min = Oe),
-            (bf.parsingFlags = Ac),
-            (bf.set = S),
-            (bf.startOf = rc),
-            (bf.subtract = We),
-            (bf.toArray = wc),
-            (bf.toObject = xc),
-            (bf.toDate = vc),
-            (bf.toISOString = ic),
-            (bf.inspect = jc),
-            (bf.toJSON = yc),
-            (bf.toString = hc),
-            (bf.unix = uc),
-            (bf.valueOf = tc),
-            (bf.creationData = Cc),
-            (bf.year = te),
-            (bf.isLeapYear = ra),
-            (bf.weekYear = Ec),
-            (bf.isoWeekYear = Fc),
-            (bf.quarter = bf.quarters = Kc),
-            (bf.month = ka),
-            (bf.daysInMonth = la),
-            (bf.week = bf.weeks = Ba),
-            (bf.isoWeek = bf.isoWeeks = Ca),
-            (bf.weeksInYear = Hc),
-            (bf.isoWeeksInYear = Gc),
-            (bf.date = Ye),
-            (bf.day = bf.days = Ka),
-            (bf.weekday = La),
-            (bf.isoWeekday = Ma),
-            (bf.dayOfYear = Lc),
-            (bf.hour = bf.hours = De),
-            (bf.minute = bf.minutes = Ze),
-            (bf.second = bf.seconds = $e),
-            (bf.millisecond = bf.milliseconds = af),
-            (bf.utcOffset = Hb),
-            (bf.utc = Jb),
-            (bf.local = Kb),
-            (bf.parseZone = Lb),
-            (bf.hasAlignedHourOffset = Mb),
-            (bf.isDST = Nb),
-            (bf.isLocal = Pb),
-            (bf.isUtcOffset = Qb),
-            (bf.isUtc = Rb),
-            (bf.isUTC = Rb),
-            (bf.zoneAbbr = Nc),
-            (bf.zoneName = Oc),
-            (bf.dates = x('dates accessor is deprecated. Use date instead.', Ye)),
-            (bf.months = x('months accessor is deprecated. Use month instead', ka)),
-            (bf.years = x('years accessor is deprecated. Use year instead', te)),
-            (bf.zone = x('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', Ib)),
-            (bf.isDSTShifted = x('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', Ob))
+    ;(bf.add = Ve),
+        (bf.calendar = Zb),
+        (bf.clone = $b),
+        (bf.diff = fc),
+        (bf.endOf = sc),
+        (bf.format = kc),
+        (bf.from = lc),
+        (bf.fromNow = mc),
+        (bf.to = nc),
+        (bf.toNow = oc),
+        (bf.get = R),
+        (bf.invalidAt = Bc),
+        (bf.isAfter = _b),
+        (bf.isBefore = ac),
+        (bf.isBetween = bc),
+        (bf.isSame = cc),
+        (bf.isSameOrAfter = dc),
+        (bf.isSameOrBefore = ec),
+        (bf.isValid = zc),
+        (bf.lang = Xe),
+        (bf.locale = pc),
+        (bf.localeData = qc),
+        (bf.max = Pe),
+        (bf.min = Oe),
+        (bf.parsingFlags = Ac),
+        (bf.set = S),
+        (bf.startOf = rc),
+        (bf.subtract = We),
+        (bf.toArray = wc),
+        (bf.toObject = xc),
+        (bf.toDate = vc),
+        (bf.toISOString = ic),
+        (bf.inspect = jc),
+        (bf.toJSON = yc),
+        (bf.toString = hc),
+        (bf.unix = uc),
+        (bf.valueOf = tc),
+        (bf.creationData = Cc),
+        (bf.year = te),
+        (bf.isLeapYear = ra),
+        (bf.weekYear = Ec),
+        (bf.isoWeekYear = Fc),
+        (bf.quarter = bf.quarters = Kc),
+        (bf.month = ka),
+        (bf.daysInMonth = la),
+        (bf.week = bf.weeks = Ba),
+        (bf.isoWeek = bf.isoWeeks = Ca),
+        (bf.weeksInYear = Hc),
+        (bf.isoWeeksInYear = Gc),
+        (bf.date = Ye),
+        (bf.day = bf.days = Ka),
+        (bf.weekday = La),
+        (bf.isoWeekday = Ma),
+        (bf.dayOfYear = Lc),
+        (bf.hour = bf.hours = De),
+        (bf.minute = bf.minutes = Ze),
+        (bf.second = bf.seconds = $e),
+        (bf.millisecond = bf.milliseconds = af),
+        (bf.utcOffset = Hb),
+        (bf.utc = Jb),
+        (bf.local = Kb),
+        (bf.parseZone = Lb),
+        (bf.hasAlignedHourOffset = Mb),
+        (bf.isDST = Nb),
+        (bf.isLocal = Pb),
+        (bf.isUtcOffset = Qb),
+        (bf.isUtc = Rb),
+        (bf.isUTC = Rb),
+        (bf.zoneAbbr = Nc),
+        (bf.zoneName = Oc),
+        (bf.dates = x('dates accessor is deprecated. Use date instead.', Ye)),
+        (bf.months = x('months accessor is deprecated. Use month instead', ka)),
+        (bf.years = x('years accessor is deprecated. Use year instead', te)),
+        (bf.zone = x('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', Ib)),
+        (bf.isDSTShifted = x('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', Ob))
     var cf = C.prototype
-        ; (cf.calendar = D),
-            (cf.longDateFormat = E),
-            (cf.invalidDate = F),
-            (cf.ordinal = G),
-            (cf.preparse = Rc),
-            (cf.postformat = Rc),
-            (cf.relativeTime = H),
-            (cf.pastFuture = I),
-            (cf.set = A),
-            (cf.months = fa),
-            (cf.monthsShort = ga),
-            (cf.monthsParse = ia),
-            (cf.monthsRegex = na),
-            (cf.monthsShortRegex = ma),
-            (cf.week = ya),
-            (cf.firstDayOfYear = Aa),
-            (cf.firstDayOfWeek = za),
-            (cf.weekdays = Fa),
-            (cf.weekdaysMin = Ha),
-            (cf.weekdaysShort = Ga),
-            (cf.weekdaysParse = Ja),
-            (cf.weekdaysRegex = Na),
-            (cf.weekdaysShortRegex = Oa),
-            (cf.weekdaysMinRegex = Pa),
-            (cf.isPM = Va),
-            (cf.meridiem = Wa),
-            $a('en', {
-                dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
-                ordinal: function (a) {
-                    var b = a % 10,
-                        c = 1 === u((a % 100) / 10) ? 'th' : 1 === b ? 'st' : 2 === b ? 'nd' : 3 === b ? 'rd' : 'th'
-                    return a + c
-                },
-            }),
-            (a.lang = x('moment.lang is deprecated. Use moment.locale instead.', $a)),
-            (a.langData = x('moment.langData is deprecated. Use moment.localeData instead.', bb))
+    ;(cf.calendar = D),
+        (cf.longDateFormat = E),
+        (cf.invalidDate = F),
+        (cf.ordinal = G),
+        (cf.preparse = Rc),
+        (cf.postformat = Rc),
+        (cf.relativeTime = H),
+        (cf.pastFuture = I),
+        (cf.set = A),
+        (cf.months = fa),
+        (cf.monthsShort = ga),
+        (cf.monthsParse = ia),
+        (cf.monthsRegex = na),
+        (cf.monthsShortRegex = ma),
+        (cf.week = ya),
+        (cf.firstDayOfYear = Aa),
+        (cf.firstDayOfWeek = za),
+        (cf.weekdays = Fa),
+        (cf.weekdaysMin = Ha),
+        (cf.weekdaysShort = Ga),
+        (cf.weekdaysParse = Ja),
+        (cf.weekdaysRegex = Na),
+        (cf.weekdaysShortRegex = Oa),
+        (cf.weekdaysMinRegex = Pa),
+        (cf.isPM = Va),
+        (cf.meridiem = Wa),
+        $a('en', {
+            dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
+            ordinal: function (a) {
+                var b = a % 10,
+                    c = 1 === u((a % 100) / 10) ? 'th' : 1 === b ? 'st' : 2 === b ? 'nd' : 3 === b ? 'rd' : 'th'
+                return a + c
+            },
+        }),
+        (a.lang = x('moment.lang is deprecated. Use moment.locale instead.', $a)),
+        (a.langData = x('moment.langData is deprecated. Use moment.localeData instead.', bb))
     var df = Math.abs,
         ef = id('ms'),
         ff = id('s'),
@@ -7120,143 +7511,143 @@ const URL_PATTERN_REGEX =
     var a = function (a, i, s) {
         if (
             ((this.parentEl = 'body'),
-                (this.element = e(a)),
-                (this.startDate = t().startOf('day')),
-                (this.endDate = t().endOf('day')),
-                (this.minDate = !1),
-                (this.maxDate = !1),
-                (this.maxSpan = !1),
-                (this.autoApply = !1),
-                (this.singleDatePicker = !1),
-                (this.showDropdowns = !1),
-                (this.minYear = t().subtract(100, 'year').format('YYYY')),
-                (this.maxYear = t().add(100, 'year').format('YYYY')),
-                (this.showWeekNumbers = !1),
-                (this.showISOWeekNumbers = !1),
-                (this.showCustomRangeLabel = !0),
-                (this.timePicker = !1),
-                (this.timePicker24Hour = !1),
-                (this.timePickerIncrement = 1),
-                (this.timePickerSeconds = !1),
-                (this.linkedCalendars = !0),
-                (this.autoUpdateInput = !0),
-                (this.alwaysShowCalendars = !1),
-                (this.ranges = {}),
-                (this.opens = 'right'),
-                this.element.hasClass('pull-right') && (this.opens = 'left'),
-                (this.drops = 'down'),
-                this.element.hasClass('dropup') && (this.drops = 'up'),
-                (this.buttonClasses = 'btn btn-sm'),
-                (this.applyButtonClasses = 'btn-primary'),
-                (this.cancelButtonClasses = 'btn-default'),
-                (this.locale = {
-                    direction: 'ltr',
-                    format: t.localeData().longDateFormat('L'),
-                    separator: ' - ',
-                    applyLabel: 'Apply',
-                    cancelLabel: 'Cancel',
-                    weekLabel: 'W',
-                    customRangeLabel: 'Custom Range',
-                    daysOfWeek: t.weekdaysMin(),
-                    monthNames: t.monthsShort(),
-                    firstDay: t.localeData().firstDayOfWeek(),
-                }),
-                (this.callback = function () { }),
-                (this.isShowing = !1),
-                (this.leftCalendar = {}),
-                (this.rightCalendar = {}),
-                ('object' == typeof i && null !== i) || (i = {}),
-                'string' == typeof (i = e.extend(this.element.data(), i)).template ||
+            (this.element = e(a)),
+            (this.startDate = t().startOf('day')),
+            (this.endDate = t().endOf('day')),
+            (this.minDate = !1),
+            (this.maxDate = !1),
+            (this.maxSpan = !1),
+            (this.autoApply = !1),
+            (this.singleDatePicker = !1),
+            (this.showDropdowns = !1),
+            (this.minYear = t().subtract(100, 'year').format('YYYY')),
+            (this.maxYear = t().add(100, 'year').format('YYYY')),
+            (this.showWeekNumbers = !1),
+            (this.showISOWeekNumbers = !1),
+            (this.showCustomRangeLabel = !0),
+            (this.timePicker = !1),
+            (this.timePicker24Hour = !1),
+            (this.timePickerIncrement = 1),
+            (this.timePickerSeconds = !1),
+            (this.linkedCalendars = !0),
+            (this.autoUpdateInput = !0),
+            (this.alwaysShowCalendars = !1),
+            (this.ranges = {}),
+            (this.opens = 'right'),
+            this.element.hasClass('pull-right') && (this.opens = 'left'),
+            (this.drops = 'down'),
+            this.element.hasClass('dropup') && (this.drops = 'up'),
+            (this.buttonClasses = 'btn btn-sm'),
+            (this.applyButtonClasses = 'btn-primary'),
+            (this.cancelButtonClasses = 'btn-default'),
+            (this.locale = {
+                direction: 'ltr',
+                format: t.localeData().longDateFormat('L'),
+                separator: ' - ',
+                applyLabel: 'Apply',
+                cancelLabel: 'Cancel',
+                weekLabel: 'W',
+                customRangeLabel: 'Custom Range',
+                daysOfWeek: t.weekdaysMin(),
+                monthNames: t.monthsShort(),
+                firstDay: t.localeData().firstDayOfWeek(),
+            }),
+            (this.callback = function () {}),
+            (this.isShowing = !1),
+            (this.leftCalendar = {}),
+            (this.rightCalendar = {}),
+            ('object' == typeof i && null !== i) || (i = {}),
+            'string' == typeof (i = e.extend(this.element.data(), i)).template ||
                 i.template instanceof e ||
                 (i.template =
                     '<div class="daterangepicker"><div class="ranges"></div><div class="drp-calendar left"><div class="calendar-table"></div><div class="calendar-time"></div></div><div class="drp-calendar right"><div class="calendar-table"></div><div class="calendar-time"></div></div><div class="drp-buttons"><span class="drp-selected"></span><button class="cancelBtn" type="button"></button><button class="applyBtn" disabled="disabled" type="button"></button> </div></div>'),
-                (this.parentEl = i.parentEl && e(i.parentEl).length ? e(i.parentEl) : e(this.parentEl)),
-                (this.container = e(i.template).appendTo(this.parentEl)),
-                'object' == typeof i.locale &&
+            (this.parentEl = i.parentEl && e(i.parentEl).length ? e(i.parentEl) : e(this.parentEl)),
+            (this.container = e(i.template).appendTo(this.parentEl)),
+            'object' == typeof i.locale &&
                 ('string' == typeof i.locale.direction && (this.locale.direction = i.locale.direction),
-                    'string' == typeof i.locale.format && (this.locale.format = i.locale.format),
-                    'string' == typeof i.locale.separator && (this.locale.separator = i.locale.separator),
-                    'object' == typeof i.locale.daysOfWeek && (this.locale.daysOfWeek = i.locale.daysOfWeek.slice()),
-                    'object' == typeof i.locale.monthNames && (this.locale.monthNames = i.locale.monthNames.slice()),
-                    'number' == typeof i.locale.firstDay && (this.locale.firstDay = i.locale.firstDay),
-                    'string' == typeof i.locale.applyLabel && (this.locale.applyLabel = i.locale.applyLabel),
-                    'string' == typeof i.locale.cancelLabel && (this.locale.cancelLabel = i.locale.cancelLabel),
-                    'string' == typeof i.locale.weekLabel && (this.locale.weekLabel = i.locale.weekLabel),
-                    'string' == typeof i.locale.customRangeLabel))
+                'string' == typeof i.locale.format && (this.locale.format = i.locale.format),
+                'string' == typeof i.locale.separator && (this.locale.separator = i.locale.separator),
+                'object' == typeof i.locale.daysOfWeek && (this.locale.daysOfWeek = i.locale.daysOfWeek.slice()),
+                'object' == typeof i.locale.monthNames && (this.locale.monthNames = i.locale.monthNames.slice()),
+                'number' == typeof i.locale.firstDay && (this.locale.firstDay = i.locale.firstDay),
+                'string' == typeof i.locale.applyLabel && (this.locale.applyLabel = i.locale.applyLabel),
+                'string' == typeof i.locale.cancelLabel && (this.locale.cancelLabel = i.locale.cancelLabel),
+                'string' == typeof i.locale.weekLabel && (this.locale.weekLabel = i.locale.weekLabel),
+                'string' == typeof i.locale.customRangeLabel))
         ) {
-            ; (p = document.createElement('textarea')).innerHTML = i.locale.customRangeLabel
+            ;(p = document.createElement('textarea')).innerHTML = i.locale.customRangeLabel
             var n = p.value
             this.locale.customRangeLabel = n
         }
         if (
             (this.container.addClass(this.locale.direction),
-                'string' == typeof i.startDate && (this.startDate = t(i.startDate, this.locale.format)),
-                'string' == typeof i.endDate && (this.endDate = t(i.endDate, this.locale.format)),
-                'string' == typeof i.minDate && (this.minDate = t(i.minDate, this.locale.format)),
-                'string' == typeof i.maxDate && (this.maxDate = t(i.maxDate, this.locale.format)),
-                'object' == typeof i.startDate && (this.startDate = t(i.startDate)),
-                'object' == typeof i.endDate && (this.endDate = t(i.endDate)),
-                'object' == typeof i.minDate && (this.minDate = t(i.minDate)),
-                'object' == typeof i.maxDate && (this.maxDate = t(i.maxDate)),
-                this.minDate && this.startDate.isBefore(this.minDate) && (this.startDate = this.minDate.clone()),
-                this.maxDate && this.endDate.isAfter(this.maxDate) && (this.endDate = this.maxDate.clone()),
-                'string' == typeof i.applyButtonClasses && (this.applyButtonClasses = i.applyButtonClasses),
-                'string' == typeof i.applyClass && (this.applyButtonClasses = i.applyClass),
-                'string' == typeof i.cancelButtonClasses && (this.cancelButtonClasses = i.cancelButtonClasses),
-                'string' == typeof i.cancelClass && (this.cancelButtonClasses = i.cancelClass),
-                'object' == typeof i.maxSpan && (this.maxSpan = i.maxSpan),
-                'object' == typeof i.dateLimit && (this.maxSpan = i.dateLimit),
-                'string' == typeof i.opens && (this.opens = i.opens),
-                'string' == typeof i.drops && (this.drops = i.drops),
-                'boolean' == typeof i.showWeekNumbers && (this.showWeekNumbers = i.showWeekNumbers),
-                'boolean' == typeof i.showISOWeekNumbers && (this.showISOWeekNumbers = i.showISOWeekNumbers),
-                'string' == typeof i.buttonClasses && (this.buttonClasses = i.buttonClasses),
-                'object' == typeof i.buttonClasses && (this.buttonClasses = i.buttonClasses.join(' ')),
-                'boolean' == typeof i.showDropdowns && (this.showDropdowns = i.showDropdowns),
-                'number' == typeof i.minYear && (this.minYear = i.minYear),
-                'number' == typeof i.maxYear && (this.maxYear = i.maxYear),
-                'boolean' == typeof i.showCustomRangeLabel && (this.showCustomRangeLabel = i.showCustomRangeLabel),
-                'boolean' == typeof i.singleDatePicker &&
+            'string' == typeof i.startDate && (this.startDate = t(i.startDate, this.locale.format)),
+            'string' == typeof i.endDate && (this.endDate = t(i.endDate, this.locale.format)),
+            'string' == typeof i.minDate && (this.minDate = t(i.minDate, this.locale.format)),
+            'string' == typeof i.maxDate && (this.maxDate = t(i.maxDate, this.locale.format)),
+            'object' == typeof i.startDate && (this.startDate = t(i.startDate)),
+            'object' == typeof i.endDate && (this.endDate = t(i.endDate)),
+            'object' == typeof i.minDate && (this.minDate = t(i.minDate)),
+            'object' == typeof i.maxDate && (this.maxDate = t(i.maxDate)),
+            this.minDate && this.startDate.isBefore(this.minDate) && (this.startDate = this.minDate.clone()),
+            this.maxDate && this.endDate.isAfter(this.maxDate) && (this.endDate = this.maxDate.clone()),
+            'string' == typeof i.applyButtonClasses && (this.applyButtonClasses = i.applyButtonClasses),
+            'string' == typeof i.applyClass && (this.applyButtonClasses = i.applyClass),
+            'string' == typeof i.cancelButtonClasses && (this.cancelButtonClasses = i.cancelButtonClasses),
+            'string' == typeof i.cancelClass && (this.cancelButtonClasses = i.cancelClass),
+            'object' == typeof i.maxSpan && (this.maxSpan = i.maxSpan),
+            'object' == typeof i.dateLimit && (this.maxSpan = i.dateLimit),
+            'string' == typeof i.opens && (this.opens = i.opens),
+            'string' == typeof i.drops && (this.drops = i.drops),
+            'boolean' == typeof i.showWeekNumbers && (this.showWeekNumbers = i.showWeekNumbers),
+            'boolean' == typeof i.showISOWeekNumbers && (this.showISOWeekNumbers = i.showISOWeekNumbers),
+            'string' == typeof i.buttonClasses && (this.buttonClasses = i.buttonClasses),
+            'object' == typeof i.buttonClasses && (this.buttonClasses = i.buttonClasses.join(' ')),
+            'boolean' == typeof i.showDropdowns && (this.showDropdowns = i.showDropdowns),
+            'number' == typeof i.minYear && (this.minYear = i.minYear),
+            'number' == typeof i.maxYear && (this.maxYear = i.maxYear),
+            'boolean' == typeof i.showCustomRangeLabel && (this.showCustomRangeLabel = i.showCustomRangeLabel),
+            'boolean' == typeof i.singleDatePicker &&
                 ((this.singleDatePicker = i.singleDatePicker), this.singleDatePicker && (this.endDate = this.startDate.clone())),
-                'boolean' == typeof i.timePicker && (this.timePicker = i.timePicker),
-                'boolean' == typeof i.timePickerSeconds && (this.timePickerSeconds = i.timePickerSeconds),
-                'number' == typeof i.timePickerIncrement && (this.timePickerIncrement = i.timePickerIncrement),
-                'boolean' == typeof i.timePicker24Hour && (this.timePicker24Hour = i.timePicker24Hour),
-                'boolean' == typeof i.autoApply && (this.autoApply = i.autoApply),
-                'boolean' == typeof i.autoUpdateInput && (this.autoUpdateInput = i.autoUpdateInput),
-                'boolean' == typeof i.linkedCalendars && (this.linkedCalendars = i.linkedCalendars),
-                'function' == typeof i.isInvalidDate && (this.isInvalidDate = i.isInvalidDate),
-                'function' == typeof i.isCustomDate && (this.isCustomDate = i.isCustomDate),
-                'boolean' == typeof i.alwaysShowCalendars && (this.alwaysShowCalendars = i.alwaysShowCalendars),
-                0 != this.locale.firstDay)
+            'boolean' == typeof i.timePicker && (this.timePicker = i.timePicker),
+            'boolean' == typeof i.timePickerSeconds && (this.timePickerSeconds = i.timePickerSeconds),
+            'number' == typeof i.timePickerIncrement && (this.timePickerIncrement = i.timePickerIncrement),
+            'boolean' == typeof i.timePicker24Hour && (this.timePicker24Hour = i.timePicker24Hour),
+            'boolean' == typeof i.autoApply && (this.autoApply = i.autoApply),
+            'boolean' == typeof i.autoUpdateInput && (this.autoUpdateInput = i.autoUpdateInput),
+            'boolean' == typeof i.linkedCalendars && (this.linkedCalendars = i.linkedCalendars),
+            'function' == typeof i.isInvalidDate && (this.isInvalidDate = i.isInvalidDate),
+            'function' == typeof i.isCustomDate && (this.isCustomDate = i.isCustomDate),
+            'boolean' == typeof i.alwaysShowCalendars && (this.alwaysShowCalendars = i.alwaysShowCalendars),
+            0 != this.locale.firstDay)
         )
-            for (var r = this.locale.firstDay; r > 0;) this.locale.daysOfWeek.push(this.locale.daysOfWeek.shift()), r--
+            for (var r = this.locale.firstDay; r > 0; ) this.locale.daysOfWeek.push(this.locale.daysOfWeek.shift()), r--
         var o, h, l
         if (void 0 === i.startDate && void 0 === i.endDate && e(this.element).is(':text')) {
             var c = e(this.element).val(),
                 d = c.split(this.locale.separator)
-                ; (o = h = null),
-                    2 == d.length
-                        ? ((o = t(d[0], this.locale.format)), (h = t(d[1], this.locale.format)))
-                        : this.singleDatePicker && '' !== c && ((o = t(c, this.locale.format)), (h = t(c, this.locale.format))),
-                    null !== o && null !== h && (this.setStartDate(o), this.setEndDate(h))
+            ;(o = h = null),
+                2 == d.length
+                    ? ((o = t(d[0], this.locale.format)), (h = t(d[1], this.locale.format)))
+                    : this.singleDatePicker && '' !== c && ((o = t(c, this.locale.format)), (h = t(c, this.locale.format))),
+                null !== o && null !== h && (this.setStartDate(o), this.setEndDate(h))
         }
         if ('object' == typeof i.ranges) {
             for (l in i.ranges) {
-                ; (o = 'string' == typeof i.ranges[l][0] ? t(i.ranges[l][0], this.locale.format) : t(i.ranges[l][0])),
+                ;(o = 'string' == typeof i.ranges[l][0] ? t(i.ranges[l][0], this.locale.format) : t(i.ranges[l][0])),
                     (h = 'string' == typeof i.ranges[l][1] ? t(i.ranges[l][1], this.locale.format) : t(i.ranges[l][1])),
                     this.minDate && o.isBefore(this.minDate) && (o = this.minDate.clone())
                 var m = this.maxDate
                 if (
                     (this.maxSpan && m && o.clone().add(this.maxSpan).isAfter(m) && (m = o.clone().add(this.maxSpan)),
-                        m && h.isAfter(m) && (h = m.clone()),
-                        !(
-                            (this.minDate && h.isBefore(this.minDate, this.timepicker ? 'minute' : 'day')) ||
-                            (m && o.isAfter(m, this.timepicker ? 'minute' : 'day'))
-                        ))
+                    m && h.isAfter(m) && (h = m.clone()),
+                    !(
+                        (this.minDate && h.isBefore(this.minDate, this.timepicker ? 'minute' : 'day')) ||
+                        (m && o.isAfter(m, this.timepicker ? 'minute' : 'day'))
+                    ))
                 ) {
                     var p
-                        ; (p = document.createElement('textarea')).innerHTML = l
+                    ;(p = document.createElement('textarea')).innerHTML = l
                     n = p.value
                     this.ranges[n] = [o, h]
                 }
@@ -7269,14 +7660,14 @@ const URL_PATTERN_REGEX =
         }
         'function' == typeof s && (this.callback = s),
             this.timePicker ||
-            ((this.startDate = this.startDate.startOf('day')),
+                ((this.startDate = this.startDate.startOf('day')),
                 (this.endDate = this.endDate.endOf('day')),
                 this.container.find('.calendar-time').hide()),
             this.timePicker && this.autoApply && (this.autoApply = !1),
             this.autoApply && this.container.addClass('auto-apply'),
             'object' == typeof i.ranges && this.container.addClass('show-ranges'),
             this.singleDatePicker &&
-            (this.container.addClass('single'),
+                (this.container.addClass('single'),
                 this.container.find('.drp-calendar.left').addClass('single'),
                 this.container.find('.drp-calendar.left').show(),
                 this.container.find('.drp-calendar.right').hide(),
@@ -7308,13 +7699,13 @@ const URL_PATTERN_REGEX =
                 .on('click.daterangepicker', 'button.cancelBtn', e.proxy(this.clickCancel, this)),
             this.element.is('input') || this.element.is('button')
                 ? this.element.on({
-                    'click.daterangepicker': e.proxy(this.show, this),
-                    'focus.daterangepicker': e.proxy(this.show, this),
-                    'keyup.daterangepicker': e.proxy(this.elementChanged, this),
-                    'keydown.daterangepicker': e.proxy(this.keydown, this),
-                })
+                      'click.daterangepicker': e.proxy(this.show, this),
+                      'focus.daterangepicker': e.proxy(this.show, this),
+                      'keyup.daterangepicker': e.proxy(this.elementChanged, this),
+                      'keydown.daterangepicker': e.proxy(this.keydown, this),
+                  })
                 : (this.element.on('click.daterangepicker', e.proxy(this.toggle, this)),
-                    this.element.on('keydown.daterangepicker', e.proxy(this.toggle, this))),
+                  this.element.on('keydown.daterangepicker', e.proxy(this.toggle, this))),
             this.updateElement()
     }
     return (
@@ -7325,20 +7716,20 @@ const URL_PATTERN_REGEX =
                     'object' == typeof e && (this.startDate = t(e)),
                     this.timePicker || (this.startDate = this.startDate.startOf('day')),
                     this.timePicker &&
-                    this.timePickerIncrement &&
-                    this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement),
+                        this.timePickerIncrement &&
+                        this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement),
                     this.minDate &&
-                    this.startDate.isBefore(this.minDate) &&
-                    ((this.startDate = this.minDate.clone()),
+                        this.startDate.isBefore(this.minDate) &&
+                        ((this.startDate = this.minDate.clone()),
                         this.timePicker &&
-                        this.timePickerIncrement &&
-                        this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement)),
+                            this.timePickerIncrement &&
+                            this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement)),
                     this.maxDate &&
-                    this.startDate.isAfter(this.maxDate) &&
-                    ((this.startDate = this.maxDate.clone()),
+                        this.startDate.isAfter(this.maxDate) &&
+                        ((this.startDate = this.maxDate.clone()),
                         this.timePicker &&
-                        this.timePickerIncrement &&
-                        this.startDate.minute(Math.floor(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement)),
+                            this.timePickerIncrement &&
+                            this.startDate.minute(Math.floor(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement)),
                     this.isShowing || this.updateElement(),
                     this.updateMonthsInView()
             },
@@ -7347,13 +7738,13 @@ const URL_PATTERN_REGEX =
                     'object' == typeof e && (this.endDate = t(e)),
                     this.timePicker || (this.endDate = this.endDate.endOf('day')),
                     this.timePicker &&
-                    this.timePickerIncrement &&
-                    this.endDate.minute(Math.round(this.endDate.minute() / this.timePickerIncrement) * this.timePickerIncrement),
+                        this.timePickerIncrement &&
+                        this.endDate.minute(Math.round(this.endDate.minute() / this.timePickerIncrement) * this.timePickerIncrement),
                     this.endDate.isBefore(this.startDate) && (this.endDate = this.startDate.clone()),
                     this.maxDate && this.endDate.isAfter(this.maxDate) && (this.endDate = this.maxDate.clone()),
                     this.maxSpan &&
-                    this.startDate.clone().add(this.maxSpan).isBefore(this.endDate) &&
-                    (this.endDate = this.startDate.clone().add(this.maxSpan)),
+                        this.startDate.clone().add(this.maxSpan).isBefore(this.endDate) &&
+                        (this.endDate = this.startDate.clone().add(this.maxSpan)),
                     (this.previousRightTime = this.endDate.clone()),
                     this.container
                         .find('.drp-selected')
@@ -7370,14 +7761,14 @@ const URL_PATTERN_REGEX =
             updateView: function () {
                 this.timePicker &&
                     (this.renderTimePicker('left'),
-                        this.renderTimePicker('right'),
-                        this.endDate
-                            ? this.container.find('.right .calendar-time select').prop('disabled', !1).removeClass('disabled')
-                            : this.container.find('.right .calendar-time select').prop('disabled', !0).addClass('disabled')),
+                    this.renderTimePicker('right'),
+                    this.endDate
+                        ? this.container.find('.right .calendar-time select').prop('disabled', !1).removeClass('disabled')
+                        : this.container.find('.right .calendar-time select').prop('disabled', !0).addClass('disabled')),
                     this.endDate &&
-                    this.container
-                        .find('.drp-selected')
-                        .html(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format)),
+                        this.container
+                            .find('.drp-selected')
+                            .html(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format)),
                     this.updateMonthsInView(),
                     this.updateCalendars(),
                     this.updateFormInputs()
@@ -7394,21 +7785,21 @@ const URL_PATTERN_REGEX =
                             this.endDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
                     )
                         return
-                            ; (this.leftCalendar.month = this.startDate.clone().date(2)),
-                                this.linkedCalendars || (this.endDate.month() == this.startDate.month() && this.endDate.year() == this.startDate.year())
-                                    ? (this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month'))
-                                    : (this.rightCalendar.month = this.endDate.clone().date(2))
+                    ;(this.leftCalendar.month = this.startDate.clone().date(2)),
+                        this.linkedCalendars || (this.endDate.month() == this.startDate.month() && this.endDate.year() == this.startDate.year())
+                            ? (this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month'))
+                            : (this.rightCalendar.month = this.endDate.clone().date(2))
                 } else
                     this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') &&
                         this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') &&
                         ((this.leftCalendar.month = this.startDate.clone().date(2)),
-                            (this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month')))
+                        (this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month')))
                 this.maxDate &&
                     this.linkedCalendars &&
                     !this.singleDatePicker &&
                     this.rightCalendar.month > this.maxDate &&
                     ((this.rightCalendar.month = this.maxDate.clone().date(2)),
-                        (this.leftCalendar.month = this.maxDate.clone().date(2).subtract(1, 'month')))
+                    (this.leftCalendar.month = this.maxDate.clone().date(2).subtract(1, 'month')))
             },
             updateCalendars: function () {
                 if (this.timePicker) {
@@ -7416,18 +7807,18 @@ const URL_PATTERN_REGEX =
                     if (this.endDate) {
                         if (
                             ((t = parseInt(this.container.find('.left .hourselect').val(), 10)),
-                                (e = parseInt(this.container.find('.left .minuteselect').val(), 10)),
-                                isNaN(e) && (e = parseInt(this.container.find('.left .minuteselect option:last').val(), 10)),
-                                (a = this.timePickerSeconds ? parseInt(this.container.find('.left .secondselect').val(), 10) : 0),
-                                !this.timePicker24Hour)
+                            (e = parseInt(this.container.find('.left .minuteselect').val(), 10)),
+                            isNaN(e) && (e = parseInt(this.container.find('.left .minuteselect option:last').val(), 10)),
+                            (a = this.timePickerSeconds ? parseInt(this.container.find('.left .secondselect').val(), 10) : 0),
+                            !this.timePicker24Hour)
                         )
                             'PM' === (i = this.container.find('.left .ampmselect').val()) && t < 12 && (t += 12), 'AM' === i && 12 === t && (t = 0)
                     } else if (
                         ((t = parseInt(this.container.find('.right .hourselect').val(), 10)),
-                            (e = parseInt(this.container.find('.right .minuteselect').val(), 10)),
-                            isNaN(e) && (e = parseInt(this.container.find('.right .minuteselect option:last').val(), 10)),
-                            (a = this.timePickerSeconds ? parseInt(this.container.find('.right .secondselect').val(), 10) : 0),
-                            !this.timePicker24Hour)
+                        (e = parseInt(this.container.find('.right .minuteselect').val(), 10)),
+                        isNaN(e) && (e = parseInt(this.container.find('.right .minuteselect option:last').val(), 10)),
+                        (a = this.timePickerSeconds ? parseInt(this.container.find('.right .secondselect').val(), 10) : 0),
+                        !this.timePicker24Hour)
                     )
                         'PM' === (i = this.container.find('.right .ampmselect').val()) && t < 12 && (t += 12), 'AM' === i && 12 === t && (t = 0)
                     this.leftCalendar.month.hour(t).minute(e).second(a), this.rightCalendar.month.hour(t).minute(e).second(a)
@@ -7451,7 +7842,7 @@ const URL_PATTERN_REGEX =
                     p = t(c).subtract(1, 'month').year(),
                     f = t([p, m]).daysInMonth(),
                     u = c.day()
-                    ; ((i = []).firstDay = c), (i.lastDay = d)
+                ;((i = []).firstDay = c), (i.lastDay = d)
                 for (var D = 0; D < 6; D++) i[D] = []
                 var g = f - u + this.locale.firstDay + 1
                 g > f && (g -= 7), u == this.locale.firstDay && (g = f - 6)
@@ -7460,56 +7851,56 @@ const URL_PATTERN_REGEX =
                         (i[b][k] = y.clone().hour(r).minute(o).second(h)),
                         y.hour(12),
                         this.minDate &&
-                        i[b][k].format('YYYY-MM-DD') == this.minDate.format('YYYY-MM-DD') &&
-                        i[b][k].isBefore(this.minDate) &&
-                        'left' == a &&
-                        (i[b][k] = this.minDate.clone()),
+                            i[b][k].format('YYYY-MM-DD') == this.minDate.format('YYYY-MM-DD') &&
+                            i[b][k].isBefore(this.minDate) &&
+                            'left' == a &&
+                            (i[b][k] = this.minDate.clone()),
                         this.maxDate &&
-                        i[b][k].format('YYYY-MM-DD') == this.maxDate.format('YYYY-MM-DD') &&
-                        i[b][k].isAfter(this.maxDate) &&
-                        'right' == a &&
-                        (i[b][k] = this.maxDate.clone())
+                            i[b][k].format('YYYY-MM-DD') == this.maxDate.format('YYYY-MM-DD') &&
+                            i[b][k].isAfter(this.maxDate) &&
+                            'right' == a &&
+                            (i[b][k] = this.maxDate.clone())
                 'left' == a ? (this.leftCalendar.calendar = i) : (this.rightCalendar.calendar = i)
                 var v = 'left' == a ? this.minDate : this.startDate,
                     C = this.maxDate,
                     Y = ('left' == a ? this.startDate : this.endDate, this.locale.direction, '<table class="table-condensed">')
-                    ; (Y += '<thead>'),
-                        (Y += '<tr>'),
-                        (this.showWeekNumbers || this.showISOWeekNumbers) && (Y += '<th></th>'),
-                        (v && !v.isBefore(i.firstDay)) || (this.linkedCalendars && 'left' != a)
-                            ? (Y += '<th></th>')
-                            : (Y += '<th class="prev available"><span></span></th>')
+                ;(Y += '<thead>'),
+                    (Y += '<tr>'),
+                    (this.showWeekNumbers || this.showISOWeekNumbers) && (Y += '<th></th>'),
+                    (v && !v.isBefore(i.firstDay)) || (this.linkedCalendars && 'left' != a)
+                        ? (Y += '<th></th>')
+                        : (Y += '<th class="prev available"><span></span></th>')
                 var w = this.locale.monthNames[i[1][1].month()] + i[1][1].format(' YYYY')
                 if (this.showDropdowns) {
                     for (
                         var P = i[1][1].month(),
-                        x = i[1][1].year(),
-                        M = (C && C.year()) || this.maxYear,
-                        I = (v && v.year()) || this.minYear,
-                        S = x == I,
-                        B = x == M,
-                        A = '<select class="monthselect">',
-                        L = 0;
+                            x = i[1][1].year(),
+                            M = (C && C.year()) || this.maxYear,
+                            I = (v && v.year()) || this.minYear,
+                            S = x == I,
+                            B = x == M,
+                            A = '<select class="monthselect">',
+                            L = 0;
                         L < 12;
                         L++
                     )
                         (!S || (v && L >= v.month())) && (!B || (C && L <= C.month()))
                             ? (A +=
-                                "<option value='" +
-                                L +
-                                "'" +
-                                (L === P ? " selected='selected'" : '') +
-                                '>' +
-                                this.locale.monthNames[L] +
-                                '</option>')
+                                  "<option value='" +
+                                  L +
+                                  "'" +
+                                  (L === P ? " selected='selected'" : '') +
+                                  '>' +
+                                  this.locale.monthNames[L] +
+                                  '</option>')
                             : (A +=
-                                "<option value='" +
-                                L +
-                                "'" +
-                                (L === P ? " selected='selected'" : '') +
-                                " disabled='disabled'>" +
-                                this.locale.monthNames[L] +
-                                '</option>')
+                                  "<option value='" +
+                                  L +
+                                  "'" +
+                                  (L === P ? " selected='selected'" : '') +
+                                  " disabled='disabled'>" +
+                                  this.locale.monthNames[L] +
+                                  '</option>')
                     A += '</select>'
                     for (var N = '<select class="yearselect">', E = I; E <= M; E++)
                         N += '<option value="' + E + '"' + (E === x ? ' selected="selected"' : '') + '>' + E + '</option>'
@@ -7517,25 +7908,25 @@ const URL_PATTERN_REGEX =
                 }
                 if (
                     ((Y += '<th colspan="5" class="month">' + w + '</th>'),
-                        (C && !C.isAfter(i.lastDay)) || (this.linkedCalendars && 'right' != a && !this.singleDatePicker)
-                            ? (Y += '<th></th>')
-                            : (Y += '<th class="next available"><span></span></th>'),
-                        (Y += '</tr>'),
-                        (Y += '<tr>'),
-                        (this.showWeekNumbers || this.showISOWeekNumbers) && (Y += '<th class="week">' + this.locale.weekLabel + '</th>'),
-                        e.each(this.locale.daysOfWeek, function (t, e) {
-                            Y += '<th>' + e + '</th>'
-                        }),
-                        (Y += '</tr>'),
-                        (Y += '</thead>'),
-                        (Y += '<tbody>'),
-                        null == this.endDate && this.maxSpan)
+                    (C && !C.isAfter(i.lastDay)) || (this.linkedCalendars && 'right' != a && !this.singleDatePicker)
+                        ? (Y += '<th></th>')
+                        : (Y += '<th class="next available"><span></span></th>'),
+                    (Y += '</tr>'),
+                    (Y += '<tr>'),
+                    (this.showWeekNumbers || this.showISOWeekNumbers) && (Y += '<th class="week">' + this.locale.weekLabel + '</th>'),
+                    e.each(this.locale.daysOfWeek, function (t, e) {
+                        Y += '<th>' + e + '</th>'
+                    }),
+                    (Y += '</tr>'),
+                    (Y += '</thead>'),
+                    (Y += '<tbody>'),
+                    null == this.endDate && this.maxSpan)
                 ) {
                     var O = this.startDate.clone().add(this.maxSpan).endOf('day')
-                        ; (C && !O.isBefore(C)) || (C = O)
+                    ;(C && !O.isBefore(C)) || (C = O)
                 }
                 for (b = 0; b < 6; b++) {
-                    ; (Y += '<tr>'),
+                    ;(Y += '<tr>'),
                         this.showWeekNumbers
                             ? (Y += '<td class="week">' + i[b][0].week() + '</td>')
                             : this.showISOWeekNumbers && (Y += '<td class="week">' + i[b][0].isoWeek() + '</td>')
@@ -7560,7 +7951,7 @@ const URL_PATTERN_REGEX =
                     }
                     Y += '</tr>'
                 }
-                ; (Y += '</tbody>'), (Y += '</table>'), this.container.find('.drp-calendar.' + a + ' .calendar-table').html(Y)
+                ;(Y += '</tbody>'), (Y += '</table>'), this.container.find('.drp-calendar.' + a + ' .calendar-table').html(Y)
             },
             renderTimePicker: function (t) {
                 if ('right' != t || this.endDate) {
@@ -7572,18 +7963,18 @@ const URL_PATTERN_REGEX =
                         (!this.maxSpan ||
                             (this.maxDate && !this.startDate.clone().add(this.maxSpan).isBefore(this.maxDate)) ||
                             (s = this.startDate.clone().add(this.maxSpan)),
-                            'left' == t)
+                        'left' == t)
                     )
                         (a = this.startDate.clone()), (i = this.minDate)
                     else if ('right' == t) {
-                        ; (a = this.endDate.clone()), (i = this.startDate)
+                        ;(a = this.endDate.clone()), (i = this.startDate)
                         var n = this.container.find('.drp-calendar.right .calendar-time')
                         if (
                             '' != n.html() &&
                             (a.hour(isNaN(a.hour()) ? n.find('.hourselect option:selected').val() : a.hour()),
-                                a.minute(isNaN(a.minute()) ? n.find('.minuteselect option:selected').val() : a.minute()),
-                                a.second(isNaN(a.second()) ? n.find('.secondselect option:selected').val() : a.second()),
-                                !this.timePicker24Hour)
+                            a.minute(isNaN(a.minute()) ? n.find('.minuteselect option:selected').val() : a.minute()),
+                            a.second(isNaN(a.second()) ? n.find('.secondselect option:selected').val() : a.second()),
+                            !this.timePicker24Hour)
                         ) {
                             var r = n.find('.ampmselect option:selected').val()
                             'PM' === r && a.hour() < 12 && a.hour(a.hour() + 12), 'AM' === r && 12 === a.hour() && a.hour(0)
@@ -7600,32 +7991,32 @@ const URL_PATTERN_REGEX =
                             s && d.minute(0).isAfter(s) && (m = !0),
                             c != a.hour() || m
                                 ? (e += m
-                                    ? '<option value="' + l + '" disabled="disabled" class="disabled">' + l + '</option>'
-                                    : '<option value="' + l + '">' + l + '</option>')
+                                      ? '<option value="' + l + '" disabled="disabled" class="disabled">' + l + '</option>'
+                                      : '<option value="' + l + '">' + l + '</option>')
                                 : (e += '<option value="' + l + '" selected="selected">' + l + '</option>')
                     }
-                    ; (e += '</select> '), (e += ': <select class="minuteselect">')
+                    ;(e += '</select> '), (e += ': <select class="minuteselect">')
                     for (l = 0; l < 60; l += this.timePickerIncrement) {
                         var p = l < 10 ? '0' + l : l
-                            ; (d = a.clone().minute(l)), (m = !1)
+                        ;(d = a.clone().minute(l)), (m = !1)
                         i && d.second(59).isBefore(i) && (m = !0),
                             s && d.second(0).isAfter(s) && (m = !0),
                             a.minute() != l || m
                                 ? (e += m
-                                    ? '<option value="' + l + '" disabled="disabled" class="disabled">' + p + '</option>'
-                                    : '<option value="' + l + '">' + p + '</option>')
+                                      ? '<option value="' + l + '" disabled="disabled" class="disabled">' + p + '</option>'
+                                      : '<option value="' + l + '">' + p + '</option>')
                                 : (e += '<option value="' + l + '" selected="selected">' + p + '</option>')
                     }
                     if (((e += '</select> '), this.timePickerSeconds)) {
                         e += ': <select class="secondselect">'
                         for (l = 0; l < 60; l++) {
-                            ; (p = l < 10 ? '0' + l : l), (d = a.clone().second(l)), (m = !1)
+                            ;(p = l < 10 ? '0' + l : l), (d = a.clone().second(l)), (m = !1)
                             i && d.isBefore(i) && (m = !0),
                                 s && d.isAfter(s) && (m = !0),
                                 a.second() != l || m
                                     ? (e += m
-                                        ? '<option value="' + l + '" disabled="disabled" class="disabled">' + p + '</option>'
-                                        : '<option value="' + l + '">' + p + '</option>')
+                                          ? '<option value="' + l + '" disabled="disabled" class="disabled">' + p + '</option>'
+                                          : '<option value="' + l + '">' + p + '</option>')
                                     : (e += '<option value="' + l + '" selected="selected">' + p + '</option>')
                         }
                         e += '</select> '
@@ -7655,16 +8046,16 @@ const URL_PATTERN_REGEX =
                     i = this.drops,
                     s = e(window).width()
                 switch (
-                (this.parentEl.is('body') ||
-                    ((a = {
-                        top: this.parentEl.offset().top - this.parentEl.scrollTop(),
-                        left: this.parentEl.offset().left - this.parentEl.scrollLeft(),
-                    }),
+                    (this.parentEl.is('body') ||
+                        ((a = {
+                            top: this.parentEl.offset().top - this.parentEl.scrollTop(),
+                            left: this.parentEl.offset().left - this.parentEl.scrollLeft(),
+                        }),
                         (s = this.parentEl[0].clientWidth + this.parentEl.offset().left)),
                     i)
                 ) {
                     case 'auto':
-                        ; (t = this.element.offset().top + this.element.outerHeight() - a.top) + this.container.outerHeight() >=
+                        ;(t = this.element.offset().top + this.element.outerHeight() - a.top) + this.container.outerHeight() >=
                             this.parentEl[0].scrollHeight && ((t = this.element.offset().top - this.container.outerHeight() - a.top), (i = 'up'))
                         break
                     case 'up':
@@ -7681,16 +8072,16 @@ const URL_PATTERN_REGEX =
                         ? this.container.css({ top: t, right: 'auto', left: 9 })
                         : this.container.css({ top: t, right: r, left: 'auto' })
                 } else if ('center' == this.opens) {
-                    ; (o = this.element.offset().left - a.left + this.element.outerWidth() / 2 - n / 2) < 0
+                    ;(o = this.element.offset().left - a.left + this.element.outerWidth() / 2 - n / 2) < 0
                         ? this.container.css({ top: t, right: 'auto', left: 9 })
                         : o + n > e(window).width()
-                            ? this.container.css({ top: t, left: 'auto', right: 0 })
-                            : this.container.css({ top: t, left: o, right: 'auto' })
+                          ? this.container.css({ top: t, left: 'auto', right: 0 })
+                          : this.container.css({ top: t, left: o, right: 'auto' })
                 } else {
                     var o
-                        ; (o = this.element.offset().left - a.left) + n > e(window).width()
-                            ? this.container.css({ top: t, left: 'auto', right: 0 })
-                            : this.container.css({ top: t, left: o, right: 'auto' })
+                    ;(o = this.element.offset().left - a.left) + n > e(window).width()
+                        ? this.container.css({ top: t, left: 'auto', right: 0 })
+                        : this.container.css({ top: t, left: o, right: 'auto' })
                 }
             },
             show: function (t) {
@@ -7698,37 +8089,37 @@ const URL_PATTERN_REGEX =
                     ((this._outsideClickProxy = e.proxy(function (t) {
                         this.outsideClick(t)
                     }, this)),
-                        e(document)
-                            .on('mousedown.daterangepicker', this._outsideClickProxy)
-                            .on('touchend.daterangepicker', this._outsideClickProxy)
-                            .on('click.daterangepicker', '[data-toggle=dropdown]', this._outsideClickProxy)
-                            .on('focusin.daterangepicker', this._outsideClickProxy),
-                        e(window).on(
-                            'resize.daterangepicker',
-                            e.proxy(function (t) {
-                                this.move(t)
-                            }, this),
-                        ),
-                        (this.oldStartDate = this.startDate.clone()),
-                        (this.oldEndDate = this.endDate.clone()),
-                        (this.previousRightTime = this.endDate.clone()),
-                        this.updateView(),
-                        this.container.show(),
-                        this.move(),
-                        this.element.trigger('show.daterangepicker', this),
-                        (this.isShowing = !0))
+                    e(document)
+                        .on('mousedown.daterangepicker', this._outsideClickProxy)
+                        .on('touchend.daterangepicker', this._outsideClickProxy)
+                        .on('click.daterangepicker', '[data-toggle=dropdown]', this._outsideClickProxy)
+                        .on('focusin.daterangepicker', this._outsideClickProxy),
+                    e(window).on(
+                        'resize.daterangepicker',
+                        e.proxy(function (t) {
+                            this.move(t)
+                        }, this),
+                    ),
+                    (this.oldStartDate = this.startDate.clone()),
+                    (this.oldEndDate = this.endDate.clone()),
+                    (this.previousRightTime = this.endDate.clone()),
+                    this.updateView(),
+                    this.container.show(),
+                    this.move(),
+                    this.element.trigger('show.daterangepicker', this),
+                    (this.isShowing = !0))
             },
             hide: function (t) {
                 this.isShowing &&
                     (this.endDate || ((this.startDate = this.oldStartDate.clone()), (this.endDate = this.oldEndDate.clone())),
-                        (this.startDate.isSame(this.oldStartDate) && this.endDate.isSame(this.oldEndDate)) ||
+                    (this.startDate.isSame(this.oldStartDate) && this.endDate.isSame(this.oldEndDate)) ||
                         this.callback(this.startDate.clone(), this.endDate.clone(), this.chosenLabel),
-                        this.updateElement(),
-                        e(document).off('.daterangepicker'),
-                        e(window).off('.daterangepicker'),
-                        this.container.hide(),
-                        this.element.trigger('hide.daterangepicker', this),
-                        (this.isShowing = !1))
+                    this.updateElement(),
+                    e(document).off('.daterangepicker'),
+                    e(window).off('.daterangepicker'),
+                    this.container.hide(),
+                    this.element.trigger('hide.daterangepicker', this),
+                    (this.isShowing = !1))
             },
             toggle: function (t) {
                 this.isShowing ? this.hide() : this.show()
@@ -7752,11 +8143,11 @@ const URL_PATTERN_REGEX =
                 if (((this.chosenLabel = e), e == this.locale.customRangeLabel)) this.showCalendars()
                 else {
                     var a = this.ranges[e]
-                        ; (this.startDate = a[0]),
-                            (this.endDate = a[1]),
-                            this.timePicker || (this.startDate.startOf('day'), this.endDate.endOf('day')),
-                            this.alwaysShowCalendars || this.hideCalendars(),
-                            this.clickApply()
+                    ;(this.startDate = a[0]),
+                        (this.endDate = a[1]),
+                        this.timePicker || (this.startDate.startOf('day'), this.endDate.endOf('day')),
+                        this.alwaysShowCalendars || this.hideCalendars(),
+                        this.clickApply()
                 }
             },
             clickPrev: function (t) {
@@ -7789,7 +8180,7 @@ const URL_PATTERN_REGEX =
                                     s = i.substr(1, 1),
                                     l = i.substr(3, 1),
                                     c = e(a).parents('.drp-calendar').hasClass('left') ? r.calendar[s][l] : o.calendar[s][l]
-                                    ; (c.isAfter(h) && c.isBefore(n)) || c.isSame(n, 'day') ? e(a).addClass('in-range') : e(a).removeClass('in-range')
+                                ;(c.isAfter(h) && c.isBefore(n)) || c.isSame(n, 'day') ? e(a).addClass('in-range') : e(a).removeClass('in-range')
                             }
                         })
                 }
@@ -7813,7 +8204,7 @@ const URL_PATTERN_REGEX =
                             var h = this.timePickerSeconds ? parseInt(this.container.find('.left .secondselect').val(), 10) : 0
                             n = n.clone().hour(r).minute(o).second(h)
                         }
-                        ; (this.endDate = null), this.setStartDate(n.clone())
+                        ;(this.endDate = null), this.setStartDate(n.clone())
                     } else if (!this.endDate && n.isBefore(this.startDate)) this.setEndDate(this.startDate.clone())
                     else {
                         if (this.timePicker) {
@@ -7841,7 +8232,7 @@ const URL_PATTERN_REGEX =
                     if (this.timePicker) {
                         var i = this.timePickerSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm'
                         if (this.startDate.format(i) == this.ranges[a][0].format(i) && this.endDate.format(i) == this.ranges[a][1].format(i)) {
-                            ; (t = !1),
+                            ;(t = !1),
                                 (this.chosenLabel = this.container
                                     .find('.ranges li:eq(' + e + ')')
                                     .addClass('active')
@@ -7852,7 +8243,7 @@ const URL_PATTERN_REGEX =
                         this.startDate.format('YYYY-MM-DD') == this.ranges[a][0].format('YYYY-MM-DD') &&
                         this.endDate.format('YYYY-MM-DD') == this.ranges[a][1].format('YYYY-MM-DD')
                     ) {
-                        ; (t = !1),
+                        ;(t = !1),
                             (this.chosenLabel = this.container
                                 .find('.ranges li:eq(' + e + ')')
                                 .addClass('active')
@@ -7865,13 +8256,13 @@ const URL_PATTERN_REGEX =
                     (this.showCustomRangeLabel
                         ? (this.chosenLabel = this.container.find('.ranges li:last').addClass('active').attr('data-range-key'))
                         : (this.chosenLabel = null),
-                        this.showCalendars())
+                    this.showCalendars())
             },
             clickApply: function (t) {
                 this.hide(), this.element.trigger('apply.daterangepicker', this)
             },
             clickCancel: function (t) {
-                ; (this.startDate = this.oldStartDate),
+                ;(this.startDate = this.oldStartDate),
                     (this.endDate = this.oldEndDate),
                     this.hide(),
                     this.element.trigger('cancel.daterangepicker', this)
@@ -7886,16 +8277,16 @@ const URL_PATTERN_REGEX =
                     ((r < this.startDate.year() || (r == this.startDate.year() && n < this.startDate.month())) &&
                         ((n = this.startDate.month()), (r = this.startDate.year()))),
                     this.minDate &&
-                    (r < this.minDate.year() || (r == this.minDate.year() && n < this.minDate.month())) &&
-                    ((n = this.minDate.month()), (r = this.minDate.year())),
+                        (r < this.minDate.year() || (r == this.minDate.year() && n < this.minDate.month())) &&
+                        ((n = this.minDate.month()), (r = this.minDate.year())),
                     this.maxDate &&
-                    (r > this.maxDate.year() || (r == this.maxDate.year() && n > this.maxDate.month())) &&
-                    ((n = this.maxDate.month()), (r = this.maxDate.year())),
+                        (r > this.maxDate.year() || (r == this.maxDate.year() && n > this.maxDate.month())) &&
+                        ((n = this.maxDate.month()), (r = this.maxDate.year())),
                     a
                         ? (this.leftCalendar.month.month(n).year(r),
-                            this.linkedCalendars && (this.rightCalendar.month = this.leftCalendar.month.clone().add(1, 'month')))
+                          this.linkedCalendars && (this.rightCalendar.month = this.leftCalendar.month.clone().add(1, 'month')))
                         : (this.rightCalendar.month.month(n).year(r),
-                            this.linkedCalendars && (this.leftCalendar.month = this.rightCalendar.month.clone().subtract(1, 'month'))),
+                          this.linkedCalendars && (this.leftCalendar.month = this.rightCalendar.month.clone().subtract(1, 'month'))),
                     this.updateCalendars()
             },
             timeChanged: function (t) {
@@ -7918,9 +8309,9 @@ const URL_PATTERN_REGEX =
                         this.singleDatePicker
                             ? (this.endDate = this.startDate.clone())
                             : this.endDate &&
-                            this.endDate.format('YYYY-MM-DD') == h.format('YYYY-MM-DD') &&
-                            this.endDate.isBefore(h) &&
-                            this.setEndDate(h.clone())
+                              this.endDate.format('YYYY-MM-DD') == h.format('YYYY-MM-DD') &&
+                              this.endDate.isBefore(h) &&
+                              this.setEndDate(h.clone())
                 } else if (this.endDate) {
                     var l = this.endDate.clone()
                     l.hour(s), l.minute(n), l.second(r), this.setEndDate(l)
@@ -7938,7 +8329,7 @@ const URL_PATTERN_REGEX =
                 }
             },
             keydown: function (t) {
-                ; (9 !== t.keyCode && 13 !== t.keyCode) || this.hide(), 27 === t.keyCode && (t.preventDefault(), t.stopPropagation(), this.hide())
+                ;(9 !== t.keyCode && 13 !== t.keyCode) || this.hide(), 27 === t.keyCode && (t.preventDefault(), t.stopPropagation(), this.hide())
             },
             updateElement: function () {
                 if (this.element.is('input') && this.autoUpdateInput) {
@@ -9016,8 +9407,9 @@ async function formFieldsPhoneNumberInput() {
     $('.number-input-icon-wrapper').prepend(flagIcon)
 
     $.each(countries, function (index, country) {
-        const option = `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name
-            }</span></div><span class='country-code'>+${country.phone}</span></li>`
+        const option = `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${
+            country.name
+        }</span></div><span class='country-code'>+${country.phone}</span></li>`
         selectBox.find('ol').append(option)
         options = $('.option')
     })
@@ -9274,12 +9666,12 @@ async function formFieldsFileUploadInput() {
                 acceptedFiles: attrs.data_accepted_files,
             })
 
-            dropzone.on('addedfile', function (file) { })
+            dropzone.on('addedfile', function (file) {})
             dropzone.on('success', function (file) {
                 const borderRadius = $element.css('border-radius')
                 $element.find('.dz-image').css('border-radius', borderRadius || 0)
             })
-            dropzone.on('removedfile', function (file) { })
+            dropzone.on('removedfile', function (file) {})
 
             await $('.dz-message').each(function () {
                 $(this).html(
@@ -9498,7 +9890,7 @@ function addValidationMessageNodes(form) {
 function getParentFormFieldsWrapperDiv(element) {
     const parent = element.parentElement
     if (!parent) return null
-
+    console.log('parent', parent)
     if (parent.classList.contains('form-fields-wrapper')) return parent
     else return getParentFormFieldsWrapperDiv(parent)
 }
@@ -9537,9 +9929,9 @@ async function handleFormSubmit(form) {
     const submitButtonOriginalLabel = submitButton.value
     const submitButtonLoadingLabel = submitButton.getAttribute('data-wait')
 
-    const faForm = document.querySelector('[fa-form="true"]');
-    const formElementId = faForm.getAttribute('fa-form-id');
-    const formName = faForm.getAttribute('fa-form-name');
+    const faForm = document.querySelector('[fa-form="true"]')
+    const formElementId = faForm.getAttribute('fa-form-id')
+    const formName = faForm.getAttribute('fa-form-name')
 
     submitButton.value = submitButtonLoadingLabel
 
@@ -9677,6 +10069,8 @@ function validateFieldData(field, value, pattern, errorMessage) {
     const formFieldsWrapper = getParentFormFieldsWrapperDiv(field)
     const validationMessageNode = formFieldsWrapper?.querySelector('.form-fields-data-validation-message')
 
+    console.log(formFieldsWrapper, 'validationMessageNode', validationMessageNode)
+
     if (!pattern.test(value) && value.length > 0) {
         validationMessageNode.innerHTML = errorMessage
         return false
@@ -9795,7 +10189,7 @@ function reactToCurrentFormStateBasedOnConditionalLogic(element) {
  * @typedef {object} TRuleset
  *
  * @property {string} inputName
- * @property {"HAS_ANY_VALUE" | "HAS_NO_VALUE" | "IS_EQUAL" | "NOT_EQUAL" | "CONTAINS" | "IS_GREATER_THAN" | "IS_LESS_THAN"} compareLogic
+ * @property {'HAS_ANY_VALUE' | 'HAS_NO_VALUE' | 'IS_EQUAL' | 'NOT_EQUAL' | 'CONTAINS' | 'IS_GREATER_THAN' | 'IS_LESS_THAN'} compareLogic
  * @property {string} compareValue
  */
 
@@ -9827,9 +10221,297 @@ function resolveConditionalLogicRuleset(ruleset) {
             return false
     }
 }
+
 /**
  * ----
  * CONDITIONAL LOGIC - END
+ * ----
+ */
+
+/**
+ * ----
+ * MULTISTEP fORM AND FIELD VALIDATION - START
+ * ----
+ */
+
+// const validateCurrentPage = () => {
+//     const formElement = document.querySelector('[fa-webflow-form]')
+//     if (!formElement) return
+//
+//     const steps = formElement.querySelectorAll('[fa-form-step]')
+//     const pages = formElement.querySelectorAll('[fa-form-page]')
+//     const previousButton = formElement.querySelector('[fa-form-previous-button]')
+//     const nextButton = formElement.querySelector('[fa-form-next-button]')
+//
+//     let currentStepIndex = 0
+//
+//     function showPageByIndex(index) {
+//         if (index < 0 || index >= steps.length) return
+//
+//         pages.forEach((page, i) => {
+//             page.classList.toggle('hidden', i !== index)
+//         })
+//
+//         steps.forEach((step, i) => {
+//             const counter = step.querySelector('[fa-form-step-counter]')
+//             const successIcon = step.querySelector('[fa-form-step-success-icon]')
+//             const label = step.querySelector('[fa-form-step-label]')
+//
+//             if (i < index) {
+//                 counter?.classList.add('hidden')
+//                 successIcon?.classList.remove('hidden')
+//                 step.classList.remove('active-step')
+//                 counter?.classList.remove('active-counter')
+//                 label?.classList.add('active-label')
+//             } else if (i === index) {
+//                 counter?.classList.remove('hidden')
+//                 successIcon?.classList.add('hidden')
+//                 step.classList.add('active-step')
+//                 counter?.classList.add('active-counter')
+//                 label?.classList.add('active-label')
+//             } else {
+//                 counter?.classList.remove('hidden')
+//                 successIcon?.classList.add('hidden')
+//                 step.classList.remove('active-step')
+//                 counter?.classList.remove('active-counter')
+//                 label?.classList.remove('active-label')
+//             }
+//         })
+//
+//         currentStepIndex = index
+//     }
+//
+//     function validateCurrentPageFields() {
+//         const currentPage = pages[currentStepIndex]
+//         if (!currentPage) return false
+//
+//         // Validate only URL, Email, and Number fields inside current page
+//         const urlFields = currentPage.querySelectorAll('input[type="url"]')
+//         const emailFields = currentPage.querySelectorAll('input[type="email"]')
+//         const phoneNumberFields = currentPage.querySelectorAll('input[type="number"]')
+//
+//         for (let f of urlFields) {
+//             const valid = validateFieldData(f, f.value, URL_PATTERN_REGEX, 'Please enter a valid url')
+//             console.log('valid', valid)
+//             if (!valid) return false
+//         }
+//
+//         for (let f of emailFields) {
+//             const message = f.getAttribute('data-invalid-error-msg') || 'Please enter a valid email'
+//             const valid = validateFieldData(f, f.value, EMAIL_PATTERN_REGEX, message)
+//             if (!valid) return false
+//         }
+//
+//         for (let f of phoneNumberFields) {
+//             if (f.required && f.value.length < 6) {
+//                 const formFieldsWrapper = getParentFormFieldsWrapperDiv(f)
+//                 const validationMessageNode = formFieldsWrapper?.querySelector('.form-fields-data-validation-message')
+//                 if (validationMessageNode) {
+//                     validationMessageNode.innerText = 'Invalid phone number'
+//                 }
+//                 return false
+//             }
+//         }
+//
+//         return true
+//     }
+//
+//     function validateCurrentPageData(form) {
+//         const currentPage = pages[currentStepIndex]
+//         if (!currentPage) return false
+//
+//         const requiredFormFieldsInputFields = currentPage.querySelectorAll(`.form-fields-wrapper [required]`)
+//
+//         let allChecksPassed = validateCurrentPageFields()
+//
+//         for (let input of requiredFormFieldsInputFields) {
+//             const formFieldsWrapper = getParentFormFieldsWrapperDiv(input)
+//             const validationMessageNode = formFieldsWrapper?.querySelector('.form-fields-data-validation-message')
+//
+//             if (!input.value) {
+//                 allChecksPassed = false
+//                 validationMessageNode.innerText = 'This field is required'
+//             } else if (!allChecksPassed) {
+//                 validateAllFields()
+//             } else validationMessageNode.innerText = ''
+//         }
+//
+//         return allChecksPassed
+//     }
+//
+//     steps.forEach((step, index) => {
+//         step.addEventListener('click', () => {
+//             showPageByIndex(index)
+//         })
+//     })
+//
+//     if (nextButton) {
+//         nextButton.addEventListener('click', () => {
+//             const validated = validateCurrentPageData(formElement)
+//
+//             if (validated && currentStepIndex < steps.length - 1) {
+//                 showPageByIndex(currentStepIndex + 1)
+//             }
+//         })
+//     }
+//
+//     if (previousButton) {
+//         previousButton.addEventListener('click', () => {
+//             if (currentStepIndex > 0) {
+//                 showPageByIndex(currentStepIndex - 1)
+//             }
+//         })
+//     }
+//
+//     showPageByIndex(0)
+// }
+
+const validateCurrentPage = () => {
+    const formElement = document.querySelector('[fa-webflow-form]')
+    if (!formElement) return
+
+    const steps = formElement.querySelectorAll('[fa-form-step]')
+    const pages = formElement.querySelectorAll('[fa-form-page]')
+    const previousButton = formElement.querySelector('[fa-form-previous-button]')
+    const nextButton = formElement.querySelector('[fa-form-next-button]')
+    const submitButton = formElement.querySelector('[fa-form-submit-button]')
+
+    let currentStepIndex = 0
+
+    function updateButtonVisibility() {
+        if (previousButton) previousButton.style.display = currentStepIndex === 0 ? 'none' : ''
+        if (nextButton) nextButton.style.display = currentStepIndex === steps.length - 1 ? 'none' : ''
+        if (submitButton) submitButton.style.display = currentStepIndex !== steps.length - 1 ? 'none' : ''
+    }
+
+    function showPageByIndex(index) {
+        if (index < 0 || index >= steps.length) return
+
+        pages.forEach((page, i) => {
+            page.classList.toggle('hidden', i !== index)
+        })
+
+        steps.forEach((step, i) => {
+            const counter = step.querySelector('[fa-form-step-counter]')
+            const successIcon = step.querySelector('[fa-form-step-success-icon]')
+            const label = step.querySelector('[fa-form-step-label]')
+
+            if (i < index) {
+                counter?.classList.add('hidden')
+                successIcon?.classList.remove('hidden')
+                step.classList.remove('active-step')
+                counter?.classList.remove('active-counter')
+                label?.classList.add('active-label')
+            } else if (i === index) {
+                counter?.classList.remove('hidden')
+                successIcon?.classList.add('hidden')
+                step.classList.add('active-step')
+                counter?.classList.add('active-counter')
+                label?.classList.add('active-label')
+            } else {
+                counter?.classList.remove('hidden')
+                successIcon?.classList.add('hidden')
+                step.classList.remove('active-step')
+                counter?.classList.remove('active-counter')
+                label?.classList.remove('active-label')
+            }
+        })
+
+        currentStepIndex = index
+        updateButtonVisibility()
+    }
+
+    function validateCurrentPageFields() {
+        const currentPage = pages[currentStepIndex]
+        if (!currentPage) return false
+
+        const urlFields = currentPage.querySelectorAll('input[type="url"]')
+        const emailFields = currentPage.querySelectorAll('input[type="email"]')
+        const phoneNumberFields = currentPage.querySelectorAll('input[type="number"]')
+
+        for (let f of urlFields) {
+            const valid = validateFieldData(f, f.value, URL_PATTERN_REGEX, 'Please enter a valid url')
+            if (!valid) return false
+        }
+
+        for (let f of emailFields) {
+            const message = f.getAttribute('data-invalid-error-msg') || 'Please enter a valid email'
+            const valid = validateFieldData(f, f.value, EMAIL_PATTERN_REGEX, message)
+            if (!valid) return false
+        }
+
+        for (let f of phoneNumberFields) {
+            if (f.required && f.value.length < 6) {
+                const formFieldsWrapper = getParentFormFieldsWrapperDiv(f)
+                const validationMessageNode = formFieldsWrapper?.querySelector('.form-fields-data-validation-message')
+                if (validationMessageNode) {
+                    validationMessageNode.innerText = 'Invalid phone number'
+                }
+                return false
+            }
+        }
+
+        return true
+    }
+
+    function validateCurrentPageData(form) {
+        const currentPage = pages[currentStepIndex]
+        if (!currentPage) return false
+
+        const requiredFormFieldsInputFields = currentPage.querySelectorAll(`.form-fields-wrapper [required]`)
+        let allChecksPassed = validateCurrentPageFields()
+
+        for (let input of requiredFormFieldsInputFields) {
+            const formFieldsWrapper = getParentFormFieldsWrapperDiv(input)
+            const validationMessageNode = formFieldsWrapper?.querySelector('.form-fields-data-validation-message')
+
+            if (!input.value) {
+                allChecksPassed = false
+                validationMessageNode.innerText = 'This field is required'
+            } else if (!allChecksPassed) {
+                validateAllFields()
+            } else validationMessageNode.innerText = ''
+        }
+
+        return allChecksPassed
+    }
+
+    steps.forEach((step, index) => {
+        step.addEventListener('click', () => {
+            if (currentStepIndex < index) {
+                if (validateCurrentPageData(formElement)) {
+                    showPageByIndex(index)
+                }
+            } else {
+                showPageByIndex(index)
+            }
+        })
+    })
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            const validated = validateCurrentPageData(formElement)
+
+            if (validated && currentStepIndex < steps.length - 1) {
+                showPageByIndex(currentStepIndex + 1)
+            }
+        })
+    }
+
+    if (previousButton) {
+        previousButton.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                showPageByIndex(currentStepIndex - 1)
+            }
+        })
+    }
+
+    showPageByIndex(0)
+}
+
+/**
+ * ----
+ * MULTISTEP fORM AND FIELD VALIDATION - END
  * ----
  */
 
@@ -9865,10 +10547,10 @@ async function makeTheFormInteractive() {
     formFieldsFileUploadInput()
     formFieldsNetPromoterScoreInput()
     formFieldsLikertScaleInput()
-
     preventWebflowDefaultFormSubmission()
     addCustomFormSubmissionLogic()
     initializeConditionalLogic()
+    validateCurrentPage()
 }
 
 initializeFormFieldsPro()
