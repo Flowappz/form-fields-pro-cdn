@@ -9566,6 +9566,18 @@ async function handleFormSubmit(form) {
     })
 
     try {
+        const webflowFormSubmissionResponse = await fetch(
+            `https://webflow.com/api/v1/form/${siteId}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': '*/*',
+                },
+                body: payload.toString(),
+            }
+        )
+
         const formSubmissionResponse = await fetch(`${BASE_URL}/api/sites/handleFormSubmission`, {
             method: 'POST',
             headers: {
@@ -9577,7 +9589,7 @@ async function handleFormSubmit(form) {
                 formId: formElementId,
                 formName: formName,
                 formData: parsedFormData,
-                webflowPayload: payload.toString(),
+                webflowPayload: payload,
             }),
         })
 
@@ -9621,17 +9633,25 @@ function getFormMetaData(form) {
  * @param {HTMLFormElement} form
  */
 function getWebflowInputFieldsData(form) {
-    const webflowInputElements = form.querySelectorAll(`input.w-input`)
+    const webflowInputElements = form.querySelectorAll(`input.w-input`);
+    const data = {};
 
-    const data = {}
     for (let input of webflowInputElements) {
-        const name = input.getAttribute('data-name')
-        const value = input.value
+        const name = input.getAttribute("data-name");
+        const value = input.value;
 
-        data[`fields[${name}]`] = value
+        if (name) {
+            data[`fields[${name}]`] = value;
+        }
     }
 
-    return data
+    // ✅ Get cf-turnstile-response input (even though it's hidden)
+    const turnstileInput = form.querySelector(`input[name="cf-turnstile-response"]`);
+    if (turnstileInput) {
+        data["fields[cf-turnstile-response]"] = turnstileInput.value;
+    }
+
+    return data;
 }
 
 /**
