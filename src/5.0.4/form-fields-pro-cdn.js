@@ -9320,9 +9320,14 @@ const countries = [
     { name: 'Zambia', code: 'ZM', phone: 260 },
     { name: 'Zimbabwe', code: 'ZW', phone: 263 },
 ]
-
 async function formFieldsPhoneNumberInput() {
     const wrapperDiv = $('[data-form-field-pro="number-input-with-country-code"]')
+
+    // Check if wrapperDiv exists before accessing attributes
+    if (!wrapperDiv || wrapperDiv.length === 0) {
+        console.warn('Form Fields Pro: No wrapper div found for phone number input')
+        return
+    }
 
     const lightTheme = {
         lightThemeHoverTextColor: wrapperDiv.attr('data-light-theme-number-input-text-color'),
@@ -9340,8 +9345,6 @@ async function formFieldsPhoneNumberInput() {
     document.head.appendChild(script)
 
     const additionalStyle = `
-
-
 .number-input-dropdown ol::-webkit-scrollbar {
     width: 0.6rem;
 }
@@ -9378,51 +9381,80 @@ async function formFieldsPhoneNumberInput() {
     margin-left: .4rem;
 }
 
-  @media (prefers-color-scheme: dark){
-          .number-input-dropdown ol li:hover {
-                background-color: ${darkTheme.darkThemeHoverBackgroundColor || '#000000'};
-                color: ${darkTheme.darkThemeHoverTextColor || '#ffffff'};
-            }
-        }
-
+@media (prefers-color-scheme: dark){
+    .number-input-dropdown ol li:hover {
+        background-color: ${darkTheme.darkThemeHoverBackgroundColor || '#000000'};
+        color: ${darkTheme.darkThemeHoverTextColor || '#ffffff'};
+    }
+}
     `
 
     const style = document.createElement('style')
     style.innerHTML = additionalStyle
-
     document.getElementsByTagName('head')[0].appendChild(style)
 
-    const selectBox = $('.number-input-dropdown'),
-        downArrow = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
+    const selectBox = $('.number-input-dropdown')
+
+    // Check if selectBox exists
+    if (!selectBox || selectBox.length === 0) {
+        console.warn('Form Fields Pro: No select box found for phone number input')
+        return
+    }
+
+    const downArrow = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
 
     let searchBox = $('.number-input-search-field')
     let inputBox = $('.number-input-field')
     let selectedOption = $('.number-input-icon-wrapper')
+
+    // Check if required elements exist
+    if (!searchBox || searchBox.length === 0 ||
+        !inputBox || inputBox.length === 0 ||
+        !selectedOption || selectedOption.length === 0) {
+        console.warn('Form Fields Pro: Required elements not found for phone number input')
+        return
+    }
 
     let options = null
 
     const flagIcon = document.createElement('span')
     flagIcon.setAttribute('class', 'iconify')
     flagIcon.setAttribute('data-icon', 'flag:gb-4x3')
-    $('.number-input-icon-wrapper').prepend(flagIcon)
+
+    // Check if selectedOption element exists before prepending
+    if (selectedOption.length > 0) {
+        selectedOption.prepend(flagIcon)
+    }
+
+    // Check if countries array exists
+    if (typeof countries === 'undefined' || !Array.isArray(countries)) {
+        console.warn('Form Fields Pro: Countries data not available')
+        return
+    }
 
     $.each(countries, function (index, country) {
-        const option = `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name
-            }</span></div><span class='country-code'>+${country.phone}</span></li>`
-        selectBox.find('ol').append(option)
+        const option = `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name}</span></div><span class='country-code'>+${country.phone}</span></li>`
+        const olElement = selectBox.find('ol')
+        if (olElement.length > 0) {
+            olElement.append(option)
+        }
         options = $('.option')
     })
 
-    inputBox.val(parseInt('+' + countries[0].phone + ' '))
+    if (countries.length > 0) {
+        inputBox.val('+' + countries[0].phone + ' ')
+    }
 
     function selectOption() {
         const icon = $(this).find('.iconify').clone(),
             phoneCode = $(this).find('.country-code').clone().text()
 
         selectedOption.html('').append(icon, downArrow)
-        inputBox.val(parseInt(phoneCode + ' ')).focus()
+        inputBox.val(phoneCode + ' ').focus()
         selectBox.hide()
-        searchBox.val('')
+        if (searchBox.length > 0) {
+            searchBox.val('')
+        }
         selectBox.find('.hide').removeClass('hide')
     }
 
@@ -9430,8 +9462,11 @@ async function formFieldsPhoneNumberInput() {
         const searchQuery = searchBox.val().toLowerCase()
 
         options.each(function () {
-            const isMatched = $(this).find('.country-name').text().toLowerCase().includes(searchQuery)
-            $(this).toggleClass('hide', !isMatched)
+            const countryNameElement = $(this).find('.country-name')
+            if (countryNameElement.length > 0) {
+                const isMatched = countryNameElement.text().toLowerCase().includes(searchQuery)
+                $(this).toggleClass('hide', !isMatched)
+            }
         })
     }
 
@@ -9446,7 +9481,8 @@ async function formFieldsPhoneNumberInput() {
     })
 
     $(document).on('click', function (e) {
-        if (!(e.target.getAttribute('class') === searchBox.attr('class'))) {
+        // Check if e.target exists before accessing getAttribute
+        if (e.target && !(e.target.getAttribute && e.target.getAttribute('class') === searchBox.attr('class'))) {
             if ($(e.target).closest(selectedOption).length === 0) {
                 selectBox.hide()
                 selectBox.attr('input-number-dropdown', 'hide')
@@ -9454,8 +9490,14 @@ async function formFieldsPhoneNumberInput() {
         }
     })
 
-    options.on('click', selectOption)
-    searchBox.on('input', searchCountry)
+    // Only attach event listeners if options exist
+    if (options && options.length > 0) {
+        options.on('click', selectOption)
+    }
+
+    if (searchBox.length > 0) {
+        searchBox.on('input', searchCountry)
+    }
 
     await addThirdPartyScriptForPhoneNumberInput()
 }
