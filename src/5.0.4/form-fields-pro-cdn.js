@@ -1,5 +1,5 @@
 /**
- * FORM FIELDS PRO CDN SCRIPT - v5.0.3
+ * FORM FIELDS PRO CDN SCRIPT - v5.0.4
  */
 
 const EMAIL_PATTERN_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -9321,28 +9321,28 @@ const countries = [
     { name: 'Zimbabwe', code: 'ZW', phone: 263 },
 ]
 async function formFieldsPhoneNumberInput() {
-    const wrapperDiv = $('[data-form-field-pro="number-input-with-country-code"]')
+    const wrapperDiv = $('[data-form-field-pro="number-input-with-country-code"]');
 
     // Check if wrapperDiv exists before accessing attributes
     if (!wrapperDiv || wrapperDiv.length === 0) {
-        console.warn('Form Fields Pro: No wrapper div found for phone number input')
-        return
+        console.warn('Form Fields Pro: No wrapper div found for phone number input');
+        return;
     }
 
     const lightTheme = {
         lightThemeHoverTextColor: wrapperDiv.attr('data-light-theme-number-input-text-color'),
         lightThemeHoverBackgroundColor: wrapperDiv.attr('data-light-theme-number-input-background-color'),
-    }
+    };
 
     const darkTheme = {
         darkThemeHoverTextColor: wrapperDiv.attr('data-dark-theme-number-input-text-color'),
         darkThemeHoverBackgroundColor: wrapperDiv.attr('data-dark-theme-number-input-background-color'),
-    }
+    };
 
-    const script = document.createElement('script')
-    script.src = 'https://code.iconify.design/3/3.1.0/iconify.min.js'
+    const script = document.createElement('script');
+    script.src = 'https://code.iconify.design/3/3.1.0/iconify.min.js';
 
-    document.head.appendChild(script)
+    document.head.appendChild(script);
 
     const additionalStyle = `
 .number-input-dropdown ol::-webkit-scrollbar {
@@ -9387,171 +9387,169 @@ async function formFieldsPhoneNumberInput() {
         color: ${darkTheme.darkThemeHoverTextColor || '#ffffff'};
     }
 }
-    `
+    `;
 
-    const style = document.createElement('style')
-    style.innerHTML = additionalStyle
-    document.getElementsByTagName('head')[0].appendChild(style)
+    const style = document.createElement('style');
+    style.innerHTML = additionalStyle;
+    document.getElementsByTagName('head')[0].appendChild(style);
 
-    const selectBox = $('.number-input-dropdown')
+    const selectBox = $('.number-input-dropdown');
 
     // Check if selectBox exists
     if (!selectBox || selectBox.length === 0) {
-        console.warn('Form Fields Pro: No select box found for phone number input')
-        return
+        console.warn('Form Fields Pro: No select box found for phone number input');
+        return;
     }
 
-    const downArrow = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
+    const downArrow = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
 
-    let searchBox = $('.number-input-search-field')
-    let inputBox = $('.number-input-field')
-    let selectedOption = $('.number-input-icon-wrapper')
+    let searchBox = $('.number-input-search-field');
+    let inputBox = $('.number-input-field');
+    let selectedOption = $('.number-input-icon-wrapper');
 
     // Check if required elements exist
     if (!searchBox || searchBox.length === 0 ||
         !inputBox || inputBox.length === 0 ||
         !selectedOption || selectedOption.length === 0) {
-        console.warn('Form Fields Pro: Required elements not found for phone number input')
-        return
+        console.warn('Form Fields Pro: Required elements not found for phone number input');
+        return;
     }
 
-    let options = null
+    let options = null;
 
-    const flagIcon = document.createElement('span')
-    flagIcon.setAttribute('class', 'iconify')
-    flagIcon.setAttribute('data-icon', 'flag:gb-4x3')
+    const flagIcon = document.createElement('span');
+    flagIcon.setAttribute('class', 'iconify');
+    flagIcon.setAttribute('data-icon', 'flag:gb-4x3');
 
     // Check if selectedOption element exists before prepending
     if (selectedOption.length > 0) {
-        selectedOption.prepend(flagIcon)
+        selectedOption.prepend(flagIcon);
     }
 
     // Check if countries array exists
     if (typeof countries === 'undefined' || !Array.isArray(countries)) {
-        console.warn('Form Fields Pro: Countries data not available')
-        return
+        console.warn('Form Fields Pro: Countries data not available');
+        return;
     }
 
     $.each(countries, function (index, country) {
-        const option = `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name}</span></div><span class='country-code'>+${country.phone}</span></li>`
-        const olElement = selectBox.find('ol')
+        const option = `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name}</span></div><span class='country-code'>+${country.phone}</span></li>`;
+        const olElement = selectBox.find('ol');
         if (olElement.length > 0) {
-            olElement.append(option)
+            olElement.append(option);
         }
-        options = $('.option')
-    })
+        options = $('.option');
+    });
 
     if (countries.length > 0) {
-        inputBox.val('+' + countries[0].phone + ' ')
+        inputBox.val('+' + countries[0].phone + ' ');
     }
 
     function selectOption() {
-        const icon = $(this).find('.iconify').clone(),
-            phoneCode = $(this).find('.country-code').clone().text()
+        const icon = $(this).find('.iconify').clone();
+        const phoneCode = $(this).find('.country-code').clone().text();
 
-        selectedOption.html('').append(icon, downArrow)
-        inputBox.val(phoneCode + ' ').focus()
-        selectBox.hide()
+        selectedOption.html('').append(icon, downArrow);
+        inputBox.val(phoneCode + ' ').focus();
+        selectBox.hide();
         if (searchBox.length > 0) {
-            searchBox.val('')
+            searchBox.val('');
         }
-        selectBox.find('.hide').removeClass('hide')
+        selectBox.find('.hide').removeClass('hide');
     }
 
     function searchCountry() {
-        const searchQuery = searchBox.val().toLowerCase()
+        const searchQuery = searchBox.val().toLowerCase();
 
         options.each(function () {
-            const countryNameElement = $(this).find('.country-name')
+            const countryNameElement = $(this).find('.country-name');
             if (countryNameElement.length > 0) {
-                const isMatched = countryNameElement.text().toLowerCase().includes(searchQuery)
-                $(this).toggleClass('hide', !isMatched)
+                const isMatched = countryNameElement.text().toLowerCase().includes(searchQuery);
+                $(this).toggleClass('hide', !isMatched);
             }
-        })
+        });
     }
 
     selectedOption.on('click', function (e) {
-        inputBox = $(this).siblings().eq(0)
-        selectedOption = $(this)
-        searchBox = $(this).siblings().eq(1).find('.number-input-search-field')
+        inputBox = $(this).siblings().eq(0);
+        selectedOption = $(this);
+        searchBox = $(this).siblings().eq(1).find('.number-input-search-field');
 
-        $('.number-input-dropdown').not($(this).siblings().eq(1)).hide()
+        $('.number-input-dropdown').not($(this).siblings().eq(1)).hide();
 
-        $(this).siblings().eq(1).toggle()
-    })
+        $(this).siblings().eq(1).toggle();
+    });
 
     $(document).on('click', function (e) {
         // Check if e.target exists before accessing getAttribute
         if (e.target && !(e.target.getAttribute && e.target.getAttribute('class') === searchBox.attr('class'))) {
             if ($(e.target).closest(selectedOption).length === 0) {
-                selectBox.hide()
-                selectBox.attr('input-number-dropdown', 'hide')
+                selectBox.hide();
+                selectBox.attr('input-number-dropdown', 'hide');
             }
         }
-    })
+    });
 
     // Only attach event listeners if options exist
     if (options && options.length > 0) {
-        options.on('click', selectOption)
+        options.on('click', selectOption);
     }
 
     if (searchBox.length > 0) {
-        searchBox.on('input', searchCountry)
+        searchBox.on('input', searchCountry);
     }
 
-    await addThirdPartyScriptForPhoneNumberInput()
+    await addThirdPartyScriptForPhoneNumberInput();
 }
 
 async function addThirdPartyScriptForPhoneNumberInput() {
     const addPhoneNumberInputScript = async () => {
-        const res = await fetch(`https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js`)
-
+        const res = await fetch(`https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js`);
         if (res.ok) {
-            const scriptString = await res.text()
-            const colorPickerScript = document.createElement('script')
-            colorPickerScript.innerHTML = scriptString
-
-            document.getElementsByTagName('head')[0].appendChild(colorPickerScript)
+            const scriptString = await res.text();
+            const colorPickerScript = document.createElement('script');
+            colorPickerScript.innerHTML = scriptString;
+            document.getElementsByTagName('head')[0].appendChild(colorPickerScript);
         }
-    }
+    };
 
-    await addPhoneNumberInputScript()
+    await addPhoneNumberInputScript();
 
     const addPhoneNumberInputCss = async () => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = 'https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css'
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    };
 
-        document.getElementsByTagName('head')[0].appendChild(link)
+    await addPhoneNumberInputCss();
+
+    // Check if the phone input element exists before trying to use it
+    const input = document.querySelector('#phone');
+    if (input) {
+        let iti = window.intlTelInput(input, {
+            countrySearch: false,
+            utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js',
+        });
+
+        $.get('https://ipinfo.io', function (response) {
+            let countryCode = response.country;
+            iti.setCountry(countryCode);
+        }, 'jsonp');
+
+        input.addEventListener('change', formatPhoneNumber);
+        input.addEventListener('keyup', formatPhoneNumber);
+
+        function formatPhoneNumber() {
+            input.value = iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL);
+        }
+
+        $('.itl').css('display', 'block');
+    } else {
+        console.warn('Form Fields Pro: Phone input element with id "phone" not found');
     }
-
-    await addPhoneNumberInputCss()
-
-    const input = document.querySelector('#phone')
-
-    let iti = window.intlTelInput(input, {
-        countrySearch: false,
-        utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js',
-    })
-
-    $.get(
-        'https://ipinfo.io',
-        function (response) {
-            let countryCode = response.country
-            iti.setCountry(countryCode)
-        },
-        'jsonp',
-    )
-
-    input.addEventListener('change', formatPhoneNumber)
-    input.addEventListener('keyup', formatPhoneNumber)
-
-    function formatPhoneNumber() {
-        input.value = iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL)
-    }
-
-    $('.itl').css('display', 'block')
 }
+
 
 /**
  * INITIALIZE COLOR PICKER INPUTS
@@ -10560,14 +10558,21 @@ const validateCurrentPage = () => {
  */
 
 async function initializeFormFieldsPro() {
-    const siteId = document.querySelector('html').getAttribute('data-wf-site')
-    const url = window.location.href
-    const faForm = document.querySelector('[fa-form="true"]')
+    const siteIdElement = document.querySelector('html');
+    // Check if siteIdElement exists before accessing getAttribute
+    if (!siteIdElement) {
+        console.warn('Form Fields Pro: Could not find html element');
+        return;
+    }
+
+    const siteId = siteIdElement.getAttribute('data-wf-site');
+    const url = window.location.href;
+    const faForm = document.querySelector('[fa-form="true"]');
 
     // Only proceed if faForm exists
     if (faForm) {
         if (isUsingWebflowDomain(url) || (await hasValidLicenseKey(siteId))) {
-            makeTheFormInteractive()
+            makeTheFormInteractive();
         }
     }
 }
