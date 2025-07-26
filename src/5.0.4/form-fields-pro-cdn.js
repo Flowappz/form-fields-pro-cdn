@@ -9929,6 +9929,9 @@ async function handleFormSubmit(form) {
     const submitButtonLoadingLabel = submitButton.getAttribute('data-wait')
 
     const faForm = document.querySelector('[fa-form="true"]')
+    if (!faForm) {
+        return
+    }
     const formElementId = faForm.getAttribute('fa-form-id')
     const formName = faForm.getAttribute('fa-form-name')
 
