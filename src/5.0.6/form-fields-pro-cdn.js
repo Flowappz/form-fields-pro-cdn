@@ -9929,7 +9929,6 @@ function addValidationMessageNodes(form) {
 function getParentFormFieldsWrapperDiv(element) {
     const parent = element.parentElement
     if (!parent) return null
-    console.log('parent', parent)
     if (parent.hasAttribute('form-fields-wrapper')) return parent;
     else return getParentFormFieldsWrapperDiv(parent)
 }
@@ -10182,8 +10181,6 @@ function validateFieldData(field, value, pattern, errorMessage) {
     const formFieldsWrapper = getParentFormFieldsWrapperDiv(field)
     const validationMessageNode = formFieldsWrapper?.querySelector('.form-fields-data-validation-message')
 
-    console.log(formFieldsWrapper, 'validationMessageNode', validationMessageNode)
-
     if (!pattern.test(value) && value.length > 0) {
         validationMessageNode.innerHTML = errorMessage
         return false
@@ -10405,7 +10402,6 @@ function resolveConditionalLogicRuleset(ruleset) {
 //
 //         for (let f of urlFields) {
 //             const valid = validateFieldData(f, f.value, URL_PATTERN_REGEX, 'Please enter a valid url')
-//             console.log('valid', valid)
 //             if (!valid) return false
 //         }
 //
