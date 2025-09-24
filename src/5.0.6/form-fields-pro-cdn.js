@@ -10050,7 +10050,7 @@ async function handleFormSubmit(form) {
                 if (backendSuccess) {
                     // Send notification
                     try {
-                        await fetch(`https://form-fields-pro-email-notifier-staging.up.railway.app/api/send-email`, {
+                        await fetch(`https://email-notifier-prod.up.railway.app/api/send-email`, {
                             method: 'POST',
                             headers: {
                                 Accept: 'application/json',
