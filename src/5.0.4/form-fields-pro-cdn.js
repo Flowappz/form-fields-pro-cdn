@@ -8714,7 +8714,7 @@ const formFieldsUserIp = async () => {
     }
 
     const getUserIp = async () => {
-        const BASE_URL = 'https://flowapps-data-client-staging.up.railway.app'
+        const BASE_URL = 'https://flowapps-data-client-production.up.railway.app'
         const res = await fetch(`${BASE_URL}/api/user-ip`)
 
         if (res.ok) {
@@ -9963,7 +9963,7 @@ function validateData(form) {
  * @param {HTMLFormElement} form
  */
 async function handleFormSubmit(form) {
-    const BASE_URL = 'https://flowapps-data-client-staging.up.railway.app'
+    const BASE_URL = 'https://flowapps-data-client-production.up.railway.app'
     const submitButton = document.querySelector(`input[type=submit]`)
     const submitButtonOriginalLabel = submitButton.value
     const submitButtonLoadingLabel = submitButton.getAttribute('data-wait')
@@ -10582,7 +10582,7 @@ function isUsingWebflowDomain(url) {
 }
 
 async function hasValidLicenseKey(siteId) {
-    const res = await fetch(`https://cache-service-staging.up.railway.app/api/license?siteId=${siteId}&appName=form-fields-pro`)
+    const res = await fetch(`https://cache-service-production.up.railway.app/api/license?siteId=${siteId}&appName=form-fields-pro`)
     if (res.ok) {
         data = await res.json()
 
