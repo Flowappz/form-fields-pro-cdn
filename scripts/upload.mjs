@@ -41,7 +41,7 @@ function authHeaders() {
   return headers;
 }
 
-// ─── Args: <env> [--nr [patch|minor|major]] [--version x.y.z] ────────────────
+// ─── Args: <env> [--nr [patch|minor|major]] [--version x.y.z] [--register] ───
 // Workflow (recommended):
 //   1. Create/edit src/5.1.0/form-fields-pro-cdn.js
 //   2. pnpm release:staging -- --version 5.1.0
@@ -49,15 +49,18 @@ function authHeaders() {
 // Alternatives:
 //   pnpm release:staging -- --nr patch|minor|major   # bump from DB version
 //   pnpm release:staging                             # re-deploy current DB version
+//   pnpm release:staging -- --register               # force re-register all sites
 const args = process.argv.slice(2);
 const env = args[0];
 
 if (!["dev", "staging", "production", "standalone"].includes(env)) {
   console.error(
-    "Usage: node upload.mjs <dev|staging|production|standalone> [--version x.y.z | --nr [patch|minor|major]]",
+    "Usage: node upload.mjs <dev|staging|production|standalone> [--version x.y.z | --nr [patch|minor|major]] [--register]",
   );
   process.exit(1);
 }
+
+const forceRegister = args.includes("--register");
 
 const versionFlagIndex = args.indexOf("--version");
 const explicitVersion =
@@ -143,6 +146,7 @@ if (!release?.version) {
 }
 const currentVersion = release.version;
 const currentHostedLocation = release.hostedLocation ?? null;
+const currentIntegrityHash = release.integrityHash ?? null;
 
 let version = currentVersion;
 let isNewVersion = false;
@@ -237,20 +241,27 @@ if (!releaseRes.ok) {
 console.log(`✓ Release metadata saved: v${version}`);
 
 // ─── Re-register on all sites ────────────────────────────────────────────────
-// Hotfix re-deploy (same version AND same URL): Cache-Control: no-cache lets
-// sites pull fresh bytes without touching Webflow registrations. But if the URL
-// itself moved (e.g. the DB row still pointed at another env's path), sites must
-// be re-registered even though the version number did not change.
+// Registered scripts carry an SRI integrity hash. Any change to the file bytes
+// changes that hash, so a site still holding the previous hash will have the
+// script blocked by the browser. Re-register whenever the version, the URL, or
+// the integrity hash changes — not just on a version bump.
 const urlChanged =
   currentHostedLocation !== null && currentHostedLocation !== hostedLocation;
+const hashChanged =
+  currentIntegrityHash !== null && currentIntegrityHash !== hash;
 
 if (urlChanged && !isNewVersion) {
   console.log(
     `\nHosted URL changed for v${version}:\n  old: ${currentHostedLocation}\n  new: ${hostedLocation}`,
   );
 }
+if (hashChanged && !isNewVersion) {
+  console.log(
+    `\nScript contents changed for v${version} — SRI hash updated:\n  old: ${currentIntegrityHash}\n  new: ${hash}`,
+  );
+}
 
-if (isNewVersion || urlChanged) {
+if (isNewVersion || urlChanged || hashChanged || forceRegister) {
   console.log(`\nRe-registering script on all sites...`);
   const registerRes = await fetch(
     `${BACKEND_URL}/api/cdn-release/register-all`,
@@ -278,8 +289,9 @@ if (isNewVersion || urlChanged) {
   }
 } else {
   console.log(
-    `\nSkipping site re-registration (hotfix re-deploy — same version, sites pull fresh code automatically).`,
+    `\nSkipping site re-registration (same version, URL and integrity hash — sites already point at this exact file).`,
   );
+  console.log(`Use --register to force re-registration.`);
 }
 
 console.log(`\nDone. v${version} deployed and injected.`);
