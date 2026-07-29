@@ -28,13 +28,43 @@ function getLatestLocalVersion() {
   return versions.at(-1) ?? null;
 }
 
-// ─── Args: <env> [--nr [patch|minor|major]] ──────────────────────────────────
+function isSemver(v) {
+  return /^\d+\.\d+\.\d+$/.test(v);
+}
+
+function authHeaders() {
+  const headers = { "Content-Type": "application/json" };
+  const secret = process.env.CDN_RELEASE_SECRET;
+  if (secret) {
+    headers.Authorization = `Bearer ${secret}`;
+  }
+  return headers;
+}
+
+// ─── Args: <env> [--nr [patch|minor|major]] [--version x.y.z] ────────────────
+// Workflow (recommended):
+//   1. Create/edit src/5.1.0/form-fields-pro-cdn.js
+//   2. pnpm release:staging -- --version 5.1.0
+//
+// Alternatives:
+//   pnpm release:staging -- --nr patch|minor|major   # bump from DB version
+//   pnpm release:staging                             # re-deploy current DB version
 const args = process.argv.slice(2);
 const env = args[0];
 
 if (!["dev", "staging", "production", "standalone"].includes(env)) {
   console.error(
-    "Usage: node upload.mjs <dev|staging|production|standalone> [--nr [patch|minor|major]]",
+    "Usage: node upload.mjs <dev|staging|production|standalone> [--version x.y.z | --nr [patch|minor|major]]",
+  );
+  process.exit(1);
+}
+
+const versionFlagIndex = args.indexOf("--version");
+const explicitVersion =
+  versionFlagIndex !== -1 ? args[versionFlagIndex + 1] : null;
+if (versionFlagIndex !== -1 && !isSemver(explicitVersion || "")) {
+  console.error(
+    `Invalid --version "${explicitVersion ?? ""}". Use semver like 5.1.0`,
   );
   process.exit(1);
 }
@@ -43,6 +73,11 @@ const nrIndex = args.indexOf("--nr");
 const bump = nrIndex !== -1 ? (args[nrIndex + 1] ?? "patch") : null;
 if (bump && !["patch", "minor", "major"].includes(bump)) {
   console.error(`Invalid bump type "${bump}". Use patch, minor, or major.`);
+  process.exit(1);
+}
+
+if (explicitVersion && bump) {
+  console.error("Use either --version or --nr, not both.");
   process.exit(1);
 }
 
@@ -75,23 +110,32 @@ if (
   process.exit(1);
 }
 
+if (!process.env.CDN_RELEASE_SECRET) {
+  console.warn(
+    `⚠ CDN_RELEASE_SECRET missing in ${envFile} — POST /api/cdn-release may fail if backend requires it.`,
+  );
+}
+
 // ─── Resolve version from DB ──────────────────────────────────────────────────
 console.log(`Fetching current version from ${BACKEND_URL}...`);
 const latestRes = await fetch(`${BACKEND_URL}/api/cdn-release/latest`);
 if (!latestRes.ok) {
   console.error("✗ Failed to fetch latest release:", await latestRes.text());
+  console.error(
+    "\nHint: staging/production backend must have /api/cdn-release/* deployed (feature/cdn-release-pipeline).",
+  );
   process.exit(1);
 }
 let { release } = await latestRes.json();
 if (!release?.version) {
   const localLatest = getLatestLocalVersion();
-  if (!bump && !localLatest) {
+  if (!explicitVersion && !bump && !localLatest) {
     console.error(
-      "✗ No release found in DB and no local version folders. Use --nr to create the first release.",
+      "✗ No release found in DB and no local version folders. Use --version or --nr to create the first release.",
     );
     process.exit(1);
   }
-  // First release: seed from latest local folder (e.g. 5.0.8), then optionally bump.
+  // First release: seed from latest local folder (e.g. 5.0.9), then optionally bump.
   release = { version: localLatest ?? "0.0.0" };
   console.log(
     `No DB release yet — seeding from local version folder: ${release.version}`,
@@ -100,7 +144,17 @@ if (!release?.version) {
 const currentVersion = release.version;
 
 let version = currentVersion;
-if (bump) {
+let isNewVersion = false;
+
+if (explicitVersion) {
+  version = explicitVersion;
+  isNewVersion = version !== currentVersion;
+  console.log(
+    isNewVersion
+      ? `Deploying explicit version: ${currentVersion} → ${version}`
+      : `Re-deploying explicit version: ${version}`,
+  );
+} else if (bump) {
   const [maj, min, pat] = currentVersion
     .replace(/-.*$/, "")
     .split(".")
@@ -108,6 +162,7 @@ if (bump) {
   if (bump === "major") version = `${maj + 1}.0.0`;
   else if (bump === "minor") version = `${maj}.${min + 1}.0`;
   else version = `${maj}.${min}.${pat + 1}`;
+  isNewVersion = true;
   console.log(`Bumping version: ${currentVersion} → ${version}`);
 } else {
   console.log(`Re-deploying current version: ${version}`);
@@ -119,6 +174,12 @@ const filePath = resolve(versionDir, SCRIPT_FILENAME);
 const previousPath = resolve(ROOT, "src", currentVersion, SCRIPT_FILENAME);
 
 if (!existsSync(filePath)) {
+  if (explicitVersion) {
+    console.error(
+      `✗ Missing script for --version ${version}. Expected:\n  ${filePath}`,
+    );
+    process.exit(1);
+  }
   if (!existsSync(previousPath)) {
     console.error(
       `✗ Missing script file. Expected either:\n  - ${filePath}\n  - ${previousPath}`,
@@ -165,7 +226,7 @@ const hostedLocation = `${R2_PUBLIC_URL}/${key}`;
 console.log(`\nSaving release metadata to DB...`);
 const releaseRes = await fetch(`${BACKEND_URL}/api/cdn-release`, {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
+  headers: authHeaders(),
   body: JSON.stringify({ version, hostedLocation, integrityHash: hash }),
 });
 if (!releaseRes.ok) {
@@ -174,17 +235,16 @@ if (!releaseRes.ok) {
 }
 console.log(`✓ Release metadata saved: v${version}`);
 
-// ─── Re-register on all sites (only on version bump) ────────────────────────
-// On a hotfix re-deploy (no --nr), the script URL is unchanged. Sites pull the
-// fresh code via Cache-Control: no-cache on the R2 object — no need to touch
-// Webflow registrations.
-if (bump) {
+// ─── Re-register on all sites (only on new version) ─────────────────────────
+// Hotfix re-deploy (same version): URL unchanged; Cache-Control: no-cache
+// lets sites pull fresh bytes without touching Webflow registrations.
+if (isNewVersion) {
   console.log(`\nRe-registering script on all sites...`);
   const registerRes = await fetch(
     `${BACKEND_URL}/api/cdn-release/register-all`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(),
     },
   );
   if (!registerRes.ok) {
@@ -211,3 +271,6 @@ if (bump) {
 }
 
 console.log(`\nDone. v${version} deployed and injected.`);
+console.log(
+  `Public URL: ${hostedLocation}\nIntegrity: ${hash}`,
+);

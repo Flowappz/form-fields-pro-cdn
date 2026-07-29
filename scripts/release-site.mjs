@@ -23,10 +23,15 @@ if (!siteId) {
   process.exit(1);
 }
 
+const headers = { "Content-Type": "application/json" };
+if (process.env.CDN_RELEASE_SECRET) {
+  headers.Authorization = `Bearer ${process.env.CDN_RELEASE_SECRET}`;
+}
+
 console.log(`Injecting latest CDN into site ${siteId} via ${BACKEND_URL}...`);
 const res = await fetch(`${BACKEND_URL}/api/cdn-release/inject/${siteId}`, {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
+  headers,
 });
 
 if (!res.ok) {
