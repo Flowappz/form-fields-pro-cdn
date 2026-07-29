@@ -142,6 +142,7 @@ if (!release?.version) {
   );
 }
 const currentVersion = release.version;
+const currentHostedLocation = release.hostedLocation ?? null;
 
 let version = currentVersion;
 let isNewVersion = false;
@@ -235,10 +236,21 @@ if (!releaseRes.ok) {
 }
 console.log(`✓ Release metadata saved: v${version}`);
 
-// ─── Re-register on all sites (only on new version) ─────────────────────────
-// Hotfix re-deploy (same version): URL unchanged; Cache-Control: no-cache
-// lets sites pull fresh bytes without touching Webflow registrations.
-if (isNewVersion) {
+// ─── Re-register on all sites ────────────────────────────────────────────────
+// Hotfix re-deploy (same version AND same URL): Cache-Control: no-cache lets
+// sites pull fresh bytes without touching Webflow registrations. But if the URL
+// itself moved (e.g. the DB row still pointed at another env's path), sites must
+// be re-registered even though the version number did not change.
+const urlChanged =
+  currentHostedLocation !== null && currentHostedLocation !== hostedLocation;
+
+if (urlChanged && !isNewVersion) {
+  console.log(
+    `\nHosted URL changed for v${version}:\n  old: ${currentHostedLocation}\n  new: ${hostedLocation}`,
+  );
+}
+
+if (isNewVersion || urlChanged) {
   console.log(`\nRe-registering script on all sites...`);
   const registerRes = await fetch(
     `${BACKEND_URL}/api/cdn-release/register-all`,
