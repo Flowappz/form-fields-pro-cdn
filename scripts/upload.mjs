@@ -6,10 +6,12 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  writeFileSync,
 } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { minify } from "terser";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -43,13 +45,19 @@ function authHeaders() {
 
 // ─── Args: <env> [--nr [patch|minor|major]] [--version x.y.z] [--register] ───
 // Workflow (recommended):
-//   1. Create/edit src/5.1.0/form-fields-pro-cdn.js
-//   2. pnpm release:staging -- --version 5.1.0
+//   1. Create/edit src/<version>/form-fields-pro-cdn.js (readable source)
+//   2. pnpm release:staging -- --version x.y.z
+//      → terser minify → upload form-fields-pro-cdn.<contentHash>.js
+//      → Cache-Control: public, max-age=31536000, immutable
+//      → SRI hash is over minified bytes; re-register sites if URL/hash changes
 //
 // Alternatives:
 //   pnpm release:staging -- --nr patch|minor|major   # bump from DB version
 //   pnpm release:staging                             # re-deploy current DB version
 //   pnpm release:staging -- --register               # force re-register all sites
+//
+// Note: same-version re-deploy with changed source is safe — content hash changes
+// the object key, so immutable cache never serves stale bytes under a new SRI.
 const args = process.argv.slice(2);
 const env = args[0];
 
@@ -200,10 +208,39 @@ if (!existsSync(filePath)) {
 
 console.log(`\nUsing local file: ${filePath}`);
 
-// ─── Upload to R2 ─────────────────────────────────────────────────────────────
-const key = `${APP_SLUG}/${NODE_ENV}/${version}/${SCRIPT_FILENAME}`;
-const body = readFileSync(filePath);
-const hash = "sha384-" + createHash("sha384").update(body).digest("base64");
+// ─── Minify before upload ─────────────────────────────────────────────────────
+// Source stays readable in src/; R2 + SRI hash use the minified bytes.
+console.log(`\nMinifying with terser...`);
+const source = readFileSync(filePath, "utf8");
+const minifyResult = await minify(source, {
+  compress: true,
+  mangle: true,
+  format: {
+    comments: false,
+  },
+});
+if (!minifyResult.code) {
+  console.error("✗ Terser produced empty output");
+  process.exit(1);
+}
+const body = Buffer.from(minifyResult.code, "utf8");
+const contentHash = createHash("sha256").update(body).digest("hex").slice(0, 12);
+const integrityHash =
+  "sha384-" + createHash("sha384").update(body).digest("base64");
+
+const distDir = resolve(ROOT, "dist", version);
+mkdirSync(distDir, { recursive: true });
+const distPath = resolve(distDir, SCRIPT_FILENAME);
+writeFileSync(distPath, body);
+console.log(
+  `✓ Minified: ${source.length.toLocaleString()} → ${body.length.toLocaleString()} bytes`,
+);
+console.log(`  Artifact: ${distPath}`);
+
+// Content-hash in the object key so immutable caching is safe even if the same
+// semver is re-deployed with different bytes (URL changes → no stale SRI).
+const hashedFilename = `form-fields-pro-cdn.${contentHash}.js`;
+const key = `${APP_SLUG}/${NODE_ENV}/${version}/${hashedFilename}`;
 
 const client = new S3Client({
   region: "auto",
@@ -221,7 +258,8 @@ await client.send(
     Key: key,
     Body: body,
     ContentType: "application/javascript",
-    CacheControl: "no-cache, no-store",
+    // Versioned + content-hashed URL → long-lived immutable cache is safe.
+    CacheControl: "public, max-age=31536000, immutable",
   }),
 );
 console.log(`✓ Uploaded: ${R2_PUBLIC_URL}/${key}`);
@@ -232,7 +270,11 @@ console.log(`\nSaving release metadata to DB...`);
 const releaseRes = await fetch(`${BACKEND_URL}/api/cdn-release`, {
   method: "POST",
   headers: authHeaders(),
-  body: JSON.stringify({ version, hostedLocation, integrityHash: hash }),
+  body: JSON.stringify({
+    version,
+    hostedLocation,
+    integrityHash,
+  }),
 });
 if (!releaseRes.ok) {
   console.error("✗ Failed to save release metadata:", await releaseRes.text());
@@ -242,13 +284,13 @@ console.log(`✓ Release metadata saved: v${version}`);
 
 // ─── Re-register on all sites ────────────────────────────────────────────────
 // Registered scripts carry an SRI integrity hash. Any change to the file bytes
-// changes that hash, so a site still holding the previous hash will have the
-// script blocked by the browser. Re-register whenever the version, the URL, or
-// the integrity hash changes — not just on a version bump.
+// changes that hash (and the content-hashed URL), so a site still holding the
+// previous hash/URL will have the script blocked by the browser. Re-register
+// whenever the version, the URL, or the integrity hash changes.
 const urlChanged =
   currentHostedLocation !== null && currentHostedLocation !== hostedLocation;
 const hashChanged =
-  currentIntegrityHash !== null && currentIntegrityHash !== hash;
+  currentIntegrityHash !== null && currentIntegrityHash !== integrityHash;
 
 if (urlChanged && !isNewVersion) {
   console.log(
@@ -257,7 +299,7 @@ if (urlChanged && !isNewVersion) {
 }
 if (hashChanged && !isNewVersion) {
   console.log(
-    `\nScript contents changed for v${version} — SRI hash updated:\n  old: ${currentIntegrityHash}\n  new: ${hash}`,
+    `\nScript contents changed for v${version} — SRI hash updated:\n  old: ${currentIntegrityHash}\n  new: ${integrityHash}`,
   );
 }
 
@@ -296,5 +338,5 @@ if (isNewVersion || urlChanged || hashChanged || forceRegister) {
 
 console.log(`\nDone. v${version} deployed and injected.`);
 console.log(
-  `Public URL: ${hostedLocation}\nIntegrity: ${hash}`,
+  `Public URL: ${hostedLocation}\nIntegrity: ${integrityHash}`,
 );
