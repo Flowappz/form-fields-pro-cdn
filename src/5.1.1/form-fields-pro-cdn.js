@@ -1,5 +1,5 @@
 /**
- * FORM FIELDS PRO CDN SCRIPT - v5.1.0
+ * FORM FIELDS PRO CDN SCRIPT - v5.1.1
  * Vendors (Select2, noUiSlider, moment, daterangepicker, etc.) load on demand.
  */
 
@@ -1837,23 +1837,22 @@ function validateFieldData(field, value, pattern, errorMessage) {
     return true
 }
 
-// URL validation
-
-const urlFields = document.querySelectorAll('[form-fields-wrapper="true"] input[type="url"]')
-urlFields.forEach((field) => {
-    field.addEventListener('input', (e) => {
-        validateFieldData(field, e.target.value, URL_PATTERN_REGEX, 'Enter a valid URL')
+function initializeInputValidationEvents() {
+    const urlFields = document.querySelectorAll('[form-fields-wrapper="true"] input[type="url"]')
+    urlFields.forEach((field) => {
+        field.addEventListener('input', (e) => {
+            validateFieldData(field, e.target.value, URL_PATTERN_REGEX, 'Enter a valid URL')
+        })
     })
-})
 
-// Email validation
-const emailFields = document.querySelectorAll('[form-fields-wrapper="true"] input[type="email"]')
-emailFields.forEach((field) => {
-    const message = field ? field.getAttribute('data-invalid-error-msg') : ''
-    field.addEventListener('input', (e) => {
-        validateFieldData(field, e.target.value, EMAIL_PATTERN_REGEX, message)
+    const emailFields = document.querySelectorAll('[form-fields-wrapper="true"] input[type="email"]')
+    emailFields.forEach((field) => {
+        const message = field.getAttribute('data-invalid-error-msg') || 'Enter a valid email'
+        field.addEventListener('input', (e) => {
+            validateFieldData(field, e.target.value, EMAIL_PATTERN_REGEX, message)
+        })
     })
-})
+}
 
 function validateAllFields() {
     const urlFields = document.querySelectorAll('[form-fields-wrapper="true"] input[type="url"]')
@@ -1891,9 +1890,12 @@ function validateAllFields() {
 
 /** */
 const FORM_STATE = {}
-const conditionalLogicFields = document.querySelectorAll('[conditional-logic]')
+let conditionalLogicFields = []
 
 function initializeConditionalLogic() {
+    conditionalLogicFields = document.querySelectorAll('[conditional-logic]')
+    if (!conditionalLogicFields.length) return
+
     conditionalLogicFields.forEach((field) => toggleDisplay(field))
 
     observeInputChangesAndFireConditionalLogic()
@@ -2366,6 +2368,11 @@ let licenseCheckPromise = null;
  * @returns {Promise<boolean>}
  */
 function hasValidLicenseKey(siteId) {
+    // A Production page without a Webflow site ID cannot have a valid license.
+    if (!siteId) {
+        return Promise.resolve(false);
+    }
+
     if (licenseCheckPromise) {
         return licenseCheckPromise;
     }
@@ -2379,7 +2386,7 @@ function hasValidLicenseKey(siteId) {
                 return false;
             }
             const data = await res.json();
-            return Boolean(data.active);
+            return data.active === true;
         } catch (err) {
             console.warn('Form Fields Pro: License check failed', err);
             return false;
@@ -2390,19 +2397,34 @@ function hasValidLicenseKey(siteId) {
 }
 
 async function makeTheFormInteractive() {
-    formFieldsDateInput()
-    formFieldsUserIp()
-    formFieldsNumberSlider()
-    formFieldsSelect()
-    formFieldsPhoneNumberInput()
-    formFieldsColorPickerInput()
-    formFieldsFileUploadInput()
-    formFieldsNetPromoterScoreInput()
-    formFieldsLikertScaleInput()
-    preventWebflowDefaultFormSubmission()
-    addCustomFormSubmissionLogic()
-    initializeConditionalLogic()
-    validateCurrentPage()
+    const initializers = [
+        formFieldsDateInput,
+        formFieldsUserIp,
+        formFieldsNumberSlider,
+        formFieldsSelect,
+        formFieldsPhoneNumberInput,
+        formFieldsColorPickerInput,
+        formFieldsFileUploadInput,
+        formFieldsNetPromoterScoreInput,
+        formFieldsLikertScaleInput,
+        initializeInputValidationEvents,
+        preventWebflowDefaultFormSubmission,
+        addCustomFormSubmissionLogic,
+        initializeConditionalLogic,
+        validateCurrentPage,
+    ]
+
+    // A vendor CDN being blocked or a single field type throwing must not stop
+    // the remaining features — especially the submission handlers.
+    for (const initialize of initializers) {
+        try {
+            Promise.resolve(initialize()).catch((err) => {
+                console.warn(`Form Fields Pro: ${initialize.name} failed`, err)
+            })
+        } catch (err) {
+            console.warn(`Form Fields Pro: ${initialize.name} failed`, err)
+        }
+    }
 }
 
 initializeFormFieldsPro()
