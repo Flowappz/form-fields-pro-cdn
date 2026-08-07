@@ -1255,14 +1255,20 @@ function initializeConditionalLogic() {
 }
 
 function toggleDisplay(element, show = false) {
-    if (show) element.style.display = 'initial'
-    else element.style.display = 'none'
+    // Clear inline display so layout CSS (block/flex/etc.) applies when shown.
+    element.style.display = show ? '' : 'none'
 }
 
 async function observeInputChangesAndFireConditionalLogic() {
     syncFormState()
 
-    conditionalLogicFields.forEach((field) => reactToCurrentFormStateBasedOnConditionalLogic(field))
+    conditionalLogicFields.forEach((field) => {
+        try {
+            reactToCurrentFormStateBasedOnConditionalLogic(field)
+        } catch (error) {
+            console.warn('[Form Fields Pro] Conditional logic evaluation failed', error)
+        }
+    })
 
     await sleep(450)
     return observeInputChangesAndFireConditionalLogic()
@@ -1280,10 +1286,16 @@ function syncFormState() {
 }
 
 function reactToCurrentFormStateBasedOnConditionalLogic(element) {
-    /** @type {TRuleset[][]} */
-    const ruleGroups = JSON.parse(element.getAttribute('conditional-logic'))
+    let ruleGroups
+    try {
+        ruleGroups = JSON.parse(element.getAttribute('conditional-logic') || '[]')
+    } catch {
+        return
+    }
 
-    const result = ruleGroups.some((ruleGroup) => ruleGroup.every((rule) => resolveConditionalLogicRuleset(rule)))
+    if (!Array.isArray(ruleGroups)) return
+
+    const result = ruleGroups.some((ruleGroup) => Array.isArray(ruleGroup) && ruleGroup.every((rule) => resolveConditionalLogicRuleset(rule)))
 
     toggleDisplay(element, result)
 }
