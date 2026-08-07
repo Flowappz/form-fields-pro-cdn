@@ -1,0 +1,1497 @@
+/**
+ * FORM FIELDS PRO CDN SCRIPT - v5.1.2
+ * Vendors (Select2, noUiSlider, moment, daterangepicker, etc.) load on demand.
+ */
+
+const EMAIL_PATTERN_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const URL_PATTERN_REGEX =
+    /^(?:(?:https?|ftp):\/\/)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/
+
+/** @type {Record<string, Promise<void>>} */
+const __ffpAssetCache = {}
+
+/** Load an external script once. */
+function loadScript(src) {
+    if (__ffpAssetCache[src]) return __ffpAssetCache[src]
+    __ffpAssetCache[src] = new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${src}"]`)
+        if (existing) {
+            if (existing.dataset.ffpLoaded === '1') return resolve()
+            existing.addEventListener('load', () => resolve())
+            existing.addEventListener('error', () => reject(new Error('Failed to load ' + src)))
+            return
+        }
+        const script = document.createElement('script')
+        script.src = src
+        script.async = true
+        script.onload = () => {
+            script.dataset.ffpLoaded = '1'
+            resolve()
+        }
+        script.onerror = () => reject(new Error('Failed to load ' + src))
+        document.head.appendChild(script)
+    })
+    return __ffpAssetCache[src]
+}
+
+/** Load an external stylesheet once. */
+function loadStylesheet(href) {
+    if (__ffpAssetCache[href]) return __ffpAssetCache[href]
+    __ffpAssetCache[href] = new Promise((resolve, reject) => {
+        if (document.querySelector(`link[href="${href}"]`)) return resolve()
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = href
+        link.onload = () => resolve()
+        link.onerror = () => reject(new Error('Failed to load ' + href))
+        document.head.appendChild(link)
+    })
+    return __ffpAssetCache[href]
+}
+
+/** Inject a style tag once (keyed by id). */
+function injectStyle(id, css) {
+    if (document.getElementById(id)) return
+    const style = document.createElement('style')
+    style.id = id
+    style.textContent = css
+    document.head.appendChild(style)
+}
+
+const sleep = (ms = 5) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/** Date pickers */
+const formFieldsDateInput = async () => {
+    const selectors = {
+        DATE_PICKER: '[form-fields-pro-date-picker]',
+        DATE_RANGE_PICKER: '[form-fields-pro-date-range-picker]',
+    }
+
+    const hasDateFields =
+        document.querySelector(selectors.DATE_PICKER) ||
+        document.querySelector(selectors.DATE_RANGE_PICKER)
+    if (!hasDateFields) return
+
+    // daterangepicker depends on moment + jQuery (jQuery is provided by Webflow)
+    await loadScript('https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js')
+    await loadScript('https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js')
+    await loadStylesheet('https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css')
+
+    const datePickerState = {}
+
+    const overrideCss = (element) => {
+        const inputName = element.getAttribute('name')
+
+        const formFieldsId = `${inputName}-${Date.now()}`
+        element.setAttribute('form-fields-id', formFieldsId)
+
+        const { backgroundColor: parentBackgroundColor, color: parentTextColor } = getComputedStyle(element.parentElement)
+
+        const lightTheme = {
+            selectedDateTextColor: element.getAttribute('data-light-theme-selected-date-text-color') || parentTextColor,
+            selectedDateBackgroundColor: element.getAttribute('data-light-theme-selected-date-background-color') || parentBackgroundColor,
+            todayColor: element.getAttribute('data-light-theme-today-color') || parentTextColor,
+        }
+
+        const darkTheme = {
+            selectedDateTextColor: element.getAttribute('data-dark-theme-selected-date-text-color') || parentTextColor,
+            selectedDateBackgroundColor: element.getAttribute('data-dark-theme-selected-date-background-color') || parentBackgroundColor,
+            todayColor: element.getAttribute('data-dark-theme-today-color') || parentTextColor,
+        }
+
+        const sheet = new CSSStyleSheet()
+        sheet.replaceSync(`
+    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.available:hover {
+      color: ${lightTheme.selectedDateTextColor};
+      background-color: ${lightTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.65)')}; 
+    }
+
+    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.in-range {
+      color: ${lightTheme.selectedDateTextColor};
+      background-color: ${lightTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.45)')};
+    }
+
+    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active, 
+    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active:hover {
+      color: ${lightTheme.selectedDateTextColor};
+      background-color: ${lightTheme.selectedDateBackgroundColor};
+    }
+  
+    @media (prefers-color-scheme: dark) {
+      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.available:hover {
+        color: ${darkTheme.selectedDateTextColor};
+        background-color: ${darkTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.65)')}; 
+      }
+
+      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.in-range {
+        color: ${darkTheme.selectedDateTextColor};
+        background-color: ${darkTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.45)')};
+      }
+
+      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active, 
+      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active:hover {
+        color: ${darkTheme.selectedDateTextColor};
+        background-color: ${darkTheme.selectedDateBackgroundColor};
+      }
+    }
+    `)
+
+        const sheets = document.adoptedStyleSheets || []
+        document.adoptedStyleSheets = [...sheets, sheet]
+    }
+
+    const showDatePickerOnIconClick = (datePickerInput) => {
+        const name = datePickerInput.getAttribute('name')
+        const icon = document.querySelector(`[name="${name}"] + .date-input-icon`)
+
+        if (icon) icon.style.cursor = 'pointer'
+
+        icon?.addEventListener('click', () => {
+            datePickerInput.click()
+        })
+    }
+
+    const createPickerDropdownWrapperElement = () => {
+        const div = document.createElement('div')
+        div.style.position = 'absolute'
+        div.style.left = '0'
+        div.style.width = '100%'
+
+        return div
+    }
+
+    const preventFormSubmitOnFirstEnterToHideDatePicker = (inputElement) => {
+        const inputName = inputElement.getAttribute('name')
+
+        $(inputElement).on('show.daterangepicker', () => {
+            datePickerState[inputName] = true
+        })
+
+        $(inputElement).on('hide.daterangepicker', (e) => {
+            datePickerState[inputName] = false
+        })
+
+        inputElement.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !datePickerState[inputName]) {
+                e.preventDefault()
+                datePickerState[inputName] = true
+            }
+        })
+    }
+
+    const initializeDatePickers = () => {
+        const datePickerInputs = document.querySelectorAll(selectors.DATE_PICKER)
+
+        for (let inputElement of datePickerInputs) {
+            const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
+            inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
+
+            $(inputElement).daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                startDate: new Date(),
+                parentEl: pickerDropdownWrapperEl,
+            })
+            overrideCss(inputElement)
+            showDatePickerOnIconClick(inputElement)
+            preventFormSubmitOnFirstEnterToHideDatePicker(inputElement)
+        }
+    }
+
+    const initializeDateRangePickers = () => {
+        const datePickerInputs = document.querySelectorAll(selectors.DATE_RANGE_PICKER)
+
+        for (let inputElement of datePickerInputs) {
+            const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
+            inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
+
+            $(inputElement).daterangepicker({
+                startDate: new Date(),
+                endDate: new Date(),
+                showDropdowns: true,
+                parentEl: pickerDropdownWrapperEl,
+            })
+            overrideCss(inputElement)
+            showDatePickerOnIconClick(inputElement)
+            preventFormSubmitOnFirstEnterToHideDatePicker(inputElement)
+        }
+    }
+
+    const loadDatePickerPackageCSS = () => {
+        injectStyle('ffp-daterangepicker-overrides', `
+    .daterangepicker {
+      font-family: inherit;
+      border-radius: 0;
+    }
+
+    .daterangepicker select.yearselect,
+    .daterangepicker select.monthselect {
+      border-radius: 0;
+      border-color: #ccc;
+    }
+
+    input.form-fields-dropdown-wrapper:focus-visible {
+      outline: 0;
+      border-color: #3898ec;
+    }
+
+    .cancelBtn, .applyBtn {
+      width: fit-content;
+      background: rgb(239, 239, 239);
+      border-color: rgb(239, 239, 239);
+      padding: 8px 12px !important;
+    }
+
+    .applyBtn {
+      background: black;
+      color: white;
+      border-color: black;
+    }
+
+    @media (max-width: 485px) {
+      .daterangepicker .drp-selected {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    }
+    `)
+    }
+
+    loadDatePickerPackageCSS()
+    initializeDatePickers()
+    initializeDateRangePickers()
+}
+
+/** User IP inputs */
+const formFieldsUserIp = async () => {
+    if (!document.querySelector('[form-fields-pro-user-ip-input], [form-fields-pro-user-ip-admin-alert]')) return
+
+    const hideAdminAlert = () => {
+
+        const alertElements = document.querySelectorAll('[form-fields-pro-user-ip-admin-alert]')
+
+        for (let element of alertElements) element.style.display = 'none'
+    }
+
+    const getUserIp = async () => {
+        const BASE_URL = 'https://flowapps-data-client-staging.up.railway.app'
+        const res = await fetch(`${BASE_URL}/api/user-ip`)
+
+        if (res.ok) {
+            const { ip } = await res.json()
+            return ip
+        } else return ''
+    }
+
+    const collectUserIp = async () => {
+        const ip = await getUserIp()
+
+        const inputElements = document.querySelectorAll('[form-fields-pro-user-ip-input]')
+
+        for (let input of inputElements) {
+            input.value = ip
+        }
+    }
+
+    hideAdminAlert()
+    collectUserIp()
+}
+
+/** Range sliders */
+const formFieldsNumberSlider = async () => {
+    if (!document.querySelector('[form-fields-pro-number-slider]')) return
+
+    await loadStylesheet('https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css')
+    await loadScript('https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js')
+
+    const additionalCss = `
+    .noUi-horizontal {
+      height: 12px;
+    }
+    
+    .noUi-target {
+      border: 1px solid #ededed;
+      border-radius: 11.5px;
+      box-shadow: none;
+    }
+
+    .noUi-horizontal .noUi-handle {
+      width: 22px;
+      height: 22px;
+      right: -17px;
+      top: -6px;
+      border-radius: 50%;
+      box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    }
+
+    .noUi-handle:after, .noUi-handle:before {
+      display: none;
+    }
+
+    .noUi-tooltip {
+      border: none;
+      box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    }
+    `
+
+    const addNumberSliderCss = () => {
+        injectStyle('ffp-nouislider-overrides', additionalCss)
+    }
+
+    const overrideCss = (element) => {
+        const inputName = element.getAttribute('name')
+
+        const formFieldsId = `${inputName}-${Date.now()}`
+        element.setAttribute('form-fields-id', formFieldsId)
+
+        const { backgroundColor: parentBackgroundColor, color: parentTextColor } = getComputedStyle(element.parentElement)
+
+        const lightTheme = {
+            maxMinValueTextColor: element.getAttribute('data-light-theme-max-min-text-color') || parentTextColor,
+            tooltipTextColor: element.getAttribute('data-light-theme-tooltip-text-color') || parentTextColor,
+            sliderColor: element.getAttribute('data-light-theme-slider-color') || parentBackgroundColor,
+        }
+
+        const darkTheme = {
+            maxMinValueTextColor: element.getAttribute('data-dark-theme-max-min-text-color') || parentTextColor,
+            tooltipTextColor: element.getAttribute('data-dark-theme-tooltip-text-color') || parentTextColor,
+            sliderColor: element.getAttribute('data-dark-theme-slider-color') || parentBackgroundColor,
+        }
+
+        const sheet = new CSSStyleSheet()
+        sheet.replaceSync(`
+      [form-fields-id="${formFieldsId}"] ~ .noUi-target .noUi-connect {
+        background: ${lightTheme.sliderColor}
+      }
+      [form-fields-id="${formFieldsId}"] ~ .noUi-horizontal .noUi-tooltip {
+        color: ${lightTheme.tooltipTextColor};
+        background: ${lightTheme.sliderColor};
+      }
+  
+      [form-fields-id="${formFieldsId}"] ~ .rs-container .rs-scale span ins {
+        color: ${lightTheme.maxMinValueTextColor};
+      }
+  
+      @media (prefers-color-scheme: dark) {
+        [form-fields-id="${formFieldsId}"] ~ .noUi-target .noUi-connect {
+          background: ${darkTheme.sliderColor}
+        }
+        [form-fields-id="${formFieldsId}"] ~ .noUi-horizontal .noUi-tooltip {
+          color: ${darkTheme.tooltipTextColor};
+          background: ${darkTheme.sliderColor};
+        }
+  
+        [form-fields-id="${formFieldsId}"] ~ .rs-container .rs-scale span ins {
+          color: ${darkTheme.maxMinValueTextColor}
+        }
+      }
+      `)
+
+        const sheets = document.adoptedStyleSheets || []
+        document.adoptedStyleSheets = [...sheets, sheet]
+    }
+
+    const initializeRegularSlider = (sliderInput) => {
+        const min = Number(sliderInput.getAttribute('data-min'))
+        const max = Number(sliderInput.getAttribute('data-max'))
+        const defaultValue = Number(sliderInput.getAttribute('data-default'))
+
+        const container = document.createElement('div')
+        sliderInput.parentElement.appendChild(container)
+
+        const slider = noUiSlider.create(container, {
+            start: defaultValue,
+            step: 1,
+            connect: 'lower',
+            tooltips: { to: (val) => Math.round(val) },
+            range: {
+                min,
+                max,
+            },
+        })
+
+        slider.on('update', (values) => {
+            values = values.map((v) => Math.round(v)).join(',')
+            sliderInput.value = values
+        })
+    }
+
+    const initializeRangeSlider = (sliderInput) => {
+        const min = Number(sliderInput.getAttribute('data-min'))
+        const max = Number(sliderInput.getAttribute('data-max'))
+        const defaultmin = Number(sliderInput.getAttribute('data-min-default'))
+        const defaultmax = Number(sliderInput.getAttribute('data-max-default'))
+
+        const container = document.createElement('div')
+        sliderInput.parentElement.appendChild(container)
+
+        const slider = noUiSlider.create(container, {
+            start: [defaultmin, defaultmax],
+            step: 1,
+            connect: [false, true, false],
+            tooltips: { to: (val) => Math.round(val) },
+            range: {
+                min,
+                max,
+            },
+        })
+
+        slider.on('update', (values) => {
+            values = values.map((v) => Math.round(v)).join(',')
+            sliderInput.value = values
+        })
+    }
+
+    const initializeTheSliders = async () => {
+        const sliders = document.querySelectorAll(`[form-fields-pro-number-slider]`)
+
+        for (let slider of sliders) {
+            const rangeSlider = slider.getAttribute('allow-range')
+            if (rangeSlider) initializeRangeSlider(slider)
+            else initializeRegularSlider(slider)
+
+            overrideCss(slider)
+            await sleep()
+        }
+    }
+
+    addNumberSliderCss()
+    initializeTheSliders()
+}
+
+/** Select inputs */
+const formFieldsSelect = async () => {
+    if (!document.querySelector('[form-fields-type="select"]')) return
+
+    await loadStylesheet('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css')
+    await loadScript('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js')
+
+    const additionalCss = `
+  .select2-container {
+    height: 38px;
+  }
+
+  .selection {
+    height: 100%;
+    display: block;
+  }
+
+  .select2-container--default .select2-selection--single {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+  }
+
+  .select2-container .select2-selection--single .select2-selection__rendered {
+    padding: 0;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    position: relative;
+    top: 0;
+    right: 0;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__arrow b,
+  .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-color: transparent;
+    border-width: 0;
+    margin-top: -3px;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDE0IDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNyA3TDEzIDEiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=);
+    height: 10px;
+    width: 20px;
+    background-repeat: no-repeat;
+  }
+
+  .select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0;
+  }
+
+  .select2-dropdown {
+    border: 1px solid #ccc;
+    border-radius: 0;
+  }
+ 
+  .select2-results__option--selectable {
+    padding: 8px 12px;
+    height: 38px;
+  }
+
+  .select2-search--dropdown .select2-search__field {
+    padding: 8px 8px;
+  }
+
+  .select2-container--default .select2-selection--single:focus-visible,
+  .select2-container--default .select2-search--dropdown .select2-search__field:focus-visible {
+    outline: 0;
+    border-color: #3898ec;
+  }
+  `
+
+    const addSelect2Css = () => {
+        injectStyle('ffp-select2-overrides', additionalCss)
+    }
+
+    const overrideCss = (element) => {
+        const inputName = element.getAttribute('name')
+        element.id = `${inputName.replace(' ', '')}-${Date.now()}`
+
+        const lightTheme = {
+            hoverTextColor: element.getAttribute('data-light-theme-hover-text-color'),
+            hoverBackground: element.getAttribute('data-light-theme-hover-background-color'),
+        }
+
+        const darkTheme = {
+            hoverTextColor: element.getAttribute('data-dark-theme-hover-text-color'),
+            hoverBackground: element.getAttribute('data-dark-theme-hover-background-color'),
+        }
+
+        const sheet = new CSSStyleSheet()
+        sheet.replaceSync(`
+        #select2-${element.id}-results li.select2-results__option--highlighted {
+          color: ${lightTheme.hoverTextColor};
+          background: ${lightTheme.hoverBackground}
+        }
+    
+        @media (prefers-color-scheme: dark) {
+          #select2-${element.id}-results li.select2-results__option--highlighted {
+            color: ${darkTheme.hoverTextColor};
+            background: ${darkTheme.hoverBackground}
+          }
+        }
+        `)
+
+        const sheets = document.adoptedStyleSheets || []
+        document.adoptedStyleSheets = [...sheets, sheet]
+    }
+
+    addSelect2Css()
+
+    const selectInputs = document.querySelectorAll(`[form-fields-type="select"]`)
+    for (let select of selectInputs) {
+        overrideCss(select)
+        const isSearchable = select.getAttribute('data-searchable')
+        $(select).select2({
+            minimumResultsForSearch: isSearchable ? 0 : Infinity,
+        })
+    }
+}
+
+/** Phone number inputs */
+/** Compact country list: [name, ISO code, dial code] */
+const countries = [["Afghanistan","AF",93],["Aland Islands","AX",358],["Albania","AL",355],["Algeria","DZ",213],["American Samoa","AS",1684],["Andorra","AD",376],["Angola","AO",244],["Anguilla","AI",1264],["Antarctica","AQ",672],["Antigua and Barbuda","AG",1268],["Argentina","AR",54],["Armenia","AM",374],["Aruba","AW",297],["Australia","AU",61],["Austria","AT",43],["Azerbaijan","AZ",994],["Bahamas","BS",1242],["Bahrain","BH",973],["Bangladesh","BD",880],["Barbados","BB",1246],["Belarus","BY",375],["Belgium","BE",32],["Belize","BZ",501],["Benin","BJ",229],["Bermuda","BM",1441],["Bhutan","BT",975],["Bolivia","BO",591],["Bonaire, Sint Eustatius and Saba","BQ",599],["Bosnia and Herzegovina","BA",387],["Botswana","BW",267],["Bouvet Island","BV",55],["Brazil","BR",55],["British Indian Ocean Territory","IO",246],["Brunei Darussalam","BN",673],["Bulgaria","BG",359],["Burkina Faso","BF",226],["Burundi","BI",257],["Cambodia","KH",855],["Cameroon","CM",237],["Canada","CA",1],["Cape Verde","CV",238],["Cayman Islands","KY",1345],["Central African Republic","CF",236],["Chad","TD",235],["Chile","CL",56],["China","CN",86],["Christmas Island","CX",61],["Cocos (Keeling) Islands","CC",672],["Colombia","CO",57],["Comoros","KM",269],["Congo","CG",242],["Congo, Democratic Republic of the Congo","CD",242],["Cook Islands","CK",682],["Costa Rica","CR",506],["Cote D'Ivoire","CI",225],["Croatia","HR",385],["Cuba","CU",53],["Curacao","CW",599],["Cyprus","CY",357],["Czech Republic","CZ",420],["Denmark","DK",45],["Djibouti","DJ",253],["Dominica","DM",1767],["Dominican Republic","DO",1809],["Ecuador","EC",593],["Egypt","EG",20],["El Salvador","SV",503],["Equatorial Guinea","GQ",240],["Eritrea","ER",291],["Estonia","EE",372],["Ethiopia","ET",251],["Falkland Islands (Malvinas)","FK",500],["Faroe Islands","FO",298],["Fiji","FJ",679],["Finland","FI",358],["France","FR",33],["French Guiana","GF",594],["French Polynesia","PF",689],["French Southern Territories","TF",262],["Gabon","GA",241],["Gambia","GM",220],["Georgia","GE",995],["Germany","DE",49],["Ghana","GH",233],["Gibraltar","GI",350],["Greece","GR",30],["Greenland","GL",299],["Grenada","GD",1473],["Guadeloupe","GP",590],["Guam","GU",1671],["Guatemala","GT",502],["Guernsey","GG",44],["Guinea","GN",224],["Guinea-Bissau","GW",245],["Guyana","GY",592],["Haiti","HT",509],["Heard Island and McDonald Islands","HM",0],["Holy See (Vatican City State)","VA",39],["Honduras","HN",504],["Hong Kong","HK",852],["Hungary","HU",36],["Iceland","IS",354],["India","IN",91],["Indonesia","ID",62],["Iran, Islamic Republic of","IR",98],["Iraq","IQ",964],["Ireland","IE",353],["Isle of Man","IM",44],["Israel","IL",972],["Italy","IT",39],["Jamaica","JM",1876],["Japan","JP",81],["Jersey","JE",44],["Jordan","JO",962],["Kazakhstan","KZ",7],["Kenya","KE",254],["Kiribati","KI",686],["Korea, Democratic People's Republic of","KP",850],["Korea, Republic of","KR",82],["Kosovo","XK",383],["Kuwait","KW",965],["Kyrgyzstan","KG",996],["Lao People's Democratic Republic","LA",856],["Latvia","LV",371],["Lebanon","LB",961],["Lesotho","LS",266],["Liberia","LR",231],["Libyan Arab Jamahiriya","LY",218],["Liechtenstein","LI",423],["Lithuania","LT",370],["Luxembourg","LU",352],["Macao","MO",853],["Macedonia, the Former Yugoslav Republic of","MK",389],["Madagascar","MG",261],["Malawi","MW",265],["Malaysia","MY",60],["Maldives","MV",960],["Mali","ML",223],["Malta","MT",356],["Marshall Islands","MH",692],["Martinique","MQ",596],["Mauritania","MR",222],["Mauritius","MU",230],["Mayotte","YT",262],["Mexico","MX",52],["Micronesia, Federated States of","FM",691],["Moldova, Republic of","MD",373],["Monaco","MC",377],["Mongolia","MN",976],["Montenegro","ME",382],["Montserrat","MS",1664],["Morocco","MA",212],["Mozambique","MZ",258],["Myanmar","MM",95],["Namibia","NA",264],["Nauru","NR",674],["Nepal","NP",977],["Netherlands","NL",31],["Netherlands Antilles","AN",599],["New Caledonia","NC",687],["New Zealand","NZ",64],["Nicaragua","NI",505],["Niger","NE",227],["Nigeria","NG",234],["Niue","NU",683],["Norfolk Island","NF",672],["Northern Mariana Islands","MP",1670],["Norway","NO",47],["Oman","OM",968],["Pakistan","PK",92],["Palau","PW",680],["Palestinian Territory, Occupied","PS",970],["Panama","PA",507],["Papua New Guinea","PG",675],["Paraguay","PY",595],["Peru","PE",51],["Philippines","PH",63],["Pitcairn","PN",64],["Poland","PL",48],["Portugal","PT",351],["Puerto Rico","PR",1787],["Qatar","QA",974],["Reunion","RE",262],["Romania","RO",40],["Russian Federation","RU",7],["Rwanda","RW",250],["Saint Barthelemy","BL",590],["Saint Helena","SH",290],["Saint Kitts and Nevis","KN",1869],["Saint Lucia","LC",1758],["Saint Martin","MF",590],["Saint Pierre and Miquelon","PM",508],["Saint Vincent and the Grenadines","VC",1784],["Samoa","WS",684],["San Marino","SM",378],["Sao Tome and Principe","ST",239],["Saudi Arabia","SA",966],["Senegal","SN",221],["Serbia","RS",381],["Serbia and Montenegro","CS",381],["Seychelles","SC",248],["Sierra Leone","SL",232],["Singapore","SG",65],["St Martin","SX",721],["Slovakia","SK",421],["Slovenia","SI",386],["Solomon Islands","SB",677],["Somalia","SO",252],["South Africa","ZA",27],["South Georgia and the South Sandwich Islands","GS",500],["South Sudan","SS",211],["Spain","ES",34],["Sri Lanka","LK",94],["Sudan","SD",249],["Suriname","SR",597],["Svalbard and Jan Mayen","SJ",47],["Swaziland","SZ",268],["Sweden","SE",46],["Switzerland","CH",41],["Syrian Arab Republic","SY",963],["Taiwan, Province of China","TW",886],["Tajikistan","TJ",992],["Tanzania, United Republic of","TZ",255],["Thailand","TH",66],["Timor-Leste","TL",670],["Togo","TG",228],["Tokelau","TK",690],["Tonga","TO",676],["Trinidad and Tobago","TT",1868],["Tunisia","TN",216],["Turkey","TR",90],["Turkmenistan","TM",7370],["Turks and Caicos Islands","TC",1649],["Tuvalu","TV",688],["Uganda","UG",256],["Ukraine","UA",380],["United Arab Emirates","AE",971],["United Kingdom","GB",44],["United States","US",1],["United States Minor Outlying Islands","UM",1],["Uruguay","UY",598],["Uzbekistan","UZ",998],["Vanuatu","VU",678],["Venezuela","VE",58],["Viet Nam","VN",84],["Virgin Islands, British","VG",1284],["Virgin Islands, U.s.","VI",1340],["Wallis and Futuna","WF",681],["Western Sahara","EH",212],["Yemen","YE",967],["Zambia","ZM",260],["Zimbabwe","ZW",263]].map(([name,code,phone])=>({name,code,phone}))
+async function formFieldsPhoneNumberInput() {
+    const wrapperDiv = $('[data-form-field-pro="number-input-with-country-code"]');
+
+    // No phone field on this page — skip quietly
+    if (!wrapperDiv || wrapperDiv.length === 0) {
+        return;
+    }
+
+    const lightTheme = {
+        lightThemeHoverTextColor: wrapperDiv.attr('data-light-theme-number-input-text-color'),
+        lightThemeHoverBackgroundColor: wrapperDiv.attr('data-light-theme-number-input-background-color'),
+    };
+
+    const darkTheme = {
+        darkThemeHoverTextColor: wrapperDiv.attr('data-dark-theme-number-input-text-color'),
+        darkThemeHoverBackgroundColor: wrapperDiv.attr('data-dark-theme-number-input-background-color'),
+    };
+
+    loadScript('https://code.iconify.design/3/3.1.0/iconify.min.js').catch(() => {});
+
+    injectStyle('ffp-phone-overrides', `
+.number-input-dropdown ol::-webkit-scrollbar { width: 0.6rem; }
+.number-input-dropdown ol::-webkit-scrollbar-thumb { width: 0.4rem; height: 3rem; background-color: #ccc; border-radius: .4rem; }
+.number-input-dropdown ol li { padding: 8px; display: flex; font-size: 14px; justify-content: space-between; cursor: pointer; }
+.number-input-dropdown ol li.hide { display: none; }
+.number-input-dropdown ol li:not(:last-child) { border-bottom: .1rem solid #eee; }
+.number-input-dropdown ol li:hover {
+  background-color:${lightTheme.lightThemeHoverBackgroundColor || '#000000'};
+  color:${lightTheme.lightThemeHoverTextColor || '#ffffff'};
+}
+.number-input-dropdown ol li .country-name { margin-left: .4rem; }
+@media (prefers-color-scheme: dark){
+  .number-input-dropdown ol li:hover {
+    background-color: ${darkTheme.darkThemeHoverBackgroundColor || '#000000'};
+    color: ${darkTheme.darkThemeHoverTextColor || '#ffffff'};
+  }
+}
+`)
+
+    const selectBox = $('.number-input-dropdown')
+    let searchBox = $('.number-input-search-field')
+    let inputBox = $('.number-input-field')
+    let selectedOption = $('.number-input-icon-wrapper')
+
+    if (!selectBox.length || !searchBox.length || !inputBox.length || !selectedOption.length) {
+        console.warn('Form Fields Pro: Required phone number elements not found')
+        return
+    }
+
+    const downArrow = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
+
+    const flagIcon = document.createElement('span')
+    flagIcon.className = 'iconify'
+    flagIcon.setAttribute('data-icon', 'flag:gb-4x3')
+    selectedOption.prepend(flagIcon)
+
+    const olElement = selectBox.find('ol')
+    for (const country of countries) {
+        olElement.append(
+            `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name}</span></div><span class="country-code">+${country.phone}</span></li>`,
+        )
+    }
+    let options = $('.option')
+    if (countries[0]) inputBox.val('+' + countries[0].phone + ' ')
+
+    function selectOption() {
+        const icon = $(this).find('.iconify').clone();
+        const phoneCode = $(this).find('.country-code').clone().text();
+
+        selectedOption.html('').append(icon, downArrow);
+        inputBox.val(phoneCode + ' ').focus();
+        selectBox.hide();
+        if (searchBox.length > 0) {
+            searchBox.val('');
+        }
+        selectBox.find('.hide').removeClass('hide');
+    }
+
+    function searchCountry() {
+        const searchQuery = searchBox.val().toLowerCase();
+
+        options.each(function () {
+            const countryNameElement = $(this).find('.country-name');
+            if (countryNameElement.length > 0) {
+                const isMatched = countryNameElement.text().toLowerCase().includes(searchQuery);
+                $(this).toggleClass('hide', !isMatched);
+            }
+        });
+    }
+
+    selectedOption.on('click', function (e) {
+        inputBox = $(this).siblings().eq(0);
+        selectedOption = $(this);
+        searchBox = $(this).siblings().eq(1).find('.number-input-search-field');
+
+        $('.number-input-dropdown').not($(this).siblings().eq(1)).hide();
+
+        $(this).siblings().eq(1).toggle();
+    });
+
+    $(document).on('click', function (e) {
+        // Check if e.target exists before accessing getAttribute
+        if (e.target && !(e.target.getAttribute && e.target.getAttribute('class') === searchBox.attr('class'))) {
+            if ($(e.target).closest(selectedOption).length === 0) {
+                selectBox.hide();
+                selectBox.attr('input-number-dropdown', 'hide');
+            }
+        }
+    });
+
+    // Only attach event listeners if options exist
+    if (options && options.length > 0) {
+        options.on('click', selectOption);
+    }
+
+    if (searchBox.length > 0) {
+        searchBox.on('input', searchCountry);
+    }
+
+    await addThirdPartyScriptForPhoneNumberInput();
+}
+
+async function addThirdPartyScriptForPhoneNumberInput() {
+    await loadStylesheet('https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css');
+    await loadScript('https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js');
+
+    // Check if the phone input element exists before trying to use it
+    const input = document.querySelector('#phone');
+    if (input) {
+        let iti = window.intlTelInput(input, {
+            countrySearch: false,
+            utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js',
+        });
+
+        $.get('https://ipinfo.io', function (response) {
+            let countryCode = response.country;
+            iti.setCountry(countryCode);
+        }, 'jsonp');
+
+        input.addEventListener('change', formatPhoneNumber);
+        input.addEventListener('keyup', formatPhoneNumber);
+
+        function formatPhoneNumber() {
+            input.value = iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL);
+        }
+
+        $('.itl').css('display', 'block');
+    } else {
+        console.warn('Form Fields Pro: Phone input element with id "phone" not found');
+    }
+}
+
+
+/** Color picker */
+async function formFieldsColorPickerInput() {
+    if (!document.querySelector('.color-input')) return
+
+    await loadStylesheet('https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css')
+    await loadScript('https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js')
+
+    injectStyle('ffp-spectrum-overrides', `
+        .sp-choose {
+            background-color: #111111 !important;
+        }
+        .sp-dd {
+            display: none;
+        }
+        .sp-replacer {
+            width: 30px;
+            height: 30px;
+        }
+    `)
+
+    $('.color-input').spectrum({
+        type: 'color',
+        showPalette: false,
+        showInput: true,
+        allowEmpty: false,
+    })
+    let selectedInput
+
+    $('.sp-replacer').on('click', function (e) {
+        selectedInput = $(this)
+    })
+
+    $('.sp-choose').on('click', function () {
+        const color = selectedInput.find('.sp-preview-inner').css('background-color')
+
+        selectedInput.siblings().attr('value', color)
+    })
+}
+
+/** File upload */
+async function formFieldsFileUploadInput() {
+    if (!document.querySelector('.dropzone')) return
+
+    await loadStylesheet('https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css')
+    await loadScript('https://unpkg.com/dropzone@5/dist/min/dropzone.min.js')
+
+    injectStyle('ffp-dropzone-overrides', `
+  .dropzone{
+  background-color:transparent !important;
+  }
+  .dropzone .dz-message{
+          margin: 0;
+      }
+      .dz-message-content{
+          margin: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+      }
+      .dz-message-link{
+          text-decoration: underline;
+      }
+      
+         .dropzone .dz-preview.dz-image-preview{
+          background-color: transparent;
+      }
+
+      .dropzone .dz-preview .dz-remove{
+          color: #000000;
+          text-decoration: none;
+      }
+  `)
+
+    Dropzone.autoDiscover = false
+
+    const dropzoneList = $('.dropzone')
+
+    const dropzoneIds = Object.values(dropzoneList).map((value) => value.id)
+
+    dropzoneIds.map(async function (i) {
+        if (i !== undefined) {
+            const element = document.getElementById(i)
+            const $element = $(`#${i}`)
+
+            const attrs = element.getAttributeNames().reduce((acc, name) => {
+                return {
+                    ...acc,
+                    [name.replace(/-/g, '_')]: element.getAttribute(name),
+                }
+            }, {})
+
+            const dropzone = new Dropzone(`#${i}`, {
+                url: '#',
+                method: 'post',
+                paramName: 'file',
+                autoProcessQueue: true,
+                addRemoveLinks: true,
+                maxFiles: parseInt(attrs.data_max_files),
+                maxFilesize: parseInt(attrs.data_max_file_size),
+                acceptedFiles: attrs.data_accepted_files,
+            })
+            dropzone.on('success', function (file) {
+                const borderRadius = $element.css('border-radius')
+                $element.find('.dz-image').css('border-radius', borderRadius || 0)
+            })
+
+            await $('.dz-message').each(function () {
+                $(this).html(
+                    `<p class="dz-message-content"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1.5em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M518.3 459a8 8 0 0 0-12.6 0l-112 141.7a7.98 7.98 0 0 0 6.3 12.9h73.9V856c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V613.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 459z"></path><path d="M811.4 366.7C765.6 245.9 648.9 160 512.2 160S258.8 245.8 213 366.6C127.3 389.1 64 467.2 64 560c0 110.5 89.5 200 199.9 200H304c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8h-40.1c-33.7 0-65.4-13.4-89-37.7-23.5-24.2-36-56.8-34.9-90.6.9-26.4 9.9-51.2 26.2-72.1 16.7-21.3 40.1-36.8 66.1-43.7l37.9-9.9 13.9-36.6c8.6-22.8 20.6-44.1 35.7-63.4a245.6 245.6 0 0 1 52.4-49.9c41.1-28.9 89.5-44.2 140-44.2s98.9 15.3 140 44.2c19.9 14 37.5 30.8 52.4 49.9 15.1 19.3 27.1 40.7 35.7 63.4l13.8 36.5 37.8 10C846.1 454.5 884 503.8 884 560c0 33.1-12.9 64.3-36.3 87.7a123.07 123.07 0 0 1-87.6 36.3H720c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h40.1C870.5 760 960 670.5 960 560c0-92.7-63.1-170.7-148.6-193.3z"></path></svg>  Drag and Drop or <span class="dz-message-link">Browse file</span> </p>`,
+                )
+            })
+
+            $element.find('.dz-message-content svg, .dz-message-link').css('color', attrs.data_default_color)
+        }
+    })
+}
+
+/** Net Promoter Score */
+async function formFieldsNetPromoterScoreInput() {
+    if (!document.querySelector('[data-field-name="net-promoter-score"]')) return
+
+    const netPromoterElement = $('[data-field-name="net-promoter-score"]')
+
+    let lightTheme = {}
+    let darkTheme = {}
+
+    function getAttributes($element) {
+        let attributes = {}
+        $.each($element[0].attributes, function (index, attr) {
+            attributes[attr.name.replace(/-/g, '_')] = attr.value
+        })
+        return attributes
+    }
+
+    netPromoterElement.each(function () {
+        const element = $(this)
+        const elementAttributes = getAttributes(element)
+
+        lightTheme = {
+            lightThemeHoverTextColor: element.attr('data-light-theme-score-text-color'),
+            lightThemeHoverBackgroundColor: element.attr('data-light-theme-score-background-color'),
+        }
+
+        darkTheme = {
+            darkThemeHoverTextColor: element.attr('data-dark-theme-score-text-color'),
+            darkThemeHoverBackgroundColor: element.attr('data-dark-theme-score-background-color'),
+        }
+
+        const inputElement = element.find('[data-input="net-promoter-score"]')
+        const extraFeedbackCollection = element.find('[data-field="extra-feedback-collection"]')
+
+        if (!elementAttributes.data_extra_feedback_collection.includes('always')) {
+            extraFeedbackCollection.hide()
+        }
+
+        $(this)
+            .find('[data-name="net-promoter-score-value"]')
+            .on('click', function () {
+                const value = $(this).text()
+                inputElement.val(value)
+
+                if (value === inputElement.val()) {
+                    element.find('[data-name="net-promoter-score-value"]').removeClass('net-promoter-active')
+                    $(this).addClass('net-promoter-active')
+
+                    const extraFeedback = elementAttributes.data_extra_feedback_collection || ''
+                    if (!extraFeedback.includes('always')) {
+                        if (!extraFeedback.includes('never') || !extraFeedback.includes('always')) {
+                            if (parseInt(value) < parseInt(extraFeedback)) {
+                                extraFeedbackCollection.show()
+                            } else {
+                                extraFeedbackCollection.hide()
+                            }
+                        } else {
+                            extraFeedbackCollection.show()
+                        }
+                    }
+                }
+            })
+    })
+
+    injectStyle('ffp-nps-overrides', `
+.net-promoter-active {
+  background-color: ${lightTheme.lightThemeHoverBackgroundColor};
+  color: ${lightTheme.lightThemeHoverTextColor};
+}
+@media (prefers-color-scheme: dark){
+  .net-promoter-active {
+    background-color: ${darkTheme.darkThemeHoverBackgroundColor};
+    color: ${darkTheme.darkThemeHoverTextColor};
+  }
+}
+`)
+}
+
+/** Likert scale */
+async function formFieldsLikertScaleInput() {
+    if (!document.querySelector('[data-field="likert-scale-field-radio"]')) return
+
+    injectStyle('ffp-likert-overrides', `
+[data-field="likert-scale-field-radio"] {
+  opacity: 0; visibility: hidden; height: 0 !important; margin: 0; width: 0 !important;
+}
+[data-field="likert-scale-field-radio"]:checked,
+[data-field="likert-scale-field-radio"]:not(:checked) + label {
+  width: 20px; height: 20px; display: inline-block; border: 1px solid #000; border-radius: 50%; margin-bottom: 0 !important;
+}
+[data-field="likert-scale-field-radio"]:checked + label {
+  background-image: url('data:image/svg+xml,<svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.3333 1L4.54167 8.79167L1 5.25" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat; background-position: center;
+}
+`)
+}
+
+function preventWebflowDefaultFormSubmission() {
+    const forms = $('form')
+
+    for (let form of forms) {
+        $(form).submit(() => {
+            return false
+        })
+    }
+}
+
+function addCustomFormSubmissionLogic() {
+    const forms = document.querySelectorAll('form')
+
+    for (let form of forms) {
+        form.setAttribute('novalidate', true)
+        addValidationMessageNodes(form)
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            if (validateData(form)) handleFormSubmit(form)
+        })
+    }
+}
+
+function addValidationMessageNodes(form) {
+    injectStyle('ffp-validation-message', `
+.form-fields-data-validation-message { color: #FF2626; font-size: 11px; }
+`)
+    for (const wrapperDiv of form.querySelectorAll('[form-fields-wrapper="true"]')) {
+        const node = document.createElement('span')
+        node.className = 'form-fields-data-validation-message'
+        wrapperDiv.appendChild(node)
+    }
+}
+
+function getParentFormFieldsWrapperDiv(element) {
+    const parent = element?.parentElement
+    if (!parent) return null
+    return parent.hasAttribute('form-fields-wrapper') ? parent : getParentFormFieldsWrapperDiv(parent)
+}
+
+function validateData(form) {
+    return validateRequiredFields(form)
+}
+
+async function handleFormSubmit(form) {
+    const BASE_URL = 'https://flowapps-data-client-staging.up.railway.app';
+    const submitButton = document.querySelector('input[type="submit"]');
+    const submitButtonOriginalLabel = submitButton.value;
+    const submitButtonLoadingLabel = submitButton.getAttribute('data-wait');
+
+    const faForm = document.querySelector('[fa-form="true"]');
+    if (!faForm) {
+        return;
+    }
+    const formElementId = faForm.getAttribute('fa-form-id');
+    const formName = faForm.getAttribute('fa-form-name');
+
+    submitButton.value = submitButtonLoadingLabel;
+
+    const metaData = getFormMetaData(form);
+    const webflowInputs = getWebflowInputFieldsData(form);
+    const formFieldsInputs = getFormFieldsInputData(form);
+
+    const payload = new URLSearchParams({
+        ...metaData,
+        ...webflowInputs,
+        ...formFieldsInputs,
+    });
+
+    const siteId = document.querySelector('html').getAttribute('data-wf-site');
+    const formSubmissionPayload = new URLSearchParams({
+        ...webflowInputs,
+        ...formFieldsInputs,
+    });
+
+    const parsedFormData = {};
+    formSubmissionPayload.forEach((value, key) => {
+        const formattedKey = key.replace(/^fields\[(.*)\]$/, '$1');
+        parsedFormData[formattedKey] = value;
+    });
+
+    // Create clean form data (without cf-turnstile-response)
+    const { "cf-turnstile-response": _, ...cleanFormData } = parsedFormData;
+
+    try {
+        let webflowSuccess = false;
+        let backendSuccess = false;
+
+        // ✅ Always try Webflow submission
+        let webflowFormSubmissionResponse;
+        try {
+            webflowFormSubmissionResponse = await fetch(
+                `https://webflow.com/api/v1/form/${siteId}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        Accept: '*/*',
+                    },
+                    body: payload.toString(),
+                }
+            );
+            webflowSuccess = webflowFormSubmissionResponse.ok;
+        } catch (webflowError) {
+            console.warn('Webflow submission failed:', webflowError);
+            webflowSuccess = false;
+        }
+
+        // Staging (*.webflow.io) gets the full app without a license;
+        // Production (custom domain) needs an active license.
+        const canUseProFeatures = await isAppAllowedToRun(siteId);
+
+        if (canUseProFeatures) {
+            // 🔐 Try backend submission only when allowed
+            try {
+                const formSubmissionResponse = await fetch(`${BASE_URL}/api/sites/handleFormSubmission`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        siteId,
+                        formId: formElementId,
+                        formName,
+                        formData: cleanFormData,
+                        webflowPayload: payload,
+                    }),
+                });
+
+                backendSuccess = formSubmissionResponse.ok;
+
+                if (backendSuccess) {
+                    // Send notification
+                    try {
+                        await fetch(`https://form-fields-pro-email-notifier-staging.up.railway.app/api/send-email`, {
+                            method: 'POST',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                siteId,
+                                formId: formElementId,
+                                formData: cleanFormData,
+                            }),
+                        });
+                    } catch (notificationError) {
+                        console.warn('Notification email failed:', notificationError);
+                        // Don't fail on notification error
+                    }
+                }
+            } catch (backendError) {
+                console.warn('Backend submission failed:', backendError);
+                backendSuccess = false;
+            }
+        } else {
+            console.warn(
+                'Form Fields Pro: No valid license on a Production domain — skipping backend & notification submission.',
+            );
+        }
+
+        submitButton.value = submitButtonOriginalLabel;
+        const redirectUrl = form.getAttribute('redirect');
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+            return;
+        }
+
+        const success = canUseProFeatures ? (webflowSuccess || backendSuccess) : webflowSuccess;
+        showFormResult(form, success);
+    } catch (error) {
+        console.error('Unexpected error during form submission:', error);
+        submitButton.value = submitButtonOriginalLabel;
+        showFormResult(form, false);
+    }
+}
+
+function showFormResult(form, success) {
+    form.style.display = 'none';
+    const el = document.querySelector(`#${form.id} ~ .w-form-${success ? 'done' : 'fail'}`);
+    if (el) el.style.display = 'block';
+}
+
+function getFormMetaData(form) {
+    return {
+        name: form.getAttribute('data-name'),
+        pageId: form.getAttribute('data-wf-page-id'),
+        elementId: form.getAttribute('data-wf-element-id'),
+        source: window.location.href,
+
+        test: false,
+        dolphin: false,
+    }
+}
+
+function getWebflowInputFieldsData(form) {
+    const webflowInputElements = form.querySelectorAll(`input.w-input`);
+    const data = {};
+
+    for (let input of webflowInputElements) {
+        const name = input.getAttribute("data-name");
+        const value = input.value;
+
+        if (name) {
+            data[`fields[${name}]`] = value;
+        }
+    }
+
+    // ✅ Get cf-turnstile-response input (even though it's hidden)
+    const turnstileInput = form.querySelector(`input[name="cf-turnstile-response"]`);
+    if (turnstileInput) {
+        data["fields[cf-turnstile-response]"] = turnstileInput.value;
+    }
+
+    return data;
+}
+
+function getFormFieldsInputData(form) {
+    const webflowInputElements = form.querySelectorAll(`[form-fields-data-input]`)
+
+    const data = {}
+    for (let input of webflowInputElements) {
+        const name = input.getAttribute('name')
+        const value = input.value
+
+        data[`fields[${name}]`] = value
+    }
+
+    return data
+}
+
+function setValidationMessage(field, message) {
+    const node = getParentFormFieldsWrapperDiv(field)?.querySelector('.form-fields-data-validation-message')
+    if (node) node.innerHTML = message || ''
+}
+
+function validateFieldData(field, value, pattern, errorMessage) {
+    const ok = !(value.length > 0 && !pattern.test(value))
+    setValidationMessage(field, ok ? '' : errorMessage)
+    return ok
+}
+
+function validateTypedFields(root = document, { scoped = false } = {}) {
+    const prefix = scoped ? '' : '[form-fields-wrapper="true"] '
+    for (const f of root.querySelectorAll(`${prefix}input[type="url"]`)) {
+        if (!validateFieldData(f, f.value, URL_PATTERN_REGEX, 'Please enter a valid url')) return false
+    }
+    for (const f of root.querySelectorAll(`${prefix}input[type="email"]`)) {
+        const message = f.getAttribute('data-invalid-error-msg') || 'Please enter a valid email'
+        if (!validateFieldData(f, f.value, EMAIL_PATTERN_REGEX, message)) return false
+    }
+    for (const f of root.querySelectorAll(`${prefix}input[type="number"]`)) {
+        if (f.required && f.value.length < 6) {
+            setValidationMessage(f, 'Invalid phone number')
+            return false
+        }
+    }
+    return true
+}
+
+function validateRequiredFields(root) {
+    const scoped = root !== document && root.tagName !== 'FORM'
+    let ok = validateTypedFields(root, { scoped })
+    for (const input of root.querySelectorAll('[form-fields-wrapper="true"] [required]')) {
+        if (!input.value) {
+            ok = false
+            setValidationMessage(input, 'This field is required')
+        } else if (ok) {
+            setValidationMessage(input, '')
+        }
+    }
+    return ok
+}
+
+function initializeInputValidationEvents() {
+    document.querySelectorAll('[form-fields-wrapper="true"] input[type="url"]').forEach((field) => {
+        field.addEventListener('input', (e) => validateFieldData(field, e.target.value, URL_PATTERN_REGEX, 'Enter a valid URL'))
+    })
+    document.querySelectorAll('[form-fields-wrapper="true"] input[type="email"]').forEach((field) => {
+        const message = field.getAttribute('data-invalid-error-msg') || 'Enter a valid email'
+        field.addEventListener('input', (e) => validateFieldData(field, e.target.value, EMAIL_PATTERN_REGEX, message))
+    })
+}
+
+const validateAllFields = () => validateTypedFields(document)
+
+/** Conditional logic */
+const FORM_STATE = {}
+let conditionalLogicFields = []
+
+function initializeConditionalLogic() {
+    conditionalLogicFields = document.querySelectorAll('[conditional-logic]')
+    if (!conditionalLogicFields.length) return
+
+    conditionalLogicFields.forEach((field) => toggleDisplay(field))
+
+    observeInputChangesAndFireConditionalLogic()
+}
+
+function toggleDisplay(element, show = false) {
+    if (show) element.style.display = 'initial'
+    else element.style.display = 'none'
+}
+
+async function observeInputChangesAndFireConditionalLogic() {
+    syncFormState()
+
+    conditionalLogicFields.forEach((field) => reactToCurrentFormStateBasedOnConditionalLogic(field))
+
+    await sleep(450)
+    return observeInputChangesAndFireConditionalLogic()
+}
+
+function syncFormState() {
+    const allInputFields = [...document.querySelectorAll(`input.w-input`), ...document.querySelectorAll('[form-fields-data-input]')]
+
+    allInputFields.forEach((input) => {
+        const name = input.getAttribute('name')
+        const value = input.value
+
+        FORM_STATE[name] = value
+    })
+}
+
+function reactToCurrentFormStateBasedOnConditionalLogic(element) {
+    /** @type {TRuleset[][]} */
+    const ruleGroups = JSON.parse(element.getAttribute('conditional-logic'))
+
+    const result = ruleGroups.some((ruleGroup) => ruleGroup.every((rule) => resolveConditionalLogicRuleset(rule)))
+
+    toggleDisplay(element, result)
+}
+
+function resolveConditionalLogicRuleset(ruleset) {
+    const { inputName, compareLogic, compareValue } = ruleset
+    const inputValue = FORM_STATE[inputName] || ''
+
+    switch (compareLogic) {
+        case 'HAS_ANY_VALUE':
+            return inputValue.length > 0
+        case 'HAS_NO_VALUE':
+            return inputValue.length === 0
+        case 'CONTAINS':
+            return inputValue.toLowerCase().includes(compareValue.toLowerCase())
+        case 'IS_EQUAL':
+            return inputValue == compareValue
+        case 'NOT_EQUAL':
+            return inputValue != compareValue
+        case 'IS_GREATER_THAN':
+            return inputValue > compareValue
+        case 'IS_LESS_THAN':
+            return inputValue < compareValue
+        default:
+            return false
+    }
+}
+
+const validateCurrentPage = () => {
+    const formElement = document.querySelector('[fa-webflow-form]')
+    if (!formElement) return
+
+    const steps = formElement.querySelectorAll('[fa-form-step]')
+    const pages = formElement.querySelectorAll('[fa-form-page]')
+    const previousButton = formElement.querySelector('[fa-form-previous-button]')
+    const nextButton = formElement.querySelector('[fa-form-next-button]')
+    const submitButton = formElement.querySelector('[fa-form-submit-button]')
+
+    let currentStepIndex = 0
+
+    function updateButtonVisibility() {
+        if (previousButton) previousButton.style.display = currentStepIndex === 0 ? 'none' : ''
+        if (nextButton) nextButton.style.display = currentStepIndex === steps.length - 1 ? 'none' : ''
+        if (submitButton) submitButton.style.display = currentStepIndex !== steps.length - 1 ? 'none' : ''
+    }
+
+    function showPageByIndex(index) {
+        if (index < 0 || index >= steps.length) return
+
+        pages.forEach((page, i) => {
+            page.classList.toggle('hidden', i !== index)
+        })
+
+        steps.forEach((step, i) => {
+            const counter = step.querySelector('[fa-form-step-counter]')
+            const successIcon = step.querySelector('[fa-form-step-success-icon]')
+            const label = step.querySelector('[fa-form-step-label]')
+            const done = i < index
+            const active = i === index
+            counter?.classList.toggle('hidden', done)
+            successIcon?.classList.toggle('hidden', !done)
+            step.classList.toggle('active-step', active)
+            counter?.classList.toggle('active-counter', active)
+            label?.classList.toggle('active-label', done || active)
+        })
+
+        currentStepIndex = index
+        updateButtonVisibility()
+    }
+
+    function validateCurrentPageData() {
+        const currentPage = pages[currentStepIndex]
+        return currentPage ? validateRequiredFields(currentPage) : false
+    }
+
+    steps.forEach((step, index) => {
+        step.addEventListener('click', () => {
+            if (currentStepIndex < index) {
+                if (validateCurrentPageData()) {
+                    showPageByIndex(index)
+                }
+            } else {
+                showPageByIndex(index)
+            }
+        })
+    })
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            const validated = validateCurrentPageData()
+
+            if (validated && currentStepIndex < steps.length - 1) {
+                showPageByIndex(currentStepIndex + 1)
+            }
+        })
+    }
+
+    if (previousButton) {
+        previousButton.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                showPageByIndex(currentStepIndex - 1)
+            }
+        })
+    }
+
+    showPageByIndex(0)
+}
+
+/** Bootstraps Form Fields Pro for the current page. */
+async function initializeFormFieldsPro() {
+    const siteIdElement = document.querySelector('html')
+    if (!siteIdElement) {
+        console.warn('Form Fields Pro: Could not find html element')
+        return
+    }
+    if (!document.querySelector('[fa-form="true"]')) return
+
+    const siteId = siteIdElement.getAttribute('data-wf-site')
+    if (await isAppAllowedToRun(siteId)) {
+        makeTheFormInteractive()
+        return
+    }
+
+    console.warn(
+        'Form Fields Pro: No valid license. Without a license you can publish to Staging (*.webflow.io) only. A valid license is required to use Form Fields Pro on Production (custom domain).',
+    )
+}
+
+async function isAppAllowedToRun(siteId) {
+    return isUsingWebflowDomain() || hasValidLicenseKey(siteId)
+}
+
+/** True when hosted on *.webflow.io (staging). */
+function isUsingWebflowDomain(url = window.location.href) {
+    let hostname;
+
+    try {
+        hostname = new URL(url).hostname;
+    } catch {
+        hostname = String(url);
+    }
+
+    // Normalise case and any trailing dot from a fully qualified hostname
+    hostname = hostname.toLowerCase().replace(/\.$/, '');
+
+    return hostname === 'webflow.io' || hostname.endsWith('.webflow.io');
+}
+
+let licenseCheckPromise = null;
+
+function hasValidLicenseKey(siteId) {
+    // A Production page without a Webflow site ID cannot have a valid license.
+    if (!siteId) {
+        return Promise.resolve(false);
+    }
+
+    if (licenseCheckPromise) {
+        return licenseCheckPromise;
+    }
+
+    licenseCheckPromise = (async () => {
+        try {
+            const res = await fetch(
+                `https://cache-service-staging.up.railway.app/api/license?siteId=${siteId}&appName=form-fields-pro`,
+            );
+            if (!res.ok) {
+                return false;
+            }
+            const data = await res.json();
+            return data.active === true;
+        } catch (err) {
+            console.warn('Form Fields Pro: License check failed', err);
+            return false;
+        }
+    })();
+
+    return licenseCheckPromise;
+}
+
+async function makeTheFormInteractive() {
+    const initializers = [
+        formFieldsDateInput,
+        formFieldsUserIp,
+        formFieldsNumberSlider,
+        formFieldsSelect,
+        formFieldsPhoneNumberInput,
+        formFieldsColorPickerInput,
+        formFieldsFileUploadInput,
+        formFieldsNetPromoterScoreInput,
+        formFieldsLikertScaleInput,
+        initializeInputValidationEvents,
+        preventWebflowDefaultFormSubmission,
+        addCustomFormSubmissionLogic,
+        initializeConditionalLogic,
+        validateCurrentPage,
+    ]
+
+    // A vendor CDN being blocked or a single field type throwing must not stop
+    // the remaining features — especially the submission handlers.
+    for (const initialize of initializers) {
+        try {
+            Promise.resolve(initialize()).catch((err) => {
+                console.warn(`Form Fields Pro: ${initialize.name} failed`, err)
+            })
+        } catch (err) {
+            console.warn(`Form Fields Pro: ${initialize.name} failed`, err)
+        }
+    }
+}
+
+initializeFormFieldsPro()
