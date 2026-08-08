@@ -923,14 +923,23 @@ async function formFieldsFileUploadInput() {
                 }
             }, {})
 
+            const parsedMaxFiles = parseInt(attrs.data_max_files, 10)
+            const parsedMaxFilesize = parseInt(attrs.data_max_file_size, 10)
+            // Dropzone treats NaN as "unlimited" — fall back to safe defaults.
+            const maxFiles = Number.isFinite(parsedMaxFiles) && parsedMaxFiles > 0 ? parsedMaxFiles : 1
+            const maxFilesizeMb =
+                Number.isFinite(parsedMaxFilesize) && parsedMaxFilesize > 0 ? parsedMaxFilesize : 5
+            // Raw file cap before FileReader (data URLs are ~33% larger).
+            const maxDataUrlSourceBytes = Math.min(maxFilesizeMb, 5) * 1024 * 1024
+
             const dropzone = new Dropzone(`#${i}`, {
                 url: '#',
                 method: 'post',
                 paramName: 'file',
                 autoProcessQueue: false,
                 addRemoveLinks: true,
-                maxFiles: parseInt(attrs.data_max_files),
-                maxFilesize: parseInt(attrs.data_max_file_size),
+                maxFiles,
+                maxFilesize: maxFilesizeMb,
                 acceptedFiles: attrs.data_accepted_files,
             })
 
@@ -946,6 +955,8 @@ async function formFieldsFileUploadInput() {
                 element.parentElement?.appendChild(hidden)
             }
 
+            let pendingUploadSync = Promise.resolve()
+
             const syncFilesToHidden = async () => {
                 const files = dropzone.files || []
                 if (!files.length) {
@@ -956,6 +967,13 @@ async function formFieldsFileUploadInput() {
                     files.map(
                         (file) =>
                             new Promise((resolve) => {
+                                if (file.size > maxDataUrlSourceBytes) {
+                                    console.warn(
+                                        `Form Fields Pro: File "${file.name}" exceeds ${maxDataUrlSourceBytes} bytes — skipped.`,
+                                    )
+                                    resolve({ name: file.name, error: 'file_too_large', size: file.size })
+                                    return
+                                }
                                 const reader = new FileReader()
                                 reader.onload = () =>
                                     resolve({
@@ -969,14 +987,29 @@ async function formFieldsFileUploadInput() {
                             }),
                     ),
                 )
-                hidden.value = JSON.stringify(encoded)
+                hidden.value = JSON.stringify(encoded.filter((item) => item && !item.error))
             }
 
-            dropzone.on('addedfile', () => {
-                void syncFilesToHidden()
+            const queueUploadSync = () => {
+                pendingUploadSync = pendingUploadSync.then(syncFilesToHidden, syncFilesToHidden)
+                return pendingUploadSync
+            }
+
+            // Submit waits on this so FileReader cannot race form payload collection.
+            element._ffpAwaitUploads = () => pendingUploadSync
+
+            dropzone.on('addedfile', (file) => {
+                if (file.size > maxDataUrlSourceBytes) {
+                    console.warn(
+                        `Form Fields Pro: File "${file.name}" exceeds size limit — removed before encoding.`,
+                    )
+                    dropzone.removeFile(file)
+                    return
+                }
+                void queueUploadSync()
             })
             dropzone.on('removedfile', () => {
-                void syncFilesToHidden()
+                void queueUploadSync()
             })
             dropzone.on('success', function () {
                 const borderRadius = $element.css('border-radius')
@@ -1096,13 +1129,26 @@ function getFfpNativeForms() {
     const roots = document.querySelectorAll('[fa-form="true"], [fa-webflow-form]')
     const forms = new Set()
     roots.forEach((root) => {
-        if (root.tagName === 'FORM') forms.add(root)
-        root.querySelectorAll('form').forEach((f) => forms.add(f))
-        const nested = root.closest?.('form')
-        if (nested) forms.add(nested)
-        // Common pattern: fa-form wrapper contains (or is next to) the native <form>
-        const siblingForm = root.querySelector?.('form') || root.parentElement?.querySelector?.('form')
-        if (siblingForm) forms.add(siblingForm)
+        // Shell is the <form> itself
+        if (root.tagName === 'FORM') {
+            forms.add(root)
+            return
+        }
+        // Prefer direct child form(s) of this FFP shell — never parent.querySelector (sibling hijack)
+        const directChildForms = root.querySelectorAll(':scope > form')
+        if (directChildForms.length) {
+            directChildForms.forEach((f) => forms.add(f))
+            return
+        }
+        // Nested form inside the shell
+        const nestedForms = root.querySelectorAll('form')
+        if (nestedForms.length) {
+            nestedForms.forEach((f) => forms.add(f))
+            return
+        }
+        // Shell wrapped by a form belonging to this instance
+        const enclosing = root.closest('form')
+        if (enclosing) forms.add(enclosing)
     })
     return [...forms]
 }
@@ -1123,8 +1169,14 @@ function addCustomFormSubmissionLogic() {
 
         form.addEventListener('submit', (e) => {
             e.preventDefault()
+            // Lock synchronously before any await so rapid double-clicks cannot race.
             if (form.dataset.ffpSubmitting === '1') return
-            if (validateData(form)) handleFormSubmit(form)
+            form.dataset.ffpSubmitting = '1'
+            if (!validateData(form)) {
+                form.dataset.ffpSubmitting = '0'
+                return
+            }
+            handleFormSubmit(form)
         })
     }
 }
@@ -1159,18 +1211,28 @@ async function handleFormSubmit(form) {
     const submitButtonOriginalLabel = submitButton?.value ?? submitButton?.textContent ?? 'Submit';
     const submitButtonLoadingLabel = submitButton?.getAttribute?.('data-wait') || 'Please wait...';
 
+    const unlockSubmit = () => {
+        form.dataset.ffpSubmitting = '0';
+        if (submitButton) {
+            submitButton.removeAttribute('disabled');
+            if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
+            else submitButton.textContent = submitButtonOriginalLabel;
+        }
+    };
+
     const faForm =
         form.closest('[fa-form="true"]') ||
         form.querySelector('[fa-form="true"]') ||
         form.parentElement?.closest?.('[fa-form="true"]');
     if (!faForm) {
         console.warn('Form Fields Pro: Submit ignored — form is not inside an [fa-form] wrapper');
+        unlockSubmit();
         return;
     }
     const formElementId = faForm.getAttribute('fa-form-id');
     const formName = faForm.getAttribute('fa-form-name');
 
-    if (form.dataset.ffpSubmitting === '1') return;
+    // Submitting flag is set synchronously in the submit listener; keep it asserted here.
     form.dataset.ffpSubmitting = '1';
 
     if (submitButton) {
@@ -1179,32 +1241,35 @@ async function handleFormSubmit(form) {
         else submitButton.textContent = submitButtonLoadingLabel;
     }
 
-    const metaData = getFormMetaData(form);
-    const webflowInputs = getWebflowInputFieldsData(form);
-    const formFieldsInputs = getFormFieldsInputData(form);
-
-    const payload = new URLSearchParams({
-        ...metaData,
-        ...webflowInputs,
-        ...formFieldsInputs,
-    });
-
-    const siteId = document.querySelector('html').getAttribute('data-wf-site');
-    const formSubmissionPayload = new URLSearchParams({
-        ...webflowInputs,
-        ...formFieldsInputs,
-    });
-
-    const parsedFormData = {};
-    formSubmissionPayload.forEach((value, key) => {
-        const formattedKey = key.replace(/^fields\[(.*)\]$/, '$1');
-        parsedFormData[formattedKey] = value;
-    });
-
-    // Create clean form data (without cf-turnstile-response)
-    const { "cf-turnstile-response": _, ...cleanFormData } = parsedFormData;
-
     try {
+        // Wait for Dropzone FileReader encoding so hidden inputs are ready.
+        await waitForPendingFileUploads(form);
+
+        const metaData = getFormMetaData(form);
+        const webflowInputs = getWebflowInputFieldsData(form);
+        const formFieldsInputs = getFormFieldsInputData(form);
+
+        const payload = new URLSearchParams({
+            ...metaData,
+            ...webflowInputs,
+            ...formFieldsInputs,
+        });
+
+        const siteId = document.querySelector('html').getAttribute('data-wf-site');
+        const formSubmissionPayload = new URLSearchParams({
+            ...webflowInputs,
+            ...formFieldsInputs,
+        });
+
+        const parsedFormData = {};
+        formSubmissionPayload.forEach((value, key) => {
+            const formattedKey = key.replace(/^fields\[(.*)\]$/, '$1');
+            parsedFormData[formattedKey] = value;
+        });
+
+        // Create clean form data (without cf-turnstile-response)
+        const { "cf-turnstile-response": _, ...cleanFormData } = parsedFormData;
+
         let webflowSuccess = false;
         let backendSuccess = false;
 
@@ -1282,16 +1347,9 @@ async function handleFormSubmit(form) {
             );
         }
 
-        // Licensed sites need backend success for integrations/notifications to have run.
+        // Licensed forms: success ONLY when backend succeeded (not Webflow-only).
         // Staging without a license relies on Webflow alone.
-        const success = hasLicense ? backendSuccess || webflowSuccess : webflowSuccess;
-
-        if (submitButton) {
-            submitButton.removeAttribute('disabled');
-            if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
-            else submitButton.textContent = submitButtonOriginalLabel;
-        }
-        form.dataset.ffpSubmitting = '0';
+        const success = hasLicense ? backendSuccess : webflowSuccess;
 
         const redirectUrl = form.getAttribute('redirect');
         if (success && redirectUrl) {
@@ -1302,14 +1360,20 @@ async function handleFormSubmit(form) {
         showFormResult(form, success);
     } catch (error) {
         console.error('Unexpected error during form submission:', error);
-        form.dataset.ffpSubmitting = '0';
-        if (submitButton) {
-            submitButton.removeAttribute('disabled');
-            if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
-            else submitButton.textContent = submitButtonOriginalLabel;
-        }
         showFormResult(form, false);
+    } finally {
+        unlockSubmit();
     }
+}
+
+async function waitForPendingFileUploads(form) {
+    const zones = form.querySelectorAll('.dropzone');
+    if (!zones.length) return;
+    await Promise.all(
+        [...zones].map((zone) =>
+            typeof zone._ffpAwaitUploads === 'function' ? zone._ffpAwaitUploads() : Promise.resolve(),
+        ),
+    );
 }
 
 function showFormResult(form, success) {
@@ -1500,6 +1564,10 @@ function syncFormState() {
     const allInputFields = [
         ...document.querySelectorAll('input.w-input, textarea.w-input, select.w-select'),
         ...document.querySelectorAll('[form-fields-data-input]'),
+        // Webflow checkbox/radio wrappers (inputs often use w-checkbox-input / w-radio-input)
+        ...document.querySelectorAll(
+            '.w-checkbox input[type="checkbox"], .w-radio input[type="radio"], input.w-checkbox-input, input.w-radio-input, input.w-checkbox, input.w-radio',
+        ),
     ]
 
     allInputFields.forEach((input) => {
@@ -1700,7 +1768,9 @@ function isUsingWebflowDomain(url = window.location.href) {
     return hostname === 'webflow.io' || hostname.endsWith('.webflow.io');
 }
 
+const LICENSE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour — do not cache forever across long-lived tabs
 let licenseCheckPromise = null;
+let licenseCheckCachedAt = 0;
 
 function hasValidLicenseKey(siteId) {
     // A Production page without a Webflow site ID cannot have a valid license.
@@ -1708,10 +1778,12 @@ function hasValidLicenseKey(siteId) {
         return Promise.resolve(false);
     }
 
-    if (licenseCheckPromise) {
+    const now = Date.now();
+    if (licenseCheckPromise && now - licenseCheckCachedAt < LICENSE_CACHE_TTL_MS) {
         return licenseCheckPromise;
     }
 
+    licenseCheckCachedAt = now;
     licenseCheckPromise = (async () => {
         try {
             const res = await fetch(
