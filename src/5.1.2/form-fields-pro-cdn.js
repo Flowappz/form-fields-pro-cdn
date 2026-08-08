@@ -987,7 +987,10 @@ async function formFieldsFileUploadInput() {
                             }),
                     ),
                 )
-                hidden.value = JSON.stringify(encoded.filter((item) => item && !item.error))
+                hidden.value = JSON.stringify(encoded.filter((item) => item && !item.error && item.dataUrl))
+                if (!hidden.value || hidden.value === '[]') {
+                    hidden.value = ''
+                }
             }
 
             const queueUploadSync = () => {
@@ -1400,7 +1403,9 @@ function getFormMetaData(form) {
 
 function getWebflowInputFieldsData(form) {
     const data = {};
-    const nodes = form.querySelectorAll('input.w-input, textarea.w-input, select.w-select, input.w-checkbox, input.w-radio');
+    const nodes = form.querySelectorAll(
+        'input.w-input, textarea.w-input, select.w-select, input.w-checkbox, input.w-radio, input.w-checkbox-input, input.w-radio-input, .w-checkbox input[type="checkbox"], .w-radio input[type="radio"]',
+    );
 
     for (const input of nodes) {
         const name = input.getAttribute('data-name') || input.getAttribute('name');
@@ -1408,7 +1413,13 @@ function getWebflowInputFieldsData(form) {
 
         if (input.type === 'checkbox' || input.type === 'radio') {
             if (!input.checked) continue;
-            data[`fields[${name}]`] = input.value || 'true';
+            const key = `fields[${name}]`;
+            // Multi-checkbox: join values; radios overwrite with the checked option
+            if (input.type === 'checkbox' && data[key]) {
+                data[key] = `${data[key]},${input.value || 'true'}`;
+            } else {
+                data[key] = input.value || 'true';
+            }
             continue;
         }
 
@@ -1497,13 +1508,39 @@ function validateTypedFields(root = document, { scoped = false } = {}) {
 function validateRequiredFields(root) {
     const scoped = root !== document && root.tagName !== 'FORM'
     let ok = validateTypedFields(root, { scoped })
+    const checkedRadioNames = new Set()
+    for (const input of root.querySelectorAll(
+        '[form-fields-wrapper="true"] input[type="radio"]:checked, form input[type="radio"]:checked',
+    )) {
+        const name = input.getAttribute('name')
+        if (name) checkedRadioNames.add(name)
+    }
+
     for (const input of root.querySelectorAll('[form-fields-wrapper="true"] [required]')) {
         if (isFieldVisiblyHidden(input)) continue
 
+        // Radio groups: only one option needs to be checked (native HTML behavior)
+        if (input.type === 'radio') {
+            const name = input.getAttribute('name')
+            if (name && checkedRadioNames.has(name)) {
+                if (ok) setValidationMessage(input, '')
+                continue
+            }
+            ok = false
+            setValidationMessage(input, 'This field is required')
+            continue
+        }
+
+        const emptyFile =
+            input.type === 'file' || input.hasAttribute('form-fields-file-upload')
+                ? !input.value || input.value === '[]' || input.value === 'null'
+                : false
+
         const empty =
+            emptyFile ||
             !input.value ||
             (input.type === 'tel' && isDialCodeOnlyPhoneValue(input.value)) ||
-            ((input.type === 'checkbox' || input.type === 'radio') && !input.checked)
+            (input.type === 'checkbox' && !input.checked)
 
         if (empty) {
             ok = false
@@ -1768,9 +1805,11 @@ function isUsingWebflowDomain(url = window.location.href) {
     return hostname === 'webflow.io' || hostname.endsWith('.webflow.io');
 }
 
-const LICENSE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour — do not cache forever across long-lived tabs
+const LICENSE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour for successful checks
+const LICENSE_NEGATIVE_CACHE_TTL_MS = 60 * 1000; // 1 minute on failure — avoid long outages
 let licenseCheckPromise = null;
 let licenseCheckCachedAt = 0;
+let licenseCheckWasNegative = false;
 
 function hasValidLicenseKey(siteId) {
     // A Production page without a Webflow site ID cannot have a valid license.
@@ -1779,7 +1818,8 @@ function hasValidLicenseKey(siteId) {
     }
 
     const now = Date.now();
-    if (licenseCheckPromise && now - licenseCheckCachedAt < LICENSE_CACHE_TTL_MS) {
+    const ttl = licenseCheckWasNegative ? LICENSE_NEGATIVE_CACHE_TTL_MS : LICENSE_CACHE_TTL_MS;
+    if (licenseCheckPromise && now - licenseCheckCachedAt < ttl) {
         return licenseCheckPromise;
     }
 
@@ -1790,12 +1830,16 @@ function hasValidLicenseKey(siteId) {
                 `https://license.flowappz.com/api/license?siteId=${siteId}&appName=form-fields-pro`,
             );
             if (!res.ok) {
+                licenseCheckWasNegative = true;
                 return false;
             }
             const data = await res.json();
-            return data.active === true;
+            const active = data.active === true;
+            licenseCheckWasNegative = !active;
+            return active;
         } catch (err) {
             console.warn('Form Fields Pro: License check failed', err);
+            licenseCheckWasNegative = true;
             return false;
         }
     })();
