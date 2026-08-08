@@ -817,7 +817,8 @@ async function formFieldsPhoneNumberInput() {
                 }
                 const $input = $field.find('.number-input-field')
                 const current = String($input.val() || '').trim()
-                if (current && current !== defaultDial) return
+                // Treat dial-code-only (with optional trailing space) as still default
+                if (current && current !== defaultDial && current !== defaultDial + ' ') return
 
                 applyCountry($field.find('.number-input-icon-wrapper'), $input, country)
                 $field.attr('data-selected-country', country.code)
@@ -952,7 +953,15 @@ async function formFieldsFileUploadInput() {
                 hidden.name = fieldName
                 hidden.setAttribute('form-fields-data-input', 'true')
                 hidden.setAttribute('data-ffp-upload-for', i)
+                // Move required onto the value-bearing hidden so validation sees encoded files
+                if (element.hasAttribute('required')) {
+                    hidden.setAttribute('required', 'required')
+                    element.removeAttribute('required')
+                }
                 element.parentElement?.appendChild(hidden)
+            } else if (element.hasAttribute('required') && !hidden.hasAttribute('required')) {
+                hidden.setAttribute('required', 'required')
+                element.removeAttribute('required')
             }
 
             let pendingUploadSync = Promise.resolve()
@@ -1170,16 +1179,23 @@ function addCustomFormSubmissionLogic() {
         form.setAttribute('novalidate', true)
         addValidationMessageNodes(form)
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault()
             // Lock synchronously before any await so rapid double-clicks cannot race.
             if (form.dataset.ffpSubmitting === '1') return
             form.dataset.ffpSubmitting = '1'
-            if (!validateData(form)) {
+            try {
+                // Await file encodes before required validation so hidden inputs are populated
+                await waitForPendingFileUploads(form)
+                if (!validateData(form)) {
+                    form.dataset.ffpSubmitting = '0'
+                    return
+                }
+                await handleFormSubmit(form)
+            } catch (err) {
+                console.error('Form Fields Pro: Submit failed', err)
                 form.dataset.ffpSubmitting = '0'
-                return
             }
-            handleFormSubmit(form)
         })
     }
 }
@@ -1443,7 +1459,12 @@ function getFormFieldsInputData(form) {
 
         if (input.type === 'checkbox' || input.type === 'radio') {
             if (!input.checked) continue
-            data[`fields[${name}]`] = input.value || 'true'
+            const key = `fields[${name}]`
+            if (input.type === 'checkbox' && data[key]) {
+                data[key] = `${data[key]},${input.value || 'true'}`
+            } else {
+                data[key] = input.value || 'true'
+            }
             continue
         }
 
@@ -1607,17 +1628,32 @@ function syncFormState() {
         ),
     ]
 
+    // Reset checkbox groups so joins rebuild from currently checked inputs only
+    const checkboxNames = new Set()
+    allInputFields.forEach((input) => {
+        if (input.type === 'checkbox') {
+            const name = input.getAttribute('name')
+            if (name) checkboxNames.add(name)
+        }
+    })
+    checkboxNames.forEach((name) => {
+        FORM_STATE[name] = ''
+    })
+
     allInputFields.forEach((input) => {
         const name = input.getAttribute('name')
         if (!name) return
 
         if (input.type === 'checkbox' || input.type === 'radio') {
             if (!input.checked) {
-                // Don't overwrite a checked sibling in the same name group with empty
-                if (FORM_STATE[name] === undefined) FORM_STATE[name] = ''
+                if (input.type === 'radio' && FORM_STATE[name] === undefined) FORM_STATE[name] = ''
                 return
             }
-            FORM_STATE[name] = input.value || 'true'
+            if (input.type === 'checkbox' && FORM_STATE[name]) {
+                FORM_STATE[name] = `${FORM_STATE[name]},${input.value || 'true'}`
+            } else {
+                FORM_STATE[name] = input.value || 'true'
+            }
             return
         }
 
@@ -1650,7 +1686,9 @@ function resolveConditionalLogicRuleset(ruleset) {
         case 'HAS_NO_VALUE':
             return inputValue.length === 0
         case 'CONTAINS':
-            return inputValue.toLowerCase().includes(compareValue.toLowerCase())
+            return String(inputValue)
+                .toLowerCase()
+                .includes(String(compareValue ?? '').toLowerCase())
         case 'IS_EQUAL':
             return inputValue == compareValue
         case 'NOT_EQUAL':
