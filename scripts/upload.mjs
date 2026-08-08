@@ -208,10 +208,62 @@ if (!existsSync(filePath)) {
 
 console.log(`\nUsing local file: ${filePath}`);
 
+// ─── Inject environment-specific service URLs ─────────────────────────────────
+const DEFAULT_DATA_CLIENT_URLS = {
+  production: "https://flowapps-data-client.vercel.app",
+  staging: "https://flowapps-data-client-staging.up.railway.app",
+  standalone: "https://flowapps-data-client.vercel.app",
+  dev: "http://localhost:3000",
+};
+const DEFAULT_EMAIL_NOTIFIER_URLS = {
+  production: "https://email-notifier-prod.up.railway.app",
+  staging: "https://form-fields-pro-email-notifier-staging.up.railway.app",
+  standalone: "https://email-notifier-prod.up.railway.app",
+  dev: "http://localhost:4000",
+};
+
+function normalizeServiceUrl(url) {
+  return String(url || "")
+    .trim()
+    .replace(/\/+$/, "")
+    .replace(/\/api$/i, "");
+}
+
+const dataClientUrl = normalizeServiceUrl(
+  process.env.DATA_CLIENT_URL || BACKEND_URL || DEFAULT_DATA_CLIENT_URLS[env],
+);
+const emailNotifierUrl = normalizeServiceUrl(
+  process.env.EMAIL_NOTIFIER_URL || DEFAULT_EMAIL_NOTIFIER_URLS[env],
+);
+
+if (!dataClientUrl || !emailNotifierUrl) {
+  console.error(
+    "✗ Missing DATA_CLIENT_URL/BACKEND_URL or EMAIL_NOTIFIER_URL for CDN placeholders.",
+  );
+  process.exit(1);
+}
+
+console.log(`Data client URL: ${dataClientUrl}`);
+console.log(`Email notifier URL: ${emailNotifierUrl}`);
+
 // ─── Minify before upload ─────────────────────────────────────────────────────
 // Source stays readable in src/; R2 + SRI hash use the minified bytes.
 console.log(`\nMinifying with terser...`);
-const source = readFileSync(filePath, "utf8");
+const rawSource = readFileSync(filePath, "utf8");
+const source = rawSource
+  .replaceAll("__FFP_DATA_CLIENT_URL__", dataClientUrl)
+  .replaceAll("__FFP_EMAIL_NOTIFIER_URL__", emailNotifierUrl);
+
+if (
+  source.includes("__FFP_DATA_CLIENT_URL__") ||
+  source.includes("__FFP_EMAIL_NOTIFIER_URL__")
+) {
+  console.error(
+    "✗ CDN placeholders were not fully replaced. Check DATA_CLIENT_URL / EMAIL_NOTIFIER_URL.",
+  );
+  process.exit(1);
+}
+
 const minifyResult = await minify(source, {
   compress: true,
   mangle: true,

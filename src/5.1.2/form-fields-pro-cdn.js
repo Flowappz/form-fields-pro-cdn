@@ -2,7 +2,24 @@
  * FORM FIELDS PRO CDN SCRIPT - v5.1.2
  * pnpm release:staging -- --version 5.1.2
  * Vendors (Select2, noUiSlider, moment, daterangepicker, etc.) load on demand.
+ *
+ * Release-time placeholders (replaced by scripts/upload.mjs):
+ *   __FFP_DATA_CLIENT_URL__
+ *   __FFP_EMAIL_NOTIFIER_URL__
  */
+
+const FFP_DATA_CLIENT_URL = (() => {
+    const injected = '__FFP_DATA_CLIENT_URL__'
+    return injected.includes('__FFP_')
+        ? 'https://flowapps-data-client-staging.up.railway.app'
+        : injected
+})()
+const FFP_EMAIL_NOTIFIER_URL = (() => {
+    const injected = '__FFP_EMAIL_NOTIFIER_URL__'
+    return injected.includes('__FFP_')
+        ? 'https://form-fields-pro-email-notifier-staging.up.railway.app'
+        : injected
+})()
 
 const EMAIL_PATTERN_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const URL_PATTERN_REGEX =
@@ -275,7 +292,7 @@ const formFieldsUserIp = async () => {
     }
 
     const getUserIp = async () => {
-        const BASE_URL = 'https://flowapps-data-client-staging.up.railway.app'
+        const BASE_URL = FFP_DATA_CLIENT_URL
         const res = await fetch(`${BASE_URL}/api/user-ip`)
 
         if (res.ok) {
@@ -711,30 +728,40 @@ async function addThirdPartyScriptForPhoneNumberInput() {
     await loadStylesheet('https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css');
     await loadScript('https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js');
 
-    // Check if the phone input element exists before trying to use it
-    const input = document.querySelector('#phone');
-    if (input) {
-        let iti = window.intlTelInput(input, {
+    const phoneInputs = document.querySelectorAll(
+        '[data-form-field-pro="number-input-with-country-code"] input[type="tel"], .number-input-field input[type="tel"], input[type="tel"][form-fields-data-input]',
+    );
+
+    if (!phoneInputs.length) {
+        console.warn('Form Fields Pro: No phone input elements found for intl-tel-input');
+        return;
+    }
+
+    phoneInputs.forEach((input) => {
+        if (input.dataset.ffpItiInitialized === '1') return;
+        input.dataset.ffpItiInitialized = '1';
+
+        const iti = window.intlTelInput(input, {
             countrySearch: false,
             utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js',
         });
 
         $.get('https://ipinfo.io', function (response) {
-            let countryCode = response.country;
+            const countryCode = response.country;
             iti.setCountry(countryCode);
         }, 'jsonp');
 
+        const formatPhoneNumber = () => {
+            if (window.intlTelInputUtils) {
+                input.value = iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL);
+            }
+        };
+
         input.addEventListener('change', formatPhoneNumber);
         input.addEventListener('keyup', formatPhoneNumber);
+    });
 
-        function formatPhoneNumber() {
-            input.value = iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL);
-        }
-
-        $('.itl').css('display', 'block');
-    } else {
-        console.warn('Form Fields Pro: Phone input element with id "phone" not found');
-    }
+    $('.itl').css('display', 'block');
 }
 
 
@@ -1000,19 +1027,28 @@ function validateData(form) {
 }
 
 async function handleFormSubmit(form) {
-    const BASE_URL = 'https://flowapps-data-client-staging.up.railway.app';
-    const submitButton = document.querySelector('input[type="submit"]');
-    const submitButtonOriginalLabel = submitButton.value;
-    const submitButtonLoadingLabel = submitButton.getAttribute('data-wait');
+    const BASE_URL = FFP_DATA_CLIENT_URL;
+    const submitButton =
+        form.querySelector('input[type="submit"]') ||
+        form.querySelector('[fa-form-submit-button]') ||
+        form.querySelector('button[type="submit"]');
+    const submitButtonOriginalLabel = submitButton?.value ?? submitButton?.textContent ?? 'Submit';
+    const submitButtonLoadingLabel = submitButton?.getAttribute?.('data-wait') || 'Please wait...';
 
-    const faForm = document.querySelector('[fa-form="true"]');
+    const faForm =
+        form.closest('[fa-form="true"]') ||
+        form.querySelector('[fa-form="true"]') ||
+        document.querySelector('[fa-form="true"]');
     if (!faForm) {
         return;
     }
     const formElementId = faForm.getAttribute('fa-form-id');
     const formName = faForm.getAttribute('fa-form-name');
 
-    submitButton.value = submitButtonLoadingLabel;
+    if (submitButton) {
+        if ('value' in submitButton) submitButton.value = submitButtonLoadingLabel;
+        else submitButton.textContent = submitButtonLoadingLabel;
+    }
 
     const metaData = getFormMetaData(form);
     const webflowInputs = getWebflowInputFieldsData(form);
@@ -1063,12 +1099,12 @@ async function handleFormSubmit(form) {
             webflowSuccess = false;
         }
 
-        // Staging (*.webflow.io) gets the full app without a license;
-        // Production (custom domain) needs an active license.
-        const canUseProFeatures = await isAppAllowedToRun(siteId);
+        // Integrations / notifications always need a valid license (backend enforces this too).
+        // Staging still gets interactive fields without a license via isAppAllowedToRun().
+        const hasLicense = await hasValidLicenseKey(siteId);
 
-        if (canUseProFeatures) {
-            // 🔐 Try backend submission only when allowed
+        if (hasLicense) {
+            // 🔐 Try backend submission only when licensed
             try {
                 const formSubmissionResponse = await fetch(`${BASE_URL}/api/sites/handleFormSubmission`, {
                     method: 'POST',
@@ -1090,7 +1126,7 @@ async function handleFormSubmit(form) {
                 if (backendSuccess) {
                     // Send notification
                     try {
-                        await fetch(`https://form-fields-pro-email-notifier-staging.up.railway.app/api/send-email`, {
+                        await fetch(`${FFP_EMAIL_NOTIFIER_URL}/api/send-email`, {
                             method: 'POST',
                             headers: {
                                 Accept: 'application/json',
@@ -1111,24 +1147,31 @@ async function handleFormSubmit(form) {
                 console.warn('Backend submission failed:', backendError);
                 backendSuccess = false;
             }
-        } else {
+        } else if (!isUsingWebflowDomain()) {
             console.warn(
                 'Form Fields Pro: No valid license on a Production domain — skipping backend & notification submission.',
             );
         }
 
-        submitButton.value = submitButtonOriginalLabel;
+        if (submitButton) {
+            if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
+            else submitButton.textContent = submitButtonOriginalLabel;
+        }
         const redirectUrl = form.getAttribute('redirect');
         if (redirectUrl) {
             window.location.href = redirectUrl;
             return;
         }
 
-        const success = canUseProFeatures ? (webflowSuccess || backendSuccess) : webflowSuccess;
+        // Webflow submission success is enough on staging without a license.
+        const success = hasLicense ? (webflowSuccess || backendSuccess) : webflowSuccess;
         showFormResult(form, success);
     } catch (error) {
         console.error('Unexpected error during form submission:', error);
-        submitButton.value = submitButtonOriginalLabel;
+        if (submitButton) {
+            if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
+            else submitButton.textContent = submitButtonOriginalLabel;
+        }
         showFormResult(form, false);
     }
 }
