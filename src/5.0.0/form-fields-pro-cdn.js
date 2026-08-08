@@ -9798,7 +9798,7 @@ function isUsingWebflowDomain(url) {
 }
 
 async function hasValidLicenseKey(siteId) {
-    const res = await fetch(`https://cache-service-staging.up.railway.app/api/license?siteId=${siteId}&appName=form-fields-pro`)
+    const res = await fetch(`https://license.flowappz.com/api/license?siteId=${siteId}&appName=form-fields-pro`)
     if (res.ok) {
         data = await res.json()
 

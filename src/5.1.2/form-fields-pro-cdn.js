@@ -1,5 +1,6 @@
 /**
  * FORM FIELDS PRO CDN SCRIPT - v5.1.2
+ * pnpm release:staging -- --version 5.1.2
  * Vendors (Select2, noUiSlider, moment, daterangepicker, etc.) load on demand.
  */
 
@@ -1459,7 +1460,7 @@ function hasValidLicenseKey(siteId) {
     licenseCheckPromise = (async () => {
         try {
             const res = await fetch(
-                `https://cache-service-staging.up.railway.app/api/license?siteId=${siteId}&appName=form-fields-pro`,
+                `https://license.flowappz.com/api/license?siteId=${siteId}&appName=form-fields-pro`,
             );
             if (!res.ok) {
                 return false;
