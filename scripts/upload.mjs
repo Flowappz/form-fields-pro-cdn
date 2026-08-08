@@ -129,15 +129,29 @@ if (!process.env.CDN_RELEASE_SECRET) {
 
 // ─── Resolve version from DB ──────────────────────────────────────────────────
 console.log(`Fetching current version from ${BACKEND_URL}...`);
-const latestRes = await fetch(`${BACKEND_URL}/api/cdn-release/latest`);
-if (!latestRes.ok) {
-  console.error("✗ Failed to fetch latest release:", await latestRes.text());
-  console.error(
-    "\nHint: staging/production backend must have /api/cdn-release/* deployed (feature/cdn-release-pipeline).",
-  );
-  process.exit(1);
+let release = null;
+try {
+  const latestRes = await fetch(`${BACKEND_URL}/api/cdn-release/latest`, {
+    headers: authHeaders(),
+  });
+  if (latestRes.ok) {
+    ({ release } = await latestRes.json());
+  } else {
+    const body = await latestRes.text();
+    console.warn(`⚠ Failed to fetch latest release (${latestRes.status}): ${body}`);
+    if (!explicitVersion && !bump) {
+      console.error(
+        "\nHint: staging/production backend must have /api/cdn-release/* deployed (feature/cdn-release-pipeline).",
+      );
+      process.exit(1);
+    }
+    console.warn("Continuing with explicit --version / --nr despite latest fetch failure.");
+  }
+} catch (err) {
+  console.warn("⚠ Latest release request failed:", err?.message || err);
+  if (!explicitVersion && !bump) process.exit(1);
 }
-let { release } = await latestRes.json();
+
 if (!release?.version) {
   const localLatest = getLatestLocalVersion();
   if (!explicitVersion && !bump && !localLatest) {
@@ -146,12 +160,12 @@ if (!release?.version) {
     );
     process.exit(1);
   }
-  // First release: seed from latest local folder (e.g. 5.0.9), then optionally bump.
   release = { version: localLatest ?? "0.0.0" };
   console.log(
     `No DB release yet — seeding from local version folder: ${release.version}`,
   );
 }
+
 const currentVersion = release.version;
 const currentHostedLocation = release.hostedLocation ?? null;
 const currentIntegrityHash = release.integrityHash ?? null;
@@ -252,14 +266,19 @@ console.log(`\nMinifying with terser...`);
 const rawSource = readFileSync(filePath, "utf8");
 const source = rawSource
   .replaceAll("__FFP_DATA_CLIENT_URL__", dataClientUrl)
-  .replaceAll("__FFP_EMAIL_NOTIFIER_URL__", emailNotifierUrl);
+  .replaceAll("__FFP_EMAIL_NOTIFIER_URL__", emailNotifierUrl)
+  .replaceAll(
+    "__FFP_SUBMISSION_SECRET__",
+    process.env.FORM_SUBMISSION_SECRET || process.env.SUBMISSION_HMAC_SECRET || "",
+  );
 
 if (
   source.includes("__FFP_DATA_CLIENT_URL__") ||
-  source.includes("__FFP_EMAIL_NOTIFIER_URL__")
+  source.includes("__FFP_EMAIL_NOTIFIER_URL__") ||
+  source.includes("__FFP_SUBMISSION_SECRET__")
 ) {
   console.error(
-    "✗ CDN placeholders were not fully replaced. Check DATA_CLIENT_URL / EMAIL_NOTIFIER_URL.",
+    "✗ CDN placeholders were not fully replaced. Check DATA_CLIENT_URL / EMAIL_NOTIFIER_URL / FORM_SUBMISSION_SECRET.",
   );
   process.exit(1);
 }

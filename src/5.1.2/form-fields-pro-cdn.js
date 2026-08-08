@@ -20,6 +20,37 @@ const FFP_EMAIL_NOTIFIER_URL = (() => {
         ? 'https://form-fields-pro-email-notifier-staging.up.railway.app'
         : injected
 })()
+const FFP_SUBMISSION_SECRET = (() => {
+    const injected = '__FFP_SUBMISSION_SECRET__'
+    return injected.includes('__FFP_') ? '' : injected
+})()
+
+async function buildSubmissionHeaders(siteId, formId) {
+    const headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    }
+    if (!FFP_SUBMISSION_SECRET || !window.crypto?.subtle) return headers
+
+    const timestamp = String(Date.now())
+    const key = await crypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(FFP_SUBMISSION_SECRET),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['sign'],
+    )
+    const sigBuf = await crypto.subtle.sign(
+        'HMAC',
+        key,
+        new TextEncoder().encode(`${siteId}:${formId}:${timestamp}`),
+    )
+    headers['X-FFP-Timestamp'] = timestamp
+    headers['X-FFP-Signature'] = [...new Uint8Array(sigBuf)]
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('')
+    return headers
+}
 
 const EMAIL_PATTERN_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const URL_PATTERN_REGEX =
@@ -34,9 +65,24 @@ function loadScript(src) {
     __ffpAssetCache[src] = new Promise((resolve, reject) => {
         const existing = document.querySelector(`script[src="${src}"]`)
         if (existing) {
-            if (existing.dataset.ffpLoaded === '1') return resolve()
-            existing.addEventListener('load', () => resolve())
+            if (existing.dataset.ffpLoaded === '1' || existing.getAttribute('data-ffp-loaded') === '1') {
+                return resolve()
+            }
+            // Script tag already present and likely finished loading before we attached listeners
+            if (existing.readyState === 'complete' || existing.readyState === 'loaded') {
+                existing.dataset.ffpLoaded = '1'
+                return resolve()
+            }
+            existing.addEventListener('load', () => {
+                existing.dataset.ffpLoaded = '1'
+                resolve()
+            })
             existing.addEventListener('error', () => reject(new Error('Failed to load ' + src)))
+            // Safety timeout — avoid hanging forever if load already fired
+            setTimeout(() => {
+                existing.dataset.ffpLoaded = '1'
+                resolve()
+            }, 3000)
             return
         }
         const script = document.createElement('script')
@@ -179,36 +225,61 @@ const formFieldsDateInput = async () => {
     }
 
     const preventFormSubmitOnFirstEnterToHideDatePicker = (inputElement) => {
-        const inputName = inputElement.getAttribute('name')
+        const inputKey = inputElement.getAttribute('form-fields-id') || inputElement.id || inputElement.getAttribute('name')
 
         $(inputElement).on('show.daterangepicker', () => {
-            datePickerState[inputName] = true
+            datePickerState[inputKey] = true
         })
 
-        $(inputElement).on('hide.daterangepicker', (e) => {
-            datePickerState[inputName] = false
+        $(inputElement).on('hide.daterangepicker', () => {
+            datePickerState[inputKey] = false
         })
 
         inputElement.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !datePickerState[inputName]) {
+            if (e.key === 'Enter' && !datePickerState[inputKey]) {
                 e.preventDefault()
-                datePickerState[inputName] = true
+                datePickerState[inputKey] = true
             }
         })
+    }
+
+    const readDatePickerOptions = (inputElement, { range = false } = {}) => {
+        const format = inputElement.getAttribute('data-format') || 'MM/DD/YYYY'
+        const firstDay = Number(inputElement.getAttribute('data-firstDay') || 0)
+        const language = inputElement.getAttribute('data-language') || 'en'
+        return {
+            showDropdowns: true,
+            autoUpdateInput: false,
+            parentEl: null,
+            locale: {
+                format,
+                firstDay: Number.isFinite(firstDay) ? firstDay : 0,
+            },
+            ...(range ? {} : { singleDatePicker: true }),
+            // language is stored for future i18n; daterangepicker uses locale.format/firstDay
+            _language: language,
+        }
     }
 
     const initializeDatePickers = () => {
         const datePickerInputs = document.querySelectorAll(selectors.DATE_PICKER)
 
         for (let inputElement of datePickerInputs) {
+            if (inputElement.dataset.ffpDateInit === '1') continue
+            inputElement.dataset.ffpDateInit = '1'
+
             const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
             inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
 
-            $(inputElement).daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                startDate: new Date(),
-                parentEl: pickerDropdownWrapperEl,
+            const opts = readDatePickerOptions(inputElement)
+            opts.parentEl = pickerDropdownWrapperEl
+
+            $(inputElement).daterangepicker(opts)
+            $(inputElement).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format(opts.locale.format))
+            })
+            $(inputElement).on('cancel.daterangepicker', function () {
+                $(this).val('')
             })
             overrideCss(inputElement)
             showDatePickerOnIconClick(inputElement)
@@ -220,14 +291,25 @@ const formFieldsDateInput = async () => {
         const datePickerInputs = document.querySelectorAll(selectors.DATE_RANGE_PICKER)
 
         for (let inputElement of datePickerInputs) {
+            if (inputElement.dataset.ffpDateInit === '1') continue
+            inputElement.dataset.ffpDateInit = '1'
+
             const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
             inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
 
-            $(inputElement).daterangepicker({
-                startDate: new Date(),
-                endDate: new Date(),
-                showDropdowns: true,
-                parentEl: pickerDropdownWrapperEl,
+            const opts = readDatePickerOptions(inputElement, { range: true })
+            opts.parentEl = pickerDropdownWrapperEl
+
+            $(inputElement).daterangepicker(opts)
+            $(inputElement).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(
+                    picker.startDate.format(opts.locale.format) +
+                        ' - ' +
+                        picker.endDate.format(opts.locale.format),
+                )
+            })
+            $(inputElement).on('cancel.daterangepicker', function () {
+                $(this).val('')
             })
             overrideCss(inputElement)
             showDatePickerOnIconClick(inputElement)
@@ -302,17 +384,19 @@ const formFieldsUserIp = async () => {
     }
 
     const collectUserIp = async () => {
-        const ip = await getUserIp()
-
-        const inputElements = document.querySelectorAll('[form-fields-pro-user-ip-input]')
-
-        for (let input of inputElements) {
-            input.value = ip
+        try {
+            const ip = await getUserIp()
+            const inputElements = document.querySelectorAll('[form-fields-pro-user-ip-input]')
+            for (const input of inputElements) {
+                input.value = ip
+            }
+        } catch (err) {
+            console.warn('Form Fields Pro: Failed to collect user IP', err)
         }
     }
 
     hideAdminAlert()
-    collectUserIp()
+    void collectUserIp()
 }
 
 /** Range sliders */
@@ -764,22 +848,25 @@ async function formFieldsColorPickerInput() {
         }
     `)
 
-    $('.color-input').spectrum({
-        type: 'color',
-        showPalette: false,
-        showInput: true,
-        allowEmpty: false,
-    })
-    let selectedInput
+    $('.color-input').each(function () {
+        const $input = $(this)
+        if ($input.data('ffpSpectrumInit')) return
+        $input.data('ffpSpectrumInit', true)
 
-    $('.sp-replacer').on('click', function (e) {
-        selectedInput = $(this)
-    })
-
-    $('.sp-choose').on('click', function () {
-        const color = selectedInput.find('.sp-preview-inner').css('background-color')
-
-        selectedInput.siblings().attr('value', color)
+        $input.spectrum({
+            type: 'color',
+            showPalette: false,
+            showInput: true,
+            allowEmpty: false,
+            change: function (color) {
+                if (!color) return
+                $input.val(color.toHexString()).trigger('change')
+            },
+            hide: function (color) {
+                if (!color) return
+                $input.val(color.toHexString()).trigger('change')
+            },
+        })
     })
 }
 
@@ -840,13 +927,58 @@ async function formFieldsFileUploadInput() {
                 url: '#',
                 method: 'post',
                 paramName: 'file',
-                autoProcessQueue: true,
+                autoProcessQueue: false,
                 addRemoveLinks: true,
                 maxFiles: parseInt(attrs.data_max_files),
                 maxFilesize: parseInt(attrs.data_max_file_size),
                 acceptedFiles: attrs.data_accepted_files,
             })
-            dropzone.on('success', function (file) {
+
+            // Persist selected files into a hidden input so submit payloads include them
+            const fieldName = element.getAttribute('name') || element.getAttribute('data-name') || i
+            let hidden = element.parentElement?.querySelector(`input[data-ffp-upload-for="${i}"]`)
+            if (!hidden) {
+                hidden = document.createElement('input')
+                hidden.type = 'hidden'
+                hidden.name = fieldName
+                hidden.setAttribute('form-fields-data-input', 'true')
+                hidden.setAttribute('data-ffp-upload-for', i)
+                element.parentElement?.appendChild(hidden)
+            }
+
+            const syncFilesToHidden = async () => {
+                const files = dropzone.files || []
+                if (!files.length) {
+                    hidden.value = ''
+                    return
+                }
+                const encoded = await Promise.all(
+                    files.map(
+                        (file) =>
+                            new Promise((resolve) => {
+                                const reader = new FileReader()
+                                reader.onload = () =>
+                                    resolve({
+                                        name: file.name,
+                                        type: file.type,
+                                        size: file.size,
+                                        dataUrl: reader.result,
+                                    })
+                                reader.onerror = () => resolve({ name: file.name, error: 'read_failed' })
+                                reader.readAsDataURL(file)
+                            }),
+                    ),
+                )
+                hidden.value = JSON.stringify(encoded)
+            }
+
+            dropzone.on('addedfile', () => {
+                void syncFilesToHidden()
+            })
+            dropzone.on('removedfile', () => {
+                void syncFilesToHidden()
+            })
+            dropzone.on('success', function () {
                 const borderRadius = $element.css('border-radius')
                 $element.find('.dz-image').css('border-radius', borderRadius || 0)
             })
@@ -959,26 +1091,39 @@ async function formFieldsLikertScaleInput() {
 `)
 }
 
-function preventWebflowDefaultFormSubmission() {
-    const forms = $('form')
+function getFfpNativeForms() {
+    // Only Form Fields Pro / Webflow forms we own — never hijack search/newsletter/login forms.
+    const roots = document.querySelectorAll('[fa-form="true"], [fa-webflow-form]')
+    const forms = new Set()
+    roots.forEach((root) => {
+        if (root.tagName === 'FORM') forms.add(root)
+        root.querySelectorAll('form').forEach((f) => forms.add(f))
+        const nested = root.closest?.('form')
+        if (nested) forms.add(nested)
+        // Common pattern: fa-form wrapper contains (or is next to) the native <form>
+        const siblingForm = root.querySelector?.('form') || root.parentElement?.querySelector?.('form')
+        if (siblingForm) forms.add(siblingForm)
+    })
+    return [...forms]
+}
 
-    for (let form of forms) {
-        $(form).submit(() => {
-            return false
-        })
+function preventWebflowDefaultFormSubmission() {
+    for (const form of getFfpNativeForms()) {
+        $(form).submit(() => false)
     }
 }
 
 function addCustomFormSubmissionLogic() {
-    const forms = document.querySelectorAll('form')
+    for (const form of getFfpNativeForms()) {
+        if (form.dataset.ffpSubmitBound === '1') continue
+        form.dataset.ffpSubmitBound = '1'
 
-    for (let form of forms) {
         form.setAttribute('novalidate', true)
         addValidationMessageNodes(form)
 
         form.addEventListener('submit', (e) => {
             e.preventDefault()
-
+            if (form.dataset.ffpSubmitting === '1') return
             if (validateData(form)) handleFormSubmit(form)
         })
     }
@@ -1017,14 +1162,19 @@ async function handleFormSubmit(form) {
     const faForm =
         form.closest('[fa-form="true"]') ||
         form.querySelector('[fa-form="true"]') ||
-        document.querySelector('[fa-form="true"]');
+        form.parentElement?.closest?.('[fa-form="true"]');
     if (!faForm) {
+        console.warn('Form Fields Pro: Submit ignored — form is not inside an [fa-form] wrapper');
         return;
     }
     const formElementId = faForm.getAttribute('fa-form-id');
     const formName = faForm.getAttribute('fa-form-name');
 
+    if (form.dataset.ffpSubmitting === '1') return;
+    form.dataset.ffpSubmitting = '1';
+
     if (submitButton) {
+        submitButton.setAttribute('disabled', 'true');
         if ('value' in submitButton) submitButton.value = submitButtonLoadingLabel;
         else submitButton.textContent = submitButtonLoadingLabel;
     }
@@ -1087,16 +1237,13 @@ async function handleFormSubmit(form) {
             try {
                 const formSubmissionResponse = await fetch(`${BASE_URL}/api/sites/handleFormSubmission`, {
                     method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
+                    headers: await buildSubmissionHeaders(siteId, formElementId),
                     body: JSON.stringify({
                         siteId,
                         formId: formElementId,
                         formName,
                         formData: cleanFormData,
-                        webflowPayload: payload,
+                        webflowPayload: payload.toString(),
                     }),
                 });
 
@@ -1105,7 +1252,7 @@ async function handleFormSubmit(form) {
                 if (backendSuccess) {
                     // Send notification
                     try {
-                        await fetch(`${FFP_EMAIL_NOTIFIER_URL}/api/send-email`, {
+                        const notificationResponse = await fetch(`${FFP_EMAIL_NOTIFIER_URL}/api/send-email`, {
                             method: 'POST',
                             headers: {
                                 Accept: 'application/json',
@@ -1117,6 +1264,9 @@ async function handleFormSubmit(form) {
                                 formData: cleanFormData,
                             }),
                         });
+                        if (!notificationResponse.ok) {
+                            console.warn('Notification email failed:', notificationResponse.status);
+                        }
                     } catch (notificationError) {
                         console.warn('Notification email failed:', notificationError);
                         // Don't fail on notification error
@@ -1132,22 +1282,29 @@ async function handleFormSubmit(form) {
             );
         }
 
+        // Licensed sites need backend success for integrations/notifications to have run.
+        // Staging without a license relies on Webflow alone.
+        const success = hasLicense ? backendSuccess || webflowSuccess : webflowSuccess;
+
         if (submitButton) {
+            submitButton.removeAttribute('disabled');
             if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
             else submitButton.textContent = submitButtonOriginalLabel;
         }
+        form.dataset.ffpSubmitting = '0';
+
         const redirectUrl = form.getAttribute('redirect');
-        if (redirectUrl) {
+        if (success && redirectUrl) {
             window.location.href = redirectUrl;
             return;
         }
 
-        // Webflow submission success is enough on staging without a license.
-        const success = hasLicense ? (webflowSuccess || backendSuccess) : webflowSuccess;
         showFormResult(form, success);
     } catch (error) {
         console.error('Unexpected error during form submission:', error);
+        form.dataset.ffpSubmitting = '0';
         if (submitButton) {
+            submitButton.removeAttribute('disabled');
             if ('value' in submitButton) submitButton.value = submitButtonOriginalLabel;
             else submitButton.textContent = submitButtonOriginalLabel;
         }
@@ -1157,7 +1314,11 @@ async function handleFormSubmit(form) {
 
 function showFormResult(form, success) {
     form.style.display = 'none';
-    const el = document.querySelector(`#${form.id} ~ .w-form-${success ? 'done' : 'fail'}`);
+    const wrapper = form.closest('.w-form') || form.parentElement;
+    const sel = `.w-form-${success ? 'done' : 'fail'}`;
+    const el =
+        (form.id && document.getElementById(form.id)?.parentElement?.querySelector(sel)) ||
+        wrapper?.querySelector?.(sel);
     if (el) el.style.display = 'block';
 }
 
@@ -1174,39 +1335,61 @@ function getFormMetaData(form) {
 }
 
 function getWebflowInputFieldsData(form) {
-    const webflowInputElements = form.querySelectorAll(`input.w-input`);
     const data = {};
+    const nodes = form.querySelectorAll('input.w-input, textarea.w-input, select.w-select, input.w-checkbox, input.w-radio');
 
-    for (let input of webflowInputElements) {
-        const name = input.getAttribute("data-name");
-        const value = input.value;
+    for (const input of nodes) {
+        const name = input.getAttribute('data-name') || input.getAttribute('name');
+        if (!name) continue;
 
-        if (name) {
-            data[`fields[${name}]`] = value;
+        if (input.type === 'checkbox' || input.type === 'radio') {
+            if (!input.checked) continue;
+            data[`fields[${name}]`] = input.value || 'true';
+            continue;
         }
+
+        data[`fields[${name}]`] = input.value;
     }
 
-    // ✅ Get cf-turnstile-response input (even though it's hidden)
-    const turnstileInput = form.querySelector(`input[name="cf-turnstile-response"]`);
+    const turnstileInput = form.querySelector('input[name="cf-turnstile-response"]');
     if (turnstileInput) {
-        data["fields[cf-turnstile-response]"] = turnstileInput.value;
+        data['fields[cf-turnstile-response]'] = turnstileInput.value;
     }
 
     return data;
 }
 
 function getFormFieldsInputData(form) {
-    const webflowInputElements = form.querySelectorAll(`[form-fields-data-input]`)
-
+    const nodes = form.querySelectorAll('[form-fields-data-input]')
     const data = {}
-    for (let input of webflowInputElements) {
+    for (const input of nodes) {
         const name = input.getAttribute('name')
-        const value = input.value
+        if (!name) continue
 
-        data[`fields[${name}]`] = value
+        if (input.type === 'checkbox' || input.type === 'radio') {
+            if (!input.checked) continue
+            data[`fields[${name}]`] = input.value || 'true'
+            continue
+        }
+
+        data[`fields[${name}]`] = input.value
     }
 
     return data
+}
+
+function isFieldVisiblyHidden(el) {
+    const wrapper = getParentFormFieldsWrapperDiv(el) || el
+    let node = wrapper
+    while (node && node !== document.body) {
+        if (node.style && node.style.display === 'none') return true
+        node = node.parentElement
+    }
+    return false
+}
+
+function isDialCodeOnlyPhoneValue(value) {
+    return /^\+\d+\s*$/.test(String(value || '').trim())
 }
 
 function setValidationMessage(field, message) {
@@ -1223,15 +1406,24 @@ function validateFieldData(field, value, pattern, errorMessage) {
 function validateTypedFields(root = document, { scoped = false } = {}) {
     const prefix = scoped ? '' : '[form-fields-wrapper="true"] '
     for (const f of root.querySelectorAll(`${prefix}input[type="url"]`)) {
+        if (isFieldVisiblyHidden(f)) continue
         if (!validateFieldData(f, f.value, URL_PATTERN_REGEX, 'Please enter a valid url')) return false
     }
     for (const f of root.querySelectorAll(`${prefix}input[type="email"]`)) {
+        if (isFieldVisiblyHidden(f)) continue
         const message = f.getAttribute('data-invalid-error-msg') || 'Please enter a valid email'
         if (!validateFieldData(f, f.value, EMAIL_PATTERN_REGEX, message)) return false
     }
-    for (const f of root.querySelectorAll(`${prefix}input[type="number"]`)) {
-        if (f.required && f.value.length < 6) {
-            setValidationMessage(f, 'Invalid phone number')
+    // Phone widgets use type="tel" inside number-input-with-country-code
+    for (const f of root.querySelectorAll(
+        `${prefix}[data-form-field-pro="number-input-with-country-code"] input[type="tel"], ${prefix}input.number-input-field[type="tel"]`,
+    )) {
+        if (isFieldVisiblyHidden(f)) continue
+        const raw = String(f.value || '').trim()
+        if (!raw || isDialCodeOnlyPhoneValue(raw)) continue
+        const digits = raw.replace(/[^\d+]/g, '')
+        if (!/^\+\d{8,}$/.test(digits)) {
+            setValidationMessage(f, f.getAttribute('data-invalid-error-msg') || 'Invalid phone number')
             return false
         }
     }
@@ -1242,7 +1434,14 @@ function validateRequiredFields(root) {
     const scoped = root !== document && root.tagName !== 'FORM'
     let ok = validateTypedFields(root, { scoped })
     for (const input of root.querySelectorAll('[form-fields-wrapper="true"] [required]')) {
-        if (!input.value) {
+        if (isFieldVisiblyHidden(input)) continue
+
+        const empty =
+            !input.value ||
+            (input.type === 'tel' && isDialCodeOnlyPhoneValue(input.value)) ||
+            ((input.type === 'checkbox' || input.type === 'radio') && !input.checked)
+
+        if (empty) {
             ok = false
             setValidationMessage(input, 'This field is required')
         } else if (ok) {
@@ -1298,13 +1497,26 @@ async function observeInputChangesAndFireConditionalLogic() {
 }
 
 function syncFormState() {
-    const allInputFields = [...document.querySelectorAll(`input.w-input`), ...document.querySelectorAll('[form-fields-data-input]')]
+    const allInputFields = [
+        ...document.querySelectorAll('input.w-input, textarea.w-input, select.w-select'),
+        ...document.querySelectorAll('[form-fields-data-input]'),
+    ]
 
     allInputFields.forEach((input) => {
         const name = input.getAttribute('name')
-        const value = input.value
+        if (!name) return
 
-        FORM_STATE[name] = value
+        if (input.type === 'checkbox' || input.type === 'radio') {
+            if (!input.checked) {
+                // Don't overwrite a checked sibling in the same name group with empty
+                if (FORM_STATE[name] === undefined) FORM_STATE[name] = ''
+                return
+            }
+            FORM_STATE[name] = input.value || 'true'
+            return
+        }
+
+        FORM_STATE[name] = input.value
     })
 }
 
@@ -1338,21 +1550,36 @@ function resolveConditionalLogicRuleset(ruleset) {
             return inputValue == compareValue
         case 'NOT_EQUAL':
             return inputValue != compareValue
-        case 'IS_GREATER_THAN':
+        case 'IS_GREATER_THAN': {
+            const left = Number(inputValue)
+            const right = Number(compareValue)
+            if (!Number.isNaN(left) && !Number.isNaN(right)) return left > right
             return inputValue > compareValue
-        case 'IS_LESS_THAN':
+        }
+        case 'IS_LESS_THAN': {
+            const left = Number(inputValue)
+            const right = Number(compareValue)
+            if (!Number.isNaN(left) && !Number.isNaN(right)) return left < right
             return inputValue < compareValue
+        }
         default:
             return false
     }
 }
 
-const validateCurrentPage = () => {
-    const formElement = document.querySelector('[fa-webflow-form]')
-    if (!formElement) return
+const initMultiStepForms = () => {
+    const formElements = document.querySelectorAll('[fa-webflow-form]')
+    formElements.forEach((formElement) => initSingleMultiStepForm(formElement))
+}
+
+const initSingleMultiStepForm = (formElement) => {
+    if (!formElement || formElement.dataset.ffpMultiStepInit === '1') return
+    formElement.dataset.ffpMultiStepInit = '1'
 
     const steps = formElement.querySelectorAll('[fa-form-step]')
     const pages = formElement.querySelectorAll('[fa-form-page]')
+    if (!steps.length || !pages.length) return
+
     const previousButton = formElement.querySelector('[fa-form-previous-button]')
     const nextButton = formElement.querySelector('[fa-form-next-button]')
     const submitButton = formElement.querySelector('[fa-form-submit-button]')
@@ -1389,17 +1616,25 @@ const validateCurrentPage = () => {
         updateButtonVisibility()
     }
 
-    function validateCurrentPageData() {
-        const currentPage = pages[currentStepIndex]
-        return currentPage ? validateRequiredFields(currentPage) : false
+    function validatePageAt(index) {
+        const page = pages[index]
+        return page ? validateRequiredFields(page) : false
+    }
+
+    function validateThrough(targetIndex) {
+        for (let i = currentStepIndex; i < targetIndex; i++) {
+            if (!validatePageAt(i)) {
+                showPageByIndex(i)
+                return false
+            }
+        }
+        return true
     }
 
     steps.forEach((step, index) => {
         step.addEventListener('click', () => {
             if (currentStepIndex < index) {
-                if (validateCurrentPageData()) {
-                    showPageByIndex(index)
-                }
+                if (validateThrough(index)) showPageByIndex(index)
             } else {
                 showPageByIndex(index)
             }
@@ -1408,9 +1643,7 @@ const validateCurrentPage = () => {
 
     if (nextButton) {
         nextButton.addEventListener('click', () => {
-            const validated = validateCurrentPageData()
-
-            if (validated && currentStepIndex < steps.length - 1) {
+            if (validatePageAt(currentStepIndex) && currentStepIndex < steps.length - 1) {
                 showPageByIndex(currentStepIndex + 1)
             }
         })
@@ -1418,14 +1651,14 @@ const validateCurrentPage = () => {
 
     if (previousButton) {
         previousButton.addEventListener('click', () => {
-            if (currentStepIndex > 0) {
-                showPageByIndex(currentStepIndex - 1)
-            }
+            if (currentStepIndex > 0) showPageByIndex(currentStepIndex - 1)
         })
     }
 
     showPageByIndex(0)
 }
+
+const validateCurrentPage = initMultiStepForms
 
 /** Bootstraps Form Fields Pro for the current page. */
 async function initializeFormFieldsPro() {
