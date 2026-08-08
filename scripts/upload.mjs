@@ -36,6 +36,24 @@ function isSemver(v) {
 
 function authHeaders() {
   const headers = { "Content-Type": "application/json" };
+
+  // Prefer Basic when available — staging often has BASIC_AUTH without a matching
+  // CDN_RELEASE_SECRET. Bearer is used when Basic is absent.
+  const basicToken = process.env.BASIC_AUTH_TOKEN || process.env.VITE_BASIC_AUTH_TOKEN;
+  if (basicToken) {
+    headers.Authorization = basicToken.startsWith("Basic ")
+      ? basicToken
+      : `Basic ${basicToken}`;
+    return headers;
+  }
+
+  const user = process.env.BASIC_AUTH_USER;
+  const pass = process.env.BASIC_AUTH_PASSWORD;
+  if (user && pass) {
+    headers.Authorization = `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`;
+    return headers;
+  }
+
   const secret = process.env.CDN_RELEASE_SECRET;
   if (secret) {
     headers.Authorization = `Bearer ${secret}`;
@@ -95,6 +113,10 @@ if (explicitVersion && bump) {
 // ─── Load env file ────────────────────────────────────────────────────────────
 const envFile = env === "dev" ? ".env" : `.env.${env}`;
 dotenv.config({ path: resolve(ROOT, envFile) });
+// Optional designer Basic auth for cdn-release when Bearer secret is unset/mismatched
+dotenv.config({
+  path: resolve(ROOT, "../advanced-forms-frontend/.env"),
+});
 
 const {
   NODE_ENV,
