@@ -641,127 +641,106 @@ async function formFieldsPhoneNumberInput() {
 }
 `)
 
-    const selectBox = $('.number-input-dropdown')
-    let searchBox = $('.number-input-search-field')
-    let inputBox = $('.number-input-field')
-    let selectedOption = $('.number-input-icon-wrapper')
-
-    if (!selectBox.length || !searchBox.length || !inputBox.length || !selectedOption.length) {
-        console.warn('Form Fields Pro: Required phone number elements not found')
-        return
-    }
-
     const downArrow = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
+    const defaultCountry = countries.find((c) => c.code === 'GB') || countries[0]
 
-    const flagIcon = document.createElement('span')
-    flagIcon.className = 'iconify'
-    flagIcon.setAttribute('data-icon', 'flag:gb-4x3')
-    selectedOption.prepend(flagIcon)
-
-    const olElement = selectBox.find('ol')
-    for (const country of countries) {
-        olElement.append(
-            `<li class="option"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name}</span></div><span class="country-code">+${country.phone}</span></li>`,
+    const countryOptionHtml = countries
+        .map(
+            (country) =>
+                `<li class="option" data-country-code="${country.code}"><div><span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span><span class="country-name">${country.name}</span></div><span class="country-code">+${country.phone}</span></li>`,
         )
-    }
-    let options = $('.option')
-    if (countries[0]) inputBox.val('+' + countries[0].phone + ' ')
+        .join('')
 
-    function selectOption() {
-        const icon = $(this).find('.iconify').clone();
-        const phoneCode = $(this).find('.country-code').clone().text();
-
-        selectedOption.html('').append(icon, downArrow);
-        inputBox.val(phoneCode + ' ').focus();
-        selectBox.hide();
-        if (searchBox.length > 0) {
-            searchBox.val('');
+    const applyCountry = ($iconWrapper, $input, country) => {
+        if (!country) return
+        const icon = `<span class="iconify" data-icon="flag:${country.code.toLowerCase()}-4x3"></span>`
+        $iconWrapper.html('').append(icon, downArrow)
+        // Only seed dial code when the field is empty / still on a dial-code-only value
+        const current = String($input.val() || '').trim()
+        if (!current || /^\+\d+$/.test(current)) {
+            $input.val('+' + country.phone + ' ')
         }
-        selectBox.find('.hide').removeClass('hide');
     }
 
-    function searchCountry() {
-        const searchQuery = searchBox.val().toLowerCase();
+    wrapperDiv.each(function () {
+        const $field = $(this)
+        const $selectBox = $field.find('.number-input-dropdown')
+        const $searchBox = $field.find('.number-input-search-field')
+        const $inputBox = $field.find('.number-input-field')
+        const $selectedOption = $field.find('.number-input-icon-wrapper')
 
-        options.each(function () {
-            const countryNameElement = $(this).find('.country-name');
-            if (countryNameElement.length > 0) {
-                const isMatched = countryNameElement.text().toLowerCase().includes(searchQuery);
-                $(this).toggleClass('hide', !isMatched);
-            }
-        });
-    }
-
-    selectedOption.on('click', function (e) {
-        inputBox = $(this).siblings().eq(0);
-        selectedOption = $(this);
-        searchBox = $(this).siblings().eq(1).find('.number-input-search-field');
-
-        $('.number-input-dropdown').not($(this).siblings().eq(1)).hide();
-
-        $(this).siblings().eq(1).toggle();
-    });
-
-    $(document).on('click', function (e) {
-        // Check if e.target exists before accessing getAttribute
-        if (e.target && !(e.target.getAttribute && e.target.getAttribute('class') === searchBox.attr('class'))) {
-            if ($(e.target).closest(selectedOption).length === 0) {
-                selectBox.hide();
-                selectBox.attr('input-number-dropdown', 'hide');
-            }
+        if (!$selectBox.length || !$inputBox.length || !$selectedOption.length) {
+            console.warn('Form Fields Pro: Required phone number elements not found')
+            return
         }
-    });
 
-    // Only attach event listeners if options exist
-    if (options && options.length > 0) {
-        options.on('click', selectOption);
-    }
+        const $ol = $selectBox.find('ol')
+        $ol.html(countryOptionHtml)
+        applyCountry($selectedOption, $inputBox, defaultCountry)
+        $field.attr('data-selected-country', defaultCountry.code)
 
-    if (searchBox.length > 0) {
-        searchBox.on('input', searchCountry);
-    }
+        const $options = $ol.find('.option')
 
-    await addThirdPartyScriptForPhoneNumberInput();
-}
+        $options.on('click', function () {
+            const code = $(this).attr('data-country-code')
+            const country = countries.find((c) => c.code === code)
+            const phoneCode = $(this).find('.country-code').text()
+            const icon = $(this).find('.iconify').clone()
 
-async function addThirdPartyScriptForPhoneNumberInput() {
-    await loadStylesheet('https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css');
-    await loadScript('https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js');
+            $selectedOption.html('').append(icon, downArrow)
+            $inputBox.val(phoneCode + ' ').focus()
+            $selectBox.hide()
+            if ($searchBox.length) $searchBox.val('')
+            $selectBox.find('.hide').removeClass('hide')
+            if (country) $field.attr('data-selected-country', country.code)
+        })
 
-    const phoneInputs = document.querySelectorAll(
-        '[data-form-field-pro="number-input-with-country-code"] input[type="tel"], .number-input-field input[type="tel"], input[type="tel"][form-fields-data-input]',
-    );
+        if ($searchBox.length) {
+            $searchBox.on('input', function () {
+                const searchQuery = String($(this).val() || '').toLowerCase()
+                $options.each(function () {
+                    const name = $(this).find('.country-name').text().toLowerCase()
+                    $(this).toggleClass('hide', !name.includes(searchQuery))
+                })
+            })
+        }
 
-    if (!phoneInputs.length) {
-        console.warn('Form Fields Pro: No phone input elements found for intl-tel-input');
-        return;
-    }
+        $selectedOption.on('click', function (e) {
+            e.stopPropagation()
+            $('.number-input-dropdown').not($selectBox).hide()
+            $selectBox.toggle()
+        })
+    })
 
-    phoneInputs.forEach((input) => {
-        if (input.dataset.ffpItiInitialized === '1') return;
-        input.dataset.ffpItiInitialized = '1';
+    $(document).on('click.ffpPhoneDropdown', function (e) {
+        if ($(e.target).closest('.number-input-icon-wrapper, .number-input-dropdown').length === 0) {
+            $('.number-input-dropdown').hide()
+        }
+    })
 
-        const iti = window.intlTelInput(input, {
-            countrySearch: false,
-            utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js',
-        });
+    // Soft geo-default: update flag + dial code when the visitor's country is known
+    $.get(
+        'https://ipinfo.io',
+        function (response) {
+            const country = countries.find((c) => c.code === response.country)
+            if (!country) return
+            const defaultDial = '+' + defaultCountry.phone
+            wrapperDiv.each(function () {
+                const $field = $(this)
+                // Don't clobber a manual country pick or typed number
+                if ($field.attr('data-selected-country') && $field.attr('data-selected-country') !== defaultCountry.code) {
+                    return
+                }
+                const $input = $field.find('.number-input-field')
+                const current = String($input.val() || '').trim()
+                if (current && current !== defaultDial) return
 
-        $.get('https://ipinfo.io', function (response) {
-            const countryCode = response.country;
-            iti.setCountry(countryCode);
-        }, 'jsonp');
-
-        const formatPhoneNumber = () => {
-            if (window.intlTelInputUtils) {
-                input.value = iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL);
-            }
-        };
-
-        input.addEventListener('change', formatPhoneNumber);
-        input.addEventListener('keyup', formatPhoneNumber);
-    });
-
-    $('.itl').css('display', 'block');
+                applyCountry($field.find('.number-input-icon-wrapper'), $input, country)
+                $field.attr('data-selected-country', country.code)
+            })
+        },
+        'jsonp',
+    )
 }
 
 
