@@ -55,6 +55,8 @@ async function buildSubmissionHeaders(siteId, formId) {
 const EMAIL_PATTERN_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const URL_PATTERN_REGEX =
     /^(?:(?:https?|ftp):\/\/)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/
+/** Plain text / Name: at least 3 Unicode letters (rejects "123", allows "Eve"). */
+const PLAIN_TEXT_MIN_LETTERS = 3
 
 /** @type {Record<string, Promise<void>>} */
 const __ffpAssetCache = {}
@@ -1574,6 +1576,30 @@ function validateFieldData(field, value, pattern, errorMessage) {
     return ok
 }
 
+function countPlainTextLetters(value) {
+    return (String(value || '').match(/\p{L}/gu) || []).length
+}
+
+function isValidPlainTextValue(value) {
+    return countPlainTextLetters(value) >= PLAIN_TEXT_MIN_LETTERS
+}
+
+function getEmptyErrorMessage(input) {
+    return input.getAttribute('data-empty-error-msg') || 'This field is required'
+}
+
+function validatePlainTextField(field, value) {
+    const raw = String(value || '').trim()
+    if (!raw) {
+        setValidationMessage(field, '')
+        return true
+    }
+    const message = field.getAttribute('data-invalid-error-msg') || 'Please enter a valid name'
+    const ok = isValidPlainTextValue(raw)
+    setValidationMessage(field, ok ? '' : message)
+    return ok
+}
+
 function validateTypedFields(root = document, { scoped = false } = {}) {
     const prefix = scoped ? '' : '[form-fields-wrapper="true"] '
     for (const f of root.querySelectorAll(`${prefix}input[type="url"]`)) {
@@ -1584,6 +1610,11 @@ function validateTypedFields(root = document, { scoped = false } = {}) {
         if (isFieldVisiblyHidden(f)) continue
         const message = f.getAttribute('data-invalid-error-msg') || 'Please enter a valid email'
         if (!validateFieldData(f, f.value, EMAIL_PATTERN_REGEX, message)) return false
+    }
+    // Plain Text / Name — require at least 3 letters
+    for (const f of root.querySelectorAll(`${prefix}input[data-plain-text="form-field-pro-plain-text"]`)) {
+        if (isFieldVisiblyHidden(f)) continue
+        if (!validatePlainTextField(f, f.value)) return false
     }
     // Phone widgets use type="tel" inside number-input-with-country-code
     for (const f of root.querySelectorAll(
@@ -1627,7 +1658,7 @@ function validateRequiredFields(root) {
                 continue
             }
             ok = false
-            setValidationMessage(input, 'This field is required')
+            setValidationMessage(input, getEmptyErrorMessage(input))
             continue
         }
 
@@ -1644,7 +1675,7 @@ function validateRequiredFields(root) {
 
         if (empty) {
             ok = false
-            setValidationMessage(input, 'This field is required')
+            setValidationMessage(input, getEmptyErrorMessage(input))
         } else if (ok) {
             setValidationMessage(input, '')
         }
@@ -1660,6 +1691,11 @@ function initializeInputValidationEvents() {
         const message = field.getAttribute('data-invalid-error-msg') || 'Enter a valid email'
         field.addEventListener('input', (e) => validateFieldData(field, e.target.value, EMAIL_PATTERN_REGEX, message))
     })
+    document
+        .querySelectorAll('[form-fields-wrapper="true"] input[data-plain-text="form-field-pro-plain-text"]')
+        .forEach((field) => {
+            field.addEventListener('input', (e) => validatePlainTextField(field, e.target.value))
+        })
 }
 
 const validateAllFields = () => validateTypedFields(document)
