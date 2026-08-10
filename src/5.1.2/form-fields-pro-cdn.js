@@ -794,6 +794,22 @@ async function formFieldsPhoneNumberInput() {
             $('.number-input-dropdown').not($selectBox).hide()
             $selectBox.toggle()
         })
+
+        // Autofill / paste often yields a local national number (e.g. 01686…).
+        // Normalize to +{dial}{national} on blur/change so validation & submit see E.164.
+        const syncPhoneValue = function () {
+            const input = $inputBox.get(0)
+            if (!input) return
+            const dial = getSelectedDialCodeForPhoneInput(input)
+            const raw = String(input.value || '').trim()
+            if (!raw || isDialCodeOnlyPhoneValue(raw)) return
+            const e164 = normalizePhoneToE164(raw, dial)
+            if (!/^\+\d{8,}$/.test(e164)) return
+            const formatted = formatPhoneDisplay(e164, dial)
+            if (formatted !== raw) input.value = formatted
+            setValidationMessage(input, '')
+        }
+        $inputBox.on('blur.ffpPhoneNormalize change.ffpPhoneNormalize', syncPhoneValue)
     })
 
     $(document).on('click.ffpPhoneDropdown', function (e) {
@@ -1484,8 +1500,67 @@ function isFieldVisiblyHidden(el) {
     return false
 }
 
+/** Known dial codes (e.g. "880", "1") — used so full E.164 is not treated as dial-only */
+const PHONE_DIAL_CODE_SET = new Set(countries.map((c) => String(c.phone)))
+
+function getSelectedDialCodeForPhoneInput(input) {
+    const wrapper =
+        (input && input.closest && input.closest('[data-form-field-pro="number-input-with-country-code"]')) ||
+        getParentFormFieldsWrapperDiv(input)
+    if (!wrapper) return null
+    const iso = wrapper.getAttribute('data-selected-country')
+    const country = iso ? countries.find((c) => c.code === iso) : null
+    return country ? String(country.phone) : null
+}
+
+/**
+ * True only when the value is exactly a known country dial code (optional trailing space).
+ * Full numbers like +8801686407947 must NOT match (previous /^\+\d+\s*$/ false positive).
+ */
 function isDialCodeOnlyPhoneValue(value) {
-    return /^\+\d+\s*$/.test(String(value || '').trim())
+    const trimmed = String(value || '').trim()
+    const match = trimmed.match(/^\+(\d+)\s*$/)
+    if (!match) return false
+    return PHONE_DIAL_CODE_SET.has(match[1])
+}
+
+/** Build +{digits} from local, international, or messy autofill values */
+function normalizePhoneToE164(value, dialCode) {
+    const raw = String(value || '').trim()
+    if (!raw) return ''
+    if (isDialCodeOnlyPhoneValue(raw)) return '+' + raw.replace(/\D/g, '')
+
+    const hasPlus = raw.startsWith('+')
+    let nums = raw.replace(/\D/g, '')
+    if (!nums) return ''
+
+    if (hasPlus) return '+' + nums
+
+    // Digits already include the selected dial code (user typed 8801… without +)
+    if (dialCode && nums.startsWith(dialCode) && nums.length > dialCode.length + 3) {
+        return '+' + nums
+    }
+
+    if (dialCode) {
+        const national = nums.replace(/^0+/, '')
+        if (!national) return '+' + dialCode
+        if (national.startsWith(dialCode) && national.length > dialCode.length + 3) {
+            return '+' + national
+        }
+        return '+' + dialCode + national
+    }
+
+    return nums
+}
+
+function formatPhoneDisplay(e164, dialCode) {
+    const cleaned = String(e164 || '').replace(/[^\d+]/g, '')
+    if (!cleaned.startsWith('+')) return cleaned
+    const nums = cleaned.slice(1)
+    if (dialCode && nums.startsWith(dialCode) && nums.length > dialCode.length) {
+        return '+' + dialCode + ' ' + nums.slice(dialCode.length)
+    }
+    return cleaned
 }
 
 function setValidationMessage(field, message) {
@@ -1517,11 +1592,15 @@ function validateTypedFields(root = document, { scoped = false } = {}) {
         if (isFieldVisiblyHidden(f)) continue
         const raw = String(f.value || '').trim()
         if (!raw || isDialCodeOnlyPhoneValue(raw)) continue
-        const digits = raw.replace(/[^\d+]/g, '')
-        if (!/^\+\d{8,}$/.test(digits)) {
+        const dial = getSelectedDialCodeForPhoneInput(f)
+        const e164 = normalizePhoneToE164(raw, dial)
+        if (!/^\+\d{8,}$/.test(e164)) {
             setValidationMessage(f, f.getAttribute('data-invalid-error-msg') || 'Invalid phone number')
             return false
         }
+        // Persist normalized value so submit payload is E.164 (autofill/local → +dial…)
+        const formatted = formatPhoneDisplay(e164, dial)
+        if (formatted && formatted !== raw) f.value = formatted
     }
     return true
 }
