@@ -879,30 +879,31 @@ function resolveColorPickerStyle($wrapper) {
     }
 }
 
+/** Apply Style menu colors to the Spectrum "Choose" button (not hover-only). */
 function applyColorPickerChooseStyles(style) {
     const lightText = style.hoverTextColorLight || '#ffffff'
     const lightBg = style.hoverBackgroundColorLight || '#111111'
     const darkText = style.hoverTextColorDark || '#ffffff'
     const darkBg = style.hoverBackgroundColorDark || '#111111'
     const css = `
-.sp-container:not(.sp-hidden) .sp-choose {
+.sp-container:not(.sp-hidden) .sp-choose,
+.sp-container:not(.sp-hidden) .sp-choose:hover,
+.sp-container:not(.sp-hidden) .sp-choose:focus,
+.sp-container:not(.sp-hidden) .sp-choose:active {
   background-color: ${lightBg} !important;
   color: ${lightText} !important;
-}
-.sp-container:not(.sp-hidden) .sp-choose:hover {
-  background-color: ${lightBg} !important;
-  color: ${lightText} !important;
-  filter: brightness(1.08);
+  border-color: ${lightBg} !important;
+  filter: none !important;
 }
 @media (prefers-color-scheme: dark) {
-  .sp-container:not(.sp-hidden) .sp-choose {
+  .sp-container:not(.sp-hidden) .sp-choose,
+  .sp-container:not(.sp-hidden) .sp-choose:hover,
+  .sp-container:not(.sp-hidden) .sp-choose:focus,
+  .sp-container:not(.sp-hidden) .sp-choose:active {
     background-color: ${darkBg} !important;
     color: ${darkText} !important;
-  }
-  .sp-container:not(.sp-hidden) .sp-choose:hover {
-    background-color: ${darkBg} !important;
-    color: ${darkText} !important;
-    filter: brightness(1.08);
+    border-color: ${darkBg} !important;
+    filter: none !important;
   }
 }
 `
