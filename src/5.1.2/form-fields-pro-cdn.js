@@ -795,6 +795,10 @@ async function formFieldsPhoneNumberInput() {
             e.stopPropagation()
             $('.number-input-dropdown').not($selectBox).hide()
             $selectBox.toggle()
+            // Focus search so typing filters countries immediately after open
+            if ($selectBox.is(':visible') && $searchBox.length) {
+                $searchBox.trigger('focus')
+            }
         })
 
         // Autofill / paste often yields a local national number (e.g. 01686…).
