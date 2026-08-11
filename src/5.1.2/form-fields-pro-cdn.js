@@ -852,6 +852,69 @@ async function formFieldsPhoneNumberInput() {
 
 
 /** Color picker */
+function resolveColorPickerStyle($wrapper) {
+    if (!$wrapper || !$wrapper.length) return {}
+
+    const fromAttrs = {
+        hoverTextColorLight: $wrapper.attr('data-light-theme-color-picker-text-color'),
+        hoverTextColorDark: $wrapper.attr('data-dark-theme-color-picker-text-color'),
+        hoverBackgroundColorLight: $wrapper.attr('data-light-theme-color-picker-background-color'),
+        hoverBackgroundColorDark: $wrapper.attr('data-dark-theme-color-picker-background-color'),
+    }
+
+    if (
+        fromAttrs.hoverTextColorLight ||
+        fromAttrs.hoverTextColorDark ||
+        fromAttrs.hoverBackgroundColorLight ||
+        fromAttrs.hoverBackgroundColorDark
+    ) {
+        return fromAttrs
+    }
+
+    try {
+        const config = JSON.parse($wrapper.attr('data-field-config') || '{}')
+        return config.style || {}
+    } catch {
+        return {}
+    }
+}
+
+function applyColorPickerChooseStyles(style) {
+    const lightText = style.hoverTextColorLight || '#ffffff'
+    const lightBg = style.hoverBackgroundColorLight || '#111111'
+    const darkText = style.hoverTextColorDark || '#ffffff'
+    const darkBg = style.hoverBackgroundColorDark || '#111111'
+    const css = `
+.sp-container:not(.sp-hidden) .sp-choose {
+  background-color: ${lightBg} !important;
+  color: ${lightText} !important;
+}
+.sp-container:not(.sp-hidden) .sp-choose:hover {
+  background-color: ${lightBg} !important;
+  color: ${lightText} !important;
+  filter: brightness(1.08);
+}
+@media (prefers-color-scheme: dark) {
+  .sp-container:not(.sp-hidden) .sp-choose {
+    background-color: ${darkBg} !important;
+    color: ${darkText} !important;
+  }
+  .sp-container:not(.sp-hidden) .sp-choose:hover {
+    background-color: ${darkBg} !important;
+    color: ${darkText} !important;
+    filter: brightness(1.08);
+  }
+}
+`
+    let el = document.getElementById('ffp-spectrum-choose-colors')
+    if (!el) {
+        el = document.createElement('style')
+        el.id = 'ffp-spectrum-choose-colors'
+        document.head.appendChild(el)
+    }
+    el.textContent = css
+}
+
 async function formFieldsColorPickerInput() {
     if (!document.querySelector('.color-input')) return
 
@@ -861,6 +924,7 @@ async function formFieldsColorPickerInput() {
     injectStyle('ffp-spectrum-overrides', `
         .sp-choose {
             background-color: #111111 !important;
+            color: #ffffff !important;
         }
         .sp-dd {
             display: none;
@@ -876,11 +940,17 @@ async function formFieldsColorPickerInput() {
         if ($input.data('ffpSpectrumInit')) return
         $input.data('ffpSpectrumInit', true)
 
+        const $wrapper = $input.closest('[form-fields-wrapper="true"]')
+        const style = resolveColorPickerStyle($wrapper)
+
         $input.spectrum({
             type: 'color',
             showPalette: false,
             showInput: true,
             allowEmpty: false,
+            show: function () {
+                applyColorPickerChooseStyles(style)
+            },
             change: function (color) {
                 if (!color) return
                 $input.val(color.toHexString()).trigger('change')
