@@ -410,115 +410,201 @@ const formFieldsNumberSlider = async () => {
     await loadStylesheet('https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css')
     await loadScript('https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js')
 
-    const additionalCss = `
-    .noUi-horizontal {
+    const SLIDER_STYLE_DEFAULTS = {
+        maxMinTextColorLight: 'rgb(26, 26, 26)',
+        maxMinTextColorDark: 'rgb(245, 245, 245)',
+        tooltipTextColorLight: 'rgb(255, 255, 255)',
+        tooltipTextColorDark: 'rgb(255, 255, 255)',
+        sliderColorLight: 'rgb(20, 110, 245)',
+        sliderColorDark: 'rgb(20, 110, 245)',
+        trackColorLight: 'rgb(237, 237, 237)',
+        trackColorDark: 'rgb(80, 80, 80)',
+    }
+
+    injectStyle(
+        'ffp-nouislider-overrides-v2',
+        `
+    .ffp-number-slider-wrap {
+      --ffp-slider-color: var(--ffp-slider-color-light);
+      --ffp-track-color: var(--ffp-track-color-light);
+      --ffp-tooltip-text: var(--ffp-tooltip-text-light);
+      --ffp-minmax-text: var(--ffp-minmax-text-light);
+      margin-top: 28px;
+    }
+    @media (prefers-color-scheme: dark) {
+      .ffp-number-slider-wrap {
+        --ffp-slider-color: var(--ffp-slider-color-dark);
+        --ffp-track-color: var(--ffp-track-color-dark);
+        --ffp-tooltip-text: var(--ffp-tooltip-text-dark);
+        --ffp-minmax-text: var(--ffp-minmax-text-dark);
+      }
+    }
+    .ffp-number-slider-wrap .noUi-horizontal {
       height: 12px;
     }
-    
-    .noUi-target {
-      border: 1px solid #ededed;
+    .ffp-number-slider-wrap .noUi-target {
+      border: 1px solid var(--ffp-track-color);
+      background: var(--ffp-track-color);
       border-radius: 11.5px;
       box-shadow: none;
     }
-
-    .noUi-horizontal .noUi-handle {
+    .ffp-number-slider-wrap .noUi-connect {
+      background: var(--ffp-slider-color);
+    }
+    .ffp-number-slider-wrap .noUi-horizontal .noUi-handle {
       width: 22px;
       height: 22px;
-      right: -17px;
+      right: -11px;
       top: -6px;
+      border: none;
       border-radius: 50%;
+      background: var(--ffp-slider-color);
       box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
     }
-
-    .noUi-handle:after, .noUi-handle:before {
+    .ffp-number-slider-wrap .noUi-handle:after,
+    .ffp-number-slider-wrap .noUi-handle:before {
       display: none;
     }
-
-    .noUi-tooltip {
+    .ffp-number-slider-wrap .noUi-tooltip {
       border: none;
+      color: var(--ffp-tooltip-text);
+      background: var(--ffp-slider-color);
       box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
     }
-    `
+    .ffp-slider-minmax {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--ffp-minmax-text);
+    }
+    `,
+    )
 
-    const addNumberSliderCss = () => {
-        injectStyle('ffp-nouislider-overrides', additionalCss)
+    const pick = (value, fallback) => (value && String(value).trim() ? value : fallback)
+    const isWhite = (value) => {
+        const normalized = String(value || '')
+            .replace(/\s/g, '')
+            .toLowerCase()
+        return !normalized || normalized === 'rgb(255,255,255)' || normalized === '#ffffff' || normalized === '#fff' || normalized === 'white'
     }
 
-    const overrideCss = (element) => {
-        const inputName = element.getAttribute('name')
-
-        const formFieldsId = `${inputName}-${Date.now()}`
-        element.setAttribute('form-fields-id', formFieldsId)
-
-        const { backgroundColor: parentBackgroundColor, color: parentTextColor } = getComputedStyle(element.parentElement)
-
-        const lightTheme = {
-            maxMinValueTextColor: element.getAttribute('data-light-theme-max-min-text-color') || parentTextColor,
-            tooltipTextColor: element.getAttribute('data-light-theme-tooltip-text-color') || parentTextColor,
-            sliderColor: element.getAttribute('data-light-theme-slider-color') || parentBackgroundColor,
+    const parseSliderTheme = (raw) => {
+        if (!raw) return null
+        const parts = String(raw).split('~')
+        if (parts.length < 8) return null
+        return {
+            maxMinTextColorLight: parts[0],
+            tooltipTextColorLight: parts[1],
+            sliderColorLight: parts[2],
+            trackColorLight: parts[3],
+            maxMinTextColorDark: parts[4],
+            tooltipTextColorDark: parts[5],
+            sliderColorDark: parts[6],
+            trackColorDark: parts[7],
         }
+    }
 
-        const darkTheme = {
-            maxMinValueTextColor: element.getAttribute('data-dark-theme-max-min-text-color') || parentTextColor,
-            tooltipTextColor: element.getAttribute('data-dark-theme-tooltip-text-color') || parentTextColor,
-            sliderColor: element.getAttribute('data-dark-theme-slider-color') || parentBackgroundColor,
+    const styleFromConfig = (element) => {
+        try {
+            const wrapper = element.closest('[data-field-config], [form-fields-wrapper]')
+            const raw = wrapper && (wrapper.getAttribute('data-field-config') || wrapper.getAttribute('field-config'))
+            return raw ? JSON.parse(raw).style || {} : {}
+        } catch (err) {
+            return {}
         }
+    }
 
-        const sheet = new CSSStyleSheet()
-        sheet.replaceSync(`
-      [form-fields-id="${formFieldsId}"] ~ .noUi-target .noUi-connect {
-        background: ${lightTheme.sliderColor}
-      }
-      [form-fields-id="${formFieldsId}"] ~ .noUi-horizontal .noUi-tooltip {
-        color: ${lightTheme.tooltipTextColor};
-        background: ${lightTheme.sliderColor};
-      }
-  
-      [form-fields-id="${formFieldsId}"] ~ .rs-container .rs-scale span ins {
-        color: ${lightTheme.maxMinValueTextColor};
-      }
-  
-      @media (prefers-color-scheme: dark) {
-        [form-fields-id="${formFieldsId}"] ~ .noUi-target .noUi-connect {
-          background: ${darkTheme.sliderColor}
+    const readTheme = (element) => {
+        const fromTheme = parseSliderTheme(element.getAttribute('data-slider-theme')) || {}
+        const fromConfig = styleFromConfig(element)
+        const attr = (name) => element.getAttribute(name)
+        const merged = {
+            maxMinTextColorLight: pick(fromTheme.maxMinTextColorLight, pick(attr('data-light-theme-max-min-text-color'), fromConfig.maxMinTextColorLight)),
+            maxMinTextColorDark: pick(fromTheme.maxMinTextColorDark, pick(attr('data-dark-theme-max-min-text-color'), fromConfig.maxMinTextColorDark)),
+            tooltipTextColorLight: pick(fromTheme.tooltipTextColorLight, pick(attr('data-light-theme-tooltip-text-color'), fromConfig.tooltipTextColorLight)),
+            tooltipTextColorDark: pick(fromTheme.tooltipTextColorDark, pick(attr('data-dark-theme-tooltip-text-color'), fromConfig.tooltipTextColorDark)),
+            sliderColorLight: pick(fromTheme.sliderColorLight, pick(attr('data-light-theme-slider-color'), fromConfig.sliderColorLight)),
+            sliderColorDark: pick(fromTheme.sliderColorDark, pick(attr('data-dark-theme-slider-color'), fromConfig.sliderColorDark)),
+            trackColorLight: pick(fromTheme.trackColorLight, pick(attr('data-light-theme-track-color'), fromConfig.trackColorLight)),
+            trackColorDark: pick(fromTheme.trackColorDark, pick(attr('data-dark-theme-track-color'), fromConfig.trackColorDark)),
         }
-        [form-fields-id="${formFieldsId}"] ~ .noUi-horizontal .noUi-tooltip {
-          color: ${darkTheme.tooltipTextColor};
-          background: ${darkTheme.sliderColor};
-        }
-  
-        [form-fields-id="${formFieldsId}"] ~ .rs-container .rs-scale span ins {
-          color: ${darkTheme.maxMinValueTextColor}
-        }
-      }
-      `)
+        const coreColors = [
+            merged.maxMinTextColorLight,
+            merged.maxMinTextColorDark,
+            merged.tooltipTextColorLight,
+            merged.tooltipTextColorDark,
+            merged.sliderColorLight,
+            merged.sliderColorDark,
+        ]
+        if (coreColors.every(isWhite)) return { ...SLIDER_STYLE_DEFAULTS }
 
-        const sheets = document.adoptedStyleSheets || []
-        document.adoptedStyleSheets = [...sheets, sheet]
+        return {
+            maxMinTextColorLight: pick(merged.maxMinTextColorLight, SLIDER_STYLE_DEFAULTS.maxMinTextColorLight),
+            maxMinTextColorDark: pick(merged.maxMinTextColorDark, SLIDER_STYLE_DEFAULTS.maxMinTextColorDark),
+            tooltipTextColorLight: pick(merged.tooltipTextColorLight, SLIDER_STYLE_DEFAULTS.tooltipTextColorLight),
+            tooltipTextColorDark: pick(merged.tooltipTextColorDark, SLIDER_STYLE_DEFAULTS.tooltipTextColorDark),
+            sliderColorLight: pick(merged.sliderColorLight, SLIDER_STYLE_DEFAULTS.sliderColorLight),
+            sliderColorDark: pick(merged.sliderColorDark, SLIDER_STYLE_DEFAULTS.sliderColorDark),
+            trackColorLight: pick(merged.trackColorLight, SLIDER_STYLE_DEFAULTS.trackColorLight),
+            trackColorDark: pick(merged.trackColorDark, SLIDER_STYLE_DEFAULTS.trackColorDark),
+        }
+    }
+
+    const applyTheme = (wrap, theme) => {
+        const vars = {
+            '--ffp-slider-color-light': theme.sliderColorLight,
+            '--ffp-slider-color-dark': theme.sliderColorDark,
+            '--ffp-track-color-light': theme.trackColorLight,
+            '--ffp-track-color-dark': theme.trackColorDark,
+            '--ffp-tooltip-text-light': theme.tooltipTextColorLight,
+            '--ffp-tooltip-text-dark': theme.tooltipTextColorDark,
+            '--ffp-minmax-text-light': theme.maxMinTextColorLight,
+            '--ffp-minmax-text-dark': theme.maxMinTextColorDark,
+        }
+        Object.keys(vars).forEach((key) => wrap.style.setProperty(key, vars[key]))
+    }
+
+    const tooltipFormat = { to: (val) => Math.round(val), from: (val) => Number(val) }
+
+    const createSliderWrap = (sliderInput, min, max) => {
+        const existing = sliderInput.parentElement && sliderInput.parentElement.querySelector('.ffp-number-slider-wrap')
+        if (existing) return null
+
+        const wrap = document.createElement('div')
+        wrap.className = 'ffp-number-slider-wrap'
+        sliderInput.parentElement.appendChild(wrap)
+
+        const container = document.createElement('div')
+        wrap.appendChild(container)
+
+        const labels = document.createElement('div')
+        labels.className = 'ffp-slider-minmax'
+        labels.innerHTML = `<span>${min}</span><span>${max}</span>`
+        wrap.appendChild(labels)
+
+        applyTheme(wrap, readTheme(sliderInput))
+        return container
     }
 
     const initializeRegularSlider = (sliderInput) => {
         const min = Number(sliderInput.getAttribute('data-min'))
         const max = Number(sliderInput.getAttribute('data-max'))
         const defaultValue = Number(sliderInput.getAttribute('data-default'))
-
-        const container = document.createElement('div')
-        sliderInput.parentElement.appendChild(container)
+        const container = createSliderWrap(sliderInput, min, max)
+        if (!container) return
 
         const slider = noUiSlider.create(container, {
             start: defaultValue,
             step: 1,
             connect: 'lower',
-            tooltips: { to: (val) => Math.round(val) },
-            range: {
-                min,
-                max,
-            },
+            tooltips: tooltipFormat,
+            range: { min, max },
         })
 
         slider.on('update', (values) => {
-            values = values.map((v) => Math.round(v)).join(',')
-            sliderInput.value = values
+            sliderInput.value = values.map((v) => Math.round(v)).join(',')
         })
     }
 
@@ -527,42 +613,28 @@ const formFieldsNumberSlider = async () => {
         const max = Number(sliderInput.getAttribute('data-max'))
         const defaultmin = Number(sliderInput.getAttribute('data-min-default'))
         const defaultmax = Number(sliderInput.getAttribute('data-max-default'))
-
-        const container = document.createElement('div')
-        sliderInput.parentElement.appendChild(container)
+        const container = createSliderWrap(sliderInput, min, max)
+        if (!container) return
 
         const slider = noUiSlider.create(container, {
             start: [defaultmin, defaultmax],
             step: 1,
             connect: [false, true, false],
-            tooltips: { to: (val) => Math.round(val) },
-            range: {
-                min,
-                max,
-            },
+            tooltips: [tooltipFormat, tooltipFormat],
+            range: { min, max },
         })
 
         slider.on('update', (values) => {
-            values = values.map((v) => Math.round(v)).join(',')
-            sliderInput.value = values
+            sliderInput.value = values.map((v) => Math.round(v)).join(',')
         })
     }
 
-    const initializeTheSliders = async () => {
-        const sliders = document.querySelectorAll(`[form-fields-pro-number-slider]`)
-
-        for (let slider of sliders) {
-            const rangeSlider = slider.getAttribute('allow-range')
-            if (rangeSlider) initializeRangeSlider(slider)
-            else initializeRegularSlider(slider)
-
-            overrideCss(slider)
-            await sleep()
-        }
+    const sliders = document.querySelectorAll('[form-fields-pro-number-slider]')
+    for (const slider of sliders) {
+        if (slider.getAttribute('allow-range')) initializeRangeSlider(slider)
+        else initializeRegularSlider(slider)
+        await sleep()
     }
-
-    addNumberSliderCss()
-    initializeTheSliders()
 }
 
 /** Select inputs */
