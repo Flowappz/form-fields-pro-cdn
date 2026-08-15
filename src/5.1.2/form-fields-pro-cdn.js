@@ -117,11 +117,13 @@ function loadStylesheet(href) {
 
 /** Inject a style tag once (keyed by id). */
 function injectStyle(id, css) {
-    if (document.getElementById(id)) return
-    const style = document.createElement('style')
-    style.id = id
+    let style = document.getElementById(id)
+    if (!style) {
+        style = document.createElement('style')
+        style.id = id
+        document.head.appendChild(style)
+    }
     style.textContent = css
-    document.head.appendChild(style)
 }
 
 const sleep = (ms = 5) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -1136,76 +1138,442 @@ async function formFieldsFileUploadInput() {
 async function formFieldsNetPromoterScoreInput() {
     if (!document.querySelector('[data-field-name="net-promoter-score"]')) return
 
+    const SELECTED_CLASS = 'ffp-nps-selected'
     const netPromoterElement = $('[data-field-name="net-promoter-score"]')
 
-    let lightTheme = {}
-    let darkTheme = {}
+    function npsAttr($element, name, fallback) {
+        const value = $element.attr(name)
+        return value && String(value).trim() ? value : fallback
+    }
 
-    function getAttributes($element) {
-        let attributes = {}
-        $.each($element[0].attributes, function (index, attr) {
-            attributes[attr.name.replace(/-/g, '_')] = attr.value
+    function npsStyleFromConfig($element) {
+        try {
+            const raw = $element.attr('data-field-config') || $element.attr('field-config')
+            return raw ? JSON.parse(raw).style || {} : {}
+        } catch (err) {
+            return {}
+        }
+    }
+
+    function parseNpsTheme(raw) {
+        if (!raw) return null
+        const value = String(raw)
+        if (value.charAt(0) === '{') {
+            try {
+                return JSON.parse(value)
+            } catch (err) {
+                return null
+            }
+        }
+        const parts = value.split('~')
+        if (parts.length < 9) return null
+        return {
+            textColorLight: parts[0],
+            backgroundColorLight: parts[1],
+            hoverTextColorLight: parts[2],
+            hoverBackgroundColorLight: parts[3],
+            selectedTextColorLight: parts[4],
+            selectedBackgroundColorLight: parts[5],
+            borderColorLight: parts[6],
+            borderRadius: parts[7],
+            layout: parts[8],
+            textColorDark: parts[9],
+            backgroundColorDark: parts[10],
+            hoverTextColorDark: parts[11],
+            hoverBackgroundColorDark: parts[12],
+            selectedTextColorDark: parts[13],
+            selectedBackgroundColorDark: parts[14],
+            borderColorDark: parts[15],
+        }
+    }
+
+    function pick(value, fallback) {
+        return value && String(value).trim() ? value : fallback
+    }
+
+    function isStockBlue(value) {
+        const normalized = String(value || '').replace(/\s/g, '').toLowerCase()
+        return !normalized || normalized === 'rgb(20,110,245)' || normalized === '#146ef5'
+    }
+
+    function followHoverIfStockBlue(selected, hover) {
+        if (isStockBlue(selected) && hover && !isStockBlue(hover)) return hover
+        return selected
+    }
+
+    function readTheme($element) {
+        const $scale = $element.find('[data-nps-scale]').first()
+        const fromTheme =
+            parseNpsTheme($scale.attr('data-nps-theme')) ||
+            parseNpsTheme($element.attr('data-nps-theme')) ||
+            {}
+        const fromConfig = npsStyleFromConfig($element)
+        const hoverTextLight = pick(
+            fromTheme.hoverTextColorLight,
+            npsAttr($element, 'data-light-theme-score-text-color', fromConfig.hoverTextColorLight || '#ffffff'),
+        )
+        const hoverBgLight = pick(
+            fromTheme.hoverBackgroundColorLight,
+            npsAttr($element, 'data-light-theme-score-background-color', fromConfig.hoverBackgroundColorLight || '#146ef5'),
+        )
+        const hoverTextDark = pick(
+            fromTheme.hoverTextColorDark,
+            npsAttr($element, 'data-dark-theme-score-text-color', fromConfig.hoverTextColorDark || '#ffffff'),
+        )
+        const hoverBgDark = pick(
+            fromTheme.hoverBackgroundColorDark,
+            npsAttr($element, 'data-dark-theme-score-background-color', fromConfig.hoverBackgroundColorDark || '#146ef5'),
+        )
+
+        return {
+            layout: pick(
+                fromTheme.layout,
+                npsAttr($element, 'data-nps-layout', $scale.attr('data-nps-layout') || fromConfig.layout || 'connected'),
+            ),
+            textColorLight: pick(fromTheme.textColorLight, npsAttr($element, 'data-light-theme-idle-text-color', fromConfig.textColorLight || 'inherit')),
+            backgroundColorLight: pick(fromTheme.backgroundColorLight, npsAttr($element, 'data-light-theme-idle-background-color', fromConfig.backgroundColorLight || 'transparent')),
+            hoverTextColorLight: pick(fromTheme.hoverTextColorLight, hoverTextLight),
+            hoverBackgroundColorLight: pick(fromTheme.hoverBackgroundColorLight, hoverBgLight),
+            selectedTextColorLight: pick(fromTheme.selectedTextColorLight, npsAttr($element, 'data-light-theme-selected-text-color', fromConfig.selectedTextColorLight || hoverTextLight)),
+            selectedBackgroundColorLight: followHoverIfStockBlue(
+                pick(fromTheme.selectedBackgroundColorLight, npsAttr($element, 'data-light-theme-selected-background-color', fromConfig.selectedBackgroundColorLight || hoverBgLight)),
+                hoverBgLight,
+            ),
+            borderColorLight: pick(fromTheme.borderColorLight, npsAttr($element, 'data-light-theme-border-color', fromConfig.borderColorLight || '#d4d4d4')),
+            textColorDark: pick(fromTheme.textColorDark, npsAttr($element, 'data-dark-theme-idle-text-color', fromConfig.textColorDark || 'inherit')),
+            backgroundColorDark: pick(fromTheme.backgroundColorDark, npsAttr($element, 'data-dark-theme-idle-background-color', fromConfig.backgroundColorDark || 'transparent')),
+            hoverTextColorDark: pick(fromTheme.hoverTextColorDark, hoverTextDark),
+            hoverBackgroundColorDark: pick(fromTheme.hoverBackgroundColorDark, hoverBgDark),
+            selectedTextColorDark: pick(fromTheme.selectedTextColorDark, npsAttr($element, 'data-dark-theme-selected-text-color', fromConfig.selectedTextColorDark || hoverTextDark)),
+            selectedBackgroundColorDark: followHoverIfStockBlue(
+                pick(fromTheme.selectedBackgroundColorDark, npsAttr($element, 'data-dark-theme-selected-background-color', fromConfig.selectedBackgroundColorDark || hoverBgDark)),
+                hoverBgDark,
+            ),
+            borderColorDark: pick(fromTheme.borderColorDark, npsAttr($element, 'data-dark-theme-border-color', fromConfig.borderColorDark || '#505050')),
+            borderRadius: pick(
+                fromTheme.borderRadius && `${String(fromTheme.borderRadius).replace(/px$/i, '')}px`,
+                npsAttr($element, 'data-border-radius', fromConfig.borderRadius ? `${String(fromConfig.borderRadius).replace(/px$/i, '')}px` : '8px'),
+            ),
+        }
+    }
+
+    function isDarkScheme() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    function activeColors(theme) {
+        const dark = isDarkScheme()
+        return {
+            idleText: dark ? theme.textColorDark : theme.textColorLight,
+            idleBg: dark ? theme.backgroundColorDark : theme.backgroundColorLight,
+            hoverText: dark ? theme.hoverTextColorDark : theme.hoverTextColorLight,
+            hoverBg: dark ? theme.hoverBackgroundColorDark : theme.hoverBackgroundColorLight,
+            selectedText: dark ? theme.selectedTextColorDark : theme.selectedTextColorLight,
+            selectedBg: dark ? theme.selectedBackgroundColorDark : theme.selectedBackgroundColorLight,
+            border: dark ? theme.borderColorDark : theme.borderColorLight,
+        }
+    }
+
+    function applyThemeVars($element, theme) {
+        const nodes = [$element[0], $element.find('[data-nps-scale]')[0]].filter(Boolean)
+        const vars = {
+            '--nps-text-light': theme.textColorLight,
+            '--nps-bg-light': theme.backgroundColorLight,
+            '--nps-hover-text-light': theme.hoverTextColorLight,
+            '--nps-hover-bg-light': theme.hoverBackgroundColorLight,
+            '--nps-selected-text-light': theme.selectedTextColorLight,
+            '--nps-selected-bg-light': theme.selectedBackgroundColorLight,
+            '--nps-border-light': theme.borderColorLight,
+            '--nps-text-dark': theme.textColorDark,
+            '--nps-bg-dark': theme.backgroundColorDark,
+            '--nps-hover-text-dark': theme.hoverTextColorDark,
+            '--nps-hover-bg-dark': theme.hoverBackgroundColorDark,
+            '--nps-selected-text-dark': theme.selectedTextColorDark,
+            '--nps-selected-bg-dark': theme.selectedBackgroundColorDark,
+            '--nps-border-dark': theme.borderColorDark,
+            '--nps-radius-value': theme.borderRadius,
+        }
+        nodes.forEach((node) => {
+            if (!node.style || !node.style.setProperty) return
+            Object.keys(vars).forEach((key) => node.style.setProperty(key, vars[key]))
         })
-        return attributes
+        $element.attr('data-nps-layout', theme.layout)
+        $element.find('[data-nps-scale]').attr('data-nps-layout', theme.layout)
+    }
+
+    function applyLayoutAndBorder($element, $cells, theme) {
+        const $scale = $cells.parent()
+        const scaleNode = $scale[0]
+        const colors = activeColors(theme)
+        $scale.attr('data-nps-scale', 'true')
+        $scale.attr('data-nps-layout', theme.layout)
+
+        if (theme.layout === 'separated') {
+            if (scaleNode && scaleNode.style && scaleNode.style.setProperty) {
+                scaleNode.style.setProperty('display', 'flex', 'important')
+                scaleNode.style.setProperty('align-items', 'stretch', 'important')
+                scaleNode.style.setProperty('column-gap', '6px', 'important')
+                scaleNode.style.setProperty('gap', '6px', 'important')
+                scaleNode.style.setProperty('overflow', 'visible', 'important')
+                scaleNode.style.setProperty('background', 'transparent', 'important')
+                scaleNode.style.setProperty('border', 'none', 'important')
+                scaleNode.style.setProperty('border-width', '0px', 'important')
+                scaleNode.style.setProperty('border-radius', '0px', 'important')
+            }
+            $cells.each(function () {
+                if (!this.style || !this.style.setProperty) return
+                this.style.setProperty('border', `1px solid ${colors.border}`, 'important')
+                this.style.setProperty('border-radius', theme.borderRadius, 'important')
+            })
+            return
+        }
+
+        if (scaleNode && scaleNode.style && scaleNode.style.setProperty) {
+            scaleNode.style.setProperty('border-style', 'solid', 'important')
+            scaleNode.style.setProperty('border-width', '1px', 'important')
+            scaleNode.style.setProperty('border-color', colors.border, 'important')
+            scaleNode.style.setProperty('border-radius', theme.borderRadius, 'important')
+        }
+        $cells.each(function () {
+            if (!this.style || !this.style.setProperty) return
+            this.style.setProperty('border-right-color', colors.border, 'important')
+        })
+    }
+
+    function bindCellStates($element, $cells, theme) {
+        const paintCell = (node, state) => {
+            if (!node || !node.style || !node.style.setProperty) return
+            const colors = activeColors(theme)
+            const layout = theme.layout
+            if (state === 'hover') {
+                node.style.setProperty('background-color', colors.hoverBg, 'important')
+                node.style.setProperty('color', colors.hoverText, 'important')
+                if (layout === 'separated') node.style.setProperty('border-color', colors.hoverBg, 'important')
+                return
+            }
+            if (state === 'selected') {
+                node.style.setProperty('background-color', colors.selectedBg, 'important')
+                node.style.setProperty('color', colors.selectedText, 'important')
+                if (layout === 'separated') node.style.setProperty('border-color', colors.selectedBg, 'important')
+                return
+            }
+            node.style.setProperty('background-color', colors.idleBg, 'important')
+            node.style.setProperty('color', colors.idleText, 'important')
+            if (layout === 'separated') node.style.setProperty('border-color', colors.border, 'important')
+        }
+
+        $cells.each(function () {
+            paintCell(this, 'idle')
+        })
+
+        $cells.on('mouseenter.ffpNps', function () {
+            if ($(this).hasClass(SELECTED_CLASS)) {
+                paintCell(this, 'selected')
+                return
+            }
+            paintCell(this, 'hover')
+        })
+        $cells.on('mouseleave.ffpNps', function () {
+            if ($(this).hasClass(SELECTED_CLASS)) {
+                paintCell(this, 'selected')
+                return
+            }
+            paintCell(this, 'idle')
+        })
+
+        $element.data('ffp-nps-paint-cell', paintCell)
+        $element.data('ffp-nps-theme', theme)
     }
 
     netPromoterElement.each(function () {
         const element = $(this)
-        const elementAttributes = getAttributes(element)
+        if (element.attr('data-ffp-nps-bound') === '1') return
+        element.attr('data-ffp-nps-bound', '1')
 
-        lightTheme = {
-            lightThemeHoverTextColor: element.attr('data-light-theme-score-text-color'),
-            lightThemeHoverBackgroundColor: element.attr('data-light-theme-score-background-color'),
-        }
-
-        darkTheme = {
-            darkThemeHoverTextColor: element.attr('data-dark-theme-score-text-color'),
-            darkThemeHoverBackgroundColor: element.attr('data-dark-theme-score-background-color'),
-        }
+        const theme = readTheme(element)
+        applyThemeVars(element, theme)
 
         const inputElement = element.find('[data-input="net-promoter-score"]')
         const extraFeedbackCollection = element.find('[data-field="extra-feedback-collection"]')
+        const $cells = element.find('[data-name="net-promoter-score-value"]')
+        applyLayoutAndBorder(element, $cells, theme)
+        bindCellStates(element, $cells, theme)
 
-        if (!elementAttributes.data_extra_feedback_collection.includes('always')) {
+        const extraFeedbackSetting = String(element.attr('data-extra-feedback-collection') || '')
+        if (!extraFeedbackSetting.includes('always')) {
             extraFeedbackCollection.hide()
         }
 
-        $(this)
-            .find('[data-name="net-promoter-score-value"]')
-            .on('click', function () {
-                const value = $(this).text()
-                inputElement.val(value)
+        const selectScore = ($cell) => {
+            const value = $cell.text().trim()
+            inputElement.val(value)
+            const paintCell = element.data('ffp-nps-paint-cell')
+            $cells
+                .removeClass(`${SELECTED_CLASS} net-promoter-active`)
+                .attr('aria-pressed', 'false')
+            if (typeof paintCell === 'function') {
+                $cells.each(function () {
+                    paintCell(this, 'idle')
+                })
+            }
+            $cell.addClass(SELECTED_CLASS).attr('aria-pressed', 'true')
+            if (typeof paintCell === 'function') paintCell($cell[0], 'selected')
 
-                if (value === inputElement.val()) {
-                    element.find('[data-name="net-promoter-score-value"]').removeClass('net-promoter-active')
-                    $(this).addClass('net-promoter-active')
-
-                    const extraFeedback = elementAttributes.data_extra_feedback_collection || ''
-                    if (!extraFeedback.includes('always')) {
-                        if (!extraFeedback.includes('never') || !extraFeedback.includes('always')) {
-                            if (parseInt(value) < parseInt(extraFeedback)) {
-                                extraFeedbackCollection.show()
-                            } else {
-                                extraFeedbackCollection.hide()
-                            }
-                        } else {
-                            extraFeedbackCollection.show()
-                        }
+            if (!extraFeedbackSetting.includes('always')) {
+                if (!extraFeedbackSetting.includes('never') || !extraFeedbackSetting.includes('always')) {
+                    if (parseInt(value, 10) < parseInt(extraFeedbackSetting, 10)) {
+                        extraFeedbackCollection.show()
+                    } else {
+                        extraFeedbackCollection.hide()
                     }
+                } else {
+                    extraFeedbackCollection.show()
                 }
-            })
+            }
+        }
+
+        $cells.on('click.ffpNps', function () {
+            selectScore($(this))
+        })
+
+        $cells.on('keydown.ffpNps', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                selectScore($(this))
+            }
+        })
     })
 
-    injectStyle('ffp-nps-overrides', `
-.net-promoter-active {
-  background-color: ${lightTheme.lightThemeHoverBackgroundColor};
-  color: ${lightTheme.lightThemeHoverTextColor};
+    injectStyle('ffp-nps-states-v3', `
+[data-field-name="net-promoter-score"] {
+  --nps-text: var(--nps-text-light, inherit);
+  --nps-bg: var(--nps-bg-light, transparent);
+  --nps-hover-text: var(--nps-hover-text-light, #ffffff);
+  --nps-hover-bg: var(--nps-hover-bg-light, #146ef5);
+  --nps-selected-text: var(--nps-selected-text-light, var(--nps-hover-text));
+  --nps-selected-bg: var(--nps-selected-bg-light, var(--nps-hover-bg));
+  --nps-border: var(--nps-border-light, #d4d4d4);
+  --nps-radius: var(--nps-radius-value, 8px);
 }
-@media (prefers-color-scheme: dark){
-  .net-promoter-active {
-    background-color: ${darkTheme.darkThemeHoverBackgroundColor};
-    color: ${darkTheme.darkThemeHoverTextColor};
+@media (prefers-color-scheme: dark) {
+  [data-field-name="net-promoter-score"] {
+    --nps-text: var(--nps-text-dark, inherit);
+    --nps-bg: var(--nps-bg-dark, transparent);
+    --nps-hover-text: var(--nps-hover-text-dark, #ffffff);
+    --nps-hover-bg: var(--nps-hover-bg-dark, #146ef5);
+    --nps-selected-text: var(--nps-selected-text-dark, var(--nps-hover-text));
+    --nps-selected-bg: var(--nps-selected-bg-dark, var(--nps-hover-bg));
+    --nps-border: var(--nps-border-dark, #505050);
   }
+}
+[data-field-name="net-promoter-score"] [data-nps-scale="true"] {
+  display: flex !important;
+  align-items: stretch !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+  overflow: hidden;
+  background: var(--nps-bg);
+  border: 1px solid var(--nps-border) !important;
+  border-radius: var(--nps-radius) !important;
+}
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-nps-scale="true"],
+[data-nps-scale="true"][data-nps-layout="separated"] {
+  gap: 6px !important;
+  column-gap: 6px !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: none !important;
+  border-width: 0 !important;
+  border-radius: 0 !important;
+}
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"] {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  user-select: none;
+  color: var(--nps-text) !important;
+  background-color: var(--nps-bg) !important;
+  border-right: 1px solid var(--nps-border) !important;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"]:last-child {
+  border-right-width: 0 !important;
+}
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"]:not(.ffp-nps-selected):not(.net-promoter-active):hover {
+  color: var(--nps-hover-text) !important;
+  background-color: var(--nps-hover-bg) !important;
+  z-index: 1;
+}
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"].ffp-nps-selected,
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"].ffp-nps-selected:hover,
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"].net-promoter-active,
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"].net-promoter-active:hover {
+  color: var(--nps-selected-text) !important;
+  background-color: var(--nps-selected-bg) !important;
+}
+[data-nps-active-style-keeper] {
+  display: none !important;
+}
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"],
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"],
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"]:last-child,
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"]:last-child {
+  border: 1px solid var(--nps-border) !important;
+  border-right-width: 1px !important;
+  border-radius: var(--nps-radius) !important;
+}
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"]:not(.ffp-nps-selected):not(.net-promoter-active):hover,
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"]:not(.ffp-nps-selected):not(.net-promoter-active):hover {
+  color: var(--nps-hover-text) !important;
+  background-color: var(--nps-hover-bg) !important;
+  border-color: var(--nps-hover-bg) !important;
+}
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].ffp-nps-selected,
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].ffp-nps-selected:hover,
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].net-promoter-active,
+[data-field-name="net-promoter-score"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].net-promoter-active:hover,
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].ffp-nps-selected,
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].ffp-nps-selected:hover,
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].net-promoter-active,
+[data-nps-scale="true"][data-nps-layout="separated"] [data-name="net-promoter-score-value"].net-promoter-active:hover {
+  color: var(--nps-selected-text) !important;
+  background-color: var(--nps-selected-bg) !important;
+  border-color: var(--nps-selected-bg) !important;
+}
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"]:focus {
+  outline: none;
+}
+[data-field-name="net-promoter-score"] [data-name="net-promoter-score-value"]:focus-visible {
+  outline: 2px solid var(--nps-selected-bg);
+  outline-offset: -2px;
+  z-index: 2;
+}
+[data-field-name="net-promoter-score"] [data-field="extra-feedback-collection"] {
+  margin-top: 12px;
+}
+[data-field-name="net-promoter-score"] [data-field="extra-feedback-collection"] textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1px solid var(--nps-border);
+  border-radius: var(--nps-radius);
+  background: var(--nps-bg);
+  color: var(--nps-text);
+  font-size: 14px;
+  line-height: 1.4;
+  resize: vertical;
+  box-sizing: border-box;
+}
+[data-field-name="net-promoter-score"] [data-field="extra-feedback-collection"] textarea:focus {
+  outline: none;
+  border-color: var(--nps-selected-bg);
+  box-shadow: 0 0 0 3px rgba(20, 110, 245, 0.2);
 }
 `)
 }
