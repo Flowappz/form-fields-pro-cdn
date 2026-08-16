@@ -147,59 +147,116 @@ const formFieldsDateInput = async () => {
 
     const datePickerState = {}
 
-    const overrideCss = (element) => {
-        const inputName = element.getAttribute('name')
+    const toRgba = (color, alpha) => {
+        const value = String(color || '').trim()
+        if (!value) return `rgba(20, 110, 245, ${alpha})`
+        if (value.startsWith('rgba(')) return value
+        if (value.startsWith('rgb(')) return value.replace('rgb(', 'rgba(').replace(')', `, ${alpha})`)
+        if (value[0] === '#' && (value.length === 4 || value.length === 7)) {
+            let hex = value.slice(1)
+            if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('')
+            const n = parseInt(hex, 16)
+            return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`
+        }
+        return value
+    }
 
-        const formFieldsId = `${inputName}-${Date.now()}`
+    const overrideCss = (element) => {
+        const picker = $(element).data('daterangepicker')
+        const inputName = element.getAttribute('name')
+        const formFieldsId = `${inputName || element.id || 'date'}-${Date.now()}`
         element.setAttribute('form-fields-id', formFieldsId)
 
-        const { backgroundColor: parentBackgroundColor, color: parentTextColor } = getComputedStyle(element.parentElement)
+        if (picker?.container) {
+            picker.container.addClass('ffp-daterangepicker')
+            picker.container.attr('data-ffp-picker', formFieldsId)
+            const zIndex = element.getAttribute('data-zIndex')
+            if (zIndex) picker.container.css('z-index', zIndex)
+        }
+
+        const { color: parentTextColor } = getComputedStyle(element.parentElement || element)
 
         const lightTheme = {
-            selectedDateTextColor: element.getAttribute('data-light-theme-selected-date-text-color') || parentTextColor,
-            selectedDateBackgroundColor: element.getAttribute('data-light-theme-selected-date-background-color') || parentBackgroundColor,
-            todayColor: element.getAttribute('data-light-theme-today-color') || parentTextColor,
+            selectedDateTextColor:
+                element.getAttribute('data-light-theme-selected-date-text-color') || '#ffffff',
+            selectedDateBackgroundColor:
+                element.getAttribute('data-light-theme-selected-date-background-color') ||
+                'rgb(20, 110, 245)',
+            todayColor: element.getAttribute('data-light-theme-today-color') || 'rgb(20, 110, 245)',
         }
 
         const darkTheme = {
-            selectedDateTextColor: element.getAttribute('data-dark-theme-selected-date-text-color') || parentTextColor,
-            selectedDateBackgroundColor: element.getAttribute('data-dark-theme-selected-date-background-color') || parentBackgroundColor,
-            todayColor: element.getAttribute('data-dark-theme-today-color') || parentTextColor,
+            selectedDateTextColor:
+                element.getAttribute('data-dark-theme-selected-date-text-color') || '#ffffff',
+            selectedDateBackgroundColor:
+                element.getAttribute('data-dark-theme-selected-date-background-color') ||
+                'rgb(20, 110, 245)',
+            todayColor: element.getAttribute('data-dark-theme-today-color') || 'rgb(147, 197, 253)',
         }
 
+        const scope = `[data-ffp-picker="${formFieldsId}"]`
         const sheet = new CSSStyleSheet()
         sheet.replaceSync(`
-    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.available:hover {
+    ${scope} td.available:hover {
       color: ${lightTheme.selectedDateTextColor};
-      background-color: ${lightTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.65)')}; 
+      background-color: ${toRgba(lightTheme.selectedDateBackgroundColor, 0.14)};
     }
 
-    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.in-range {
-      color: ${lightTheme.selectedDateTextColor};
-      background-color: ${lightTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.45)')};
+    ${scope} td.in-range {
+      color: ${parentTextColor || '#111827'};
+      background-color: ${toRgba(lightTheme.selectedDateBackgroundColor, 0.12)};
     }
 
-    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active, 
-    [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active:hover {
-      color: ${lightTheme.selectedDateTextColor};
-      background-color: ${lightTheme.selectedDateBackgroundColor};
+    ${scope} td.active,
+    ${scope} td.active:hover {
+      color: ${lightTheme.selectedDateTextColor} !important;
+      background-color: ${lightTheme.selectedDateBackgroundColor} !important;
     }
-  
+
+    ${scope} td.today {
+      color: ${lightTheme.todayColor};
+      font-weight: 600;
+    }
+
+    ${scope} td.today:not(.active) {
+      box-shadow: inset 0 0 0 1.5px ${lightTheme.todayColor};
+    }
+
+    ${scope} .applyBtn {
+      background: ${lightTheme.selectedDateBackgroundColor} !important;
+      border-color: ${lightTheme.selectedDateBackgroundColor} !important;
+      color: ${lightTheme.selectedDateTextColor} !important;
+    }
+
     @media (prefers-color-scheme: dark) {
-      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.available:hover {
+      ${scope} td.available:hover {
         color: ${darkTheme.selectedDateTextColor};
-        background-color: ${darkTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.65)')}; 
+        background-color: ${toRgba(darkTheme.selectedDateBackgroundColor, 0.28)};
       }
 
-      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.in-range {
+      ${scope} td.in-range {
         color: ${darkTheme.selectedDateTextColor};
-        background-color: ${darkTheme.selectedDateBackgroundColor.replace('rgb', 'rgba').replace(')', ', 0.45)')};
+        background-color: ${toRgba(darkTheme.selectedDateBackgroundColor, 0.22)};
       }
 
-      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active, 
-      [form-fields-id="${formFieldsId}"]  + div + div .daterangepicker td.active:hover {
-        color: ${darkTheme.selectedDateTextColor};
-        background-color: ${darkTheme.selectedDateBackgroundColor};
+      ${scope} td.active,
+      ${scope} td.active:hover {
+        color: ${darkTheme.selectedDateTextColor} !important;
+        background-color: ${darkTheme.selectedDateBackgroundColor} !important;
+      }
+
+      ${scope} td.today {
+        color: ${darkTheme.todayColor};
+      }
+
+      ${scope} td.today:not(.active) {
+        box-shadow: inset 0 0 0 1.5px ${darkTheme.todayColor};
+      }
+
+      ${scope} .applyBtn {
+        background: ${darkTheme.selectedDateBackgroundColor} !important;
+        border-color: ${darkTheme.selectedDateBackgroundColor} !important;
+        color: ${darkTheme.selectedDateTextColor} !important;
       }
     }
     `)
@@ -209,8 +266,10 @@ const formFieldsDateInput = async () => {
     }
 
     const showDatePickerOnIconClick = (datePickerInput) => {
-        const name = datePickerInput.getAttribute('name')
-        const icon = document.querySelector(`[name="${name}"] + .date-input-icon`)
+        const parent = datePickerInput.parentElement
+        const icon =
+            parent?.querySelector('.date-input-icon') ||
+            document.querySelector(`[name="${datePickerInput.getAttribute('name')}"] + .date-input-icon`)
 
         if (icon) icon.style.cursor = 'pointer'
 
@@ -247,123 +306,348 @@ const formFieldsDateInput = async () => {
         })
     }
 
-    const readDatePickerOptions = (inputElement, { range = false } = {}) => {
+    const MOMENT_LOCALE_MAP = {
+        'en-US': 'en',
+        en: 'en',
+        'ru-RU': 'ru',
+        ru: 'ru',
+        'fr-FR': 'fr',
+        fr: 'fr',
+        'de-DE': 'de',
+        de: 'de',
+        'nl-NL': 'nl',
+        nl: 'nl',
+        'ja-JP': 'ja',
+        ja: 'ja',
+    }
+
+    const DATE_PICKER_BUTTON_LABELS = {
+        en: { applyLabel: 'Apply', cancelLabel: 'Cancel' },
+        ru: { applyLabel: 'Применить', cancelLabel: 'Отмена' },
+        fr: { applyLabel: 'Appliquer', cancelLabel: 'Annuler' },
+        de: { applyLabel: 'Anwenden', cancelLabel: 'Abbrechen' },
+        nl: { applyLabel: 'Toepassen', cancelLabel: 'Annuleren' },
+        ja: { applyLabel: '適用', cancelLabel: 'キャンセル' },
+    }
+
+    const toMomentFirstDay = (raw) => {
+        const day = Number(raw)
+        if (!Number.isFinite(day)) return 0
+        if (day === 7) return 0
+        if (day < 0 || day > 6) return 0
+        return day
+    }
+
+    const resolveMomentLocale = (language) => {
+        if (!language) return 'en'
+        return (
+            MOMENT_LOCALE_MAP[language] ||
+            MOMENT_LOCALE_MAP[language.split('-')[0]] ||
+            language.split('-')[0] ||
+            'en'
+        )
+    }
+
+    const loadMomentLocale = async (language) => {
+        const locale = resolveMomentLocale(language)
+        if (locale === 'en') return locale
+        await loadScript(`https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/${locale}.js`)
+        return locale
+    }
+
+    const readDatePickerOptions = (inputElement, { range = false, momentLocale = 'en' } = {}) => {
         const format = inputElement.getAttribute('data-format') || 'MM/DD/YYYY'
-        const firstDay = Number(inputElement.getAttribute('data-firstDay') || 0)
-        const language = inputElement.getAttribute('data-language') || 'en'
+        const firstDay = toMomentFirstDay(inputElement.getAttribute('data-firstDay'))
+        const labels = DATE_PICKER_BUTTON_LABELS[momentLocale] || DATE_PICKER_BUTTON_LABELS.en
+        const localeData = window.moment?.localeData?.(momentLocale)
         return {
-            showDropdowns: true,
+            showDropdowns: false,
             autoUpdateInput: false,
+            autoApply: !range,
+            opens: 'center',
             parentEl: null,
             locale: {
                 format,
-                firstDay: Number.isFinite(firstDay) ? firstDay : 0,
+                firstDay,
+                applyLabel: labels.applyLabel,
+                cancelLabel: labels.cancelLabel,
+                ...(localeData
+                    ? {
+                          daysOfWeek: localeData.weekdaysMin(),
+                          monthNames: localeData.months(),
+                      }
+                    : {}),
             },
             ...(range ? {} : { singleDatePicker: true }),
-            // language is stored for future i18n; daterangepicker uses locale.format/firstDay
-            _language: language,
         }
     }
 
-    const initializeDatePickers = () => {
-        const datePickerInputs = document.querySelectorAll(selectors.DATE_PICKER)
+    const applyCalendarLayout = (inputElement, { range = false } = {}) => {
+        const picker = $(inputElement).data('daterangepicker')
+        if (!picker?.container) return
 
-        for (let inputElement of datePickerInputs) {
-            if (inputElement.dataset.ffpDateInit === '1') continue
-            inputElement.dataset.ffpDateInit = '1'
+        picker.container.addClass('ffp-daterangepicker')
 
-            const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
-            inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
+        const months = Number(inputElement.getAttribute('data-months'))
+        const columns = Number(inputElement.getAttribute('data-columns'))
 
-            const opts = readDatePickerOptions(inputElement)
-            opts.parentEl = pickerDropdownWrapperEl
+        if (Number.isFinite(months) && months <= 1) {
+            picker.container.addClass('ffp-single-month')
+        } else if (!range && Number.isFinite(months) && months >= 2) {
+            picker.container.removeClass('single')
+            picker.container.find('.drp-calendar.left').removeClass('single')
+            picker.container.find('.drp-calendar.right').show()
+        }
 
-            $(inputElement).daterangepicker(opts)
-            $(inputElement).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format(opts.locale.format))
-            })
-            $(inputElement).on('cancel.daterangepicker', function () {
-                $(this).val('')
-            })
-            overrideCss(inputElement)
-            showDatePickerOnIconClick(inputElement)
-            preventFormSubmitOnFirstEnterToHideDatePicker(inputElement)
+        if (Number.isFinite(columns) && columns === 1) {
+            picker.container.addClass('ffp-one-column')
         }
     }
 
-    const initializeDateRangePickers = () => {
-        const datePickerInputs = document.querySelectorAll(selectors.DATE_RANGE_PICKER)
+    const bindDatePicker = async (inputElement, { range = false } = {}) => {
+        if (inputElement.dataset.ffpDateInit === '1') return
+        inputElement.dataset.ffpDateInit = '1'
 
-        for (let inputElement of datePickerInputs) {
-            if (inputElement.dataset.ffpDateInit === '1') continue
-            inputElement.dataset.ffpDateInit = '1'
+        const language = inputElement.getAttribute('data-language') || 'en'
+        const momentLocale = await loadMomentLocale(language)
 
-            const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
-            inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
+        const pickerDropdownWrapperEl = createPickerDropdownWrapperElement()
+        inputElement.parentElement.appendChild(pickerDropdownWrapperEl)
 
-            const opts = readDatePickerOptions(inputElement, { range: true })
-            opts.parentEl = pickerDropdownWrapperEl
+        const opts = readDatePickerOptions(inputElement, { range, momentLocale })
+        opts.parentEl = pickerDropdownWrapperEl
 
-            $(inputElement).daterangepicker(opts)
-            $(inputElement).on('apply.daterangepicker', function (ev, picker) {
+        $(inputElement).daterangepicker(opts)
+        $(inputElement).on('apply.daterangepicker', function (ev, picker) {
+            if (range) {
                 $(this).val(
                     picker.startDate.format(opts.locale.format) +
                         ' - ' +
                         picker.endDate.format(opts.locale.format),
                 )
-            })
-            $(inputElement).on('cancel.daterangepicker', function () {
-                $(this).val('')
-            })
-            overrideCss(inputElement)
-            showDatePickerOnIconClick(inputElement)
-            preventFormSubmitOnFirstEnterToHideDatePicker(inputElement)
+            } else {
+                $(this).val(picker.startDate.format(opts.locale.format))
+            }
+        })
+        $(inputElement).on('cancel.daterangepicker', function () {
+            $(this).val('')
+        })
+        applyCalendarLayout(inputElement, { range })
+        overrideCss(inputElement)
+        showDatePickerOnIconClick(inputElement)
+        preventFormSubmitOnFirstEnterToHideDatePicker(inputElement)
+    }
+
+    const initializeDatePickers = async () => {
+        const datePickerInputs = document.querySelectorAll(selectors.DATE_PICKER)
+        for (const inputElement of datePickerInputs) {
+            await bindDatePicker(inputElement)
+        }
+    }
+
+    const initializeDateRangePickers = async () => {
+        const datePickerInputs = document.querySelectorAll(selectors.DATE_RANGE_PICKER)
+        for (const inputElement of datePickerInputs) {
+            await bindDatePicker(inputElement, { range: true })
         }
     }
 
     const loadDatePickerPackageCSS = () => {
         injectStyle('ffp-daterangepicker-overrides', `
-    .daterangepicker {
+    [form-fields-pro-date-picker],
+    [form-fields-pro-date-range-picker] {
+      cursor: pointer;
+      padding-right: 44px;
+    }
+
+    .date-input-icon {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .date-input-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .date-input-icon svg path {
+      stroke: #6b7280;
+    }
+
+    .daterangepicker.ffp-daterangepicker {
       font-family: inherit;
+      font-size: 13px;
+      color: #111827;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
+      padding: 10px 10px 0;
+      margin-top: 8px;
+      width: auto !important;
+      max-width: calc(100vw - 24px);
+    }
+
+    .daterangepicker.ffp-daterangepicker:before,
+    .daterangepicker.ffp-daterangepicker:after {
+      display: none;
+    }
+
+    .daterangepicker.ffp-daterangepicker .calendar-table {
+      background: transparent;
+      border: 0;
+      padding: 4px;
+    }
+
+    .daterangepicker.ffp-daterangepicker .calendar-table table {
+      border-collapse: separate;
+      border-spacing: 2px;
+    }
+
+    .daterangepicker.ffp-daterangepicker .drp-calendar {
+      max-width: none;
+      padding: 0 4px 8px;
+    }
+
+    .daterangepicker.ffp-daterangepicker td,
+    .daterangepicker.ffp-daterangepicker th {
+      min-width: 38px;
+      width: 38px;
+      height: 36px;
+      line-height: 36px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 0;
+      border-radius: 8px;
+    }
+
+    .daterangepicker.ffp-daterangepicker th {
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      height: 28px;
+      line-height: 28px;
+    }
+
+    .daterangepicker.ffp-daterangepicker th.month {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      color: #111827;
+      min-width: 140px;
+      width: auto;
+    }
+
+    .daterangepicker.ffp-daterangepicker th.prev,
+    .daterangepicker.ffp-daterangepicker th.next {
+      min-width: 32px;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      color: #374151;
+    }
+
+    .daterangepicker.ffp-daterangepicker th.prev:hover,
+    .daterangepicker.ffp-daterangepicker th.next:hover,
+    .daterangepicker.ffp-daterangepicker td.available:hover {
+      background-color: #f3f4f6;
+    }
+
+    .daterangepicker.ffp-daterangepicker td.off,
+    .daterangepicker.ffp-daterangepicker td.off.in-range,
+    .daterangepicker.ffp-daterangepicker td.off.available {
+      color: #d1d5db;
+      background: transparent;
+    }
+
+    .daterangepicker.ffp-daterangepicker td.in-range {
       border-radius: 0;
     }
 
-    .daterangepicker select.yearselect,
-    .daterangepicker select.monthselect {
-      border-radius: 0;
-      border-color: #ccc;
+    .daterangepicker.ffp-daterangepicker td.start-date {
+      border-radius: 8px 0 0 8px;
     }
 
-    input.form-fields-dropdown-wrapper:focus-visible {
-      outline: 0;
-      border-color: #3898ec;
+    .daterangepicker.ffp-daterangepicker td.end-date {
+      border-radius: 0 8px 8px 0;
     }
 
-    .cancelBtn, .applyBtn {
-      width: fit-content;
-      background: rgb(239, 239, 239);
-      border-color: rgb(239, 239, 239);
-      padding: 8px 12px !important;
+    .daterangepicker.ffp-daterangepicker td.start-date.end-date,
+    .daterangepicker.ffp-daterangepicker.single td.active {
+      border-radius: 8px;
     }
 
-    .applyBtn {
-      background: black;
-      color: white;
-      border-color: black;
+    .daterangepicker.ffp-daterangepicker .daterangepicker_input,
+    .daterangepicker.ffp-daterangepicker.single .drp-selected {
+      display: none;
+    }
+
+    .daterangepicker.ffp-daterangepicker .drp-buttons {
+      padding: 10px 8px 12px;
+      border-top: 1px solid #f3f4f6;
+      text-align: right;
+    }
+
+    .daterangepicker.ffp-daterangepicker .drp-buttons .btn {
+      width: auto;
+      margin-left: 8px;
+      border-radius: 8px !important;
+      font-size: 13px !important;
+      font-weight: 500;
+      line-height: 1.2;
+      padding: 7px 14px !important;
+      box-shadow: none !important;
+    }
+
+    .daterangepicker.ffp-daterangepicker .cancelBtn {
+      background: #fff !important;
+      color: #374151 !important;
+      border: 1px solid #e5e7eb !important;
+    }
+
+    .daterangepicker.ffp-daterangepicker .applyBtn {
+      background: #146ef5 !important;
+      color: #fff !important;
+      border: 1px solid #146ef5 !important;
+    }
+
+    .daterangepicker.ffp-daterangepicker.ffp-single-month .drp-calendar.right {
+      display: none;
+    }
+
+    .daterangepicker.ffp-daterangepicker.ffp-one-column .drp-calendar {
+      float: none !important;
+      display: block;
+    }
+
+    .daterangepicker.ffp-daterangepicker.ffp-one-column .drp-calendar.right {
+      margin-left: 0;
     }
 
     @media (max-width: 485px) {
-      .daterangepicker .drp-selected {
+      .daterangepicker.ffp-daterangepicker .drp-selected {
         width: 100%;
         margin-bottom: 8px;
+      }
+
+      .daterangepicker.ffp-daterangepicker td,
+      .daterangepicker.ffp-daterangepicker th {
+        min-width: 32px;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
       }
     }
     `)
     }
 
     loadDatePickerPackageCSS()
-    initializeDatePickers()
-    initializeDateRangePickers()
+    await initializeDatePickers()
+    await initializeDateRangePickers()
 }
 
 /** User IP inputs */
