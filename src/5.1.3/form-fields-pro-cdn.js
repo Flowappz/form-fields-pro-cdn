@@ -189,18 +189,19 @@ const formFieldsDateInput = async () => {
         const darkToday = element.getAttribute('data-dark-theme-today-color') || 'rgb(147, 197, 253)'
 
         return `
-      :host, .container {
+      :host {
         font-family: inherit;
         font-size: 13px;
         color: #111827;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
-        overflow: auto;
-        max-width: calc(100vw - 24px);
       }
       .container {
         padding: 10px;
+        max-width: calc(100vw - 24px);
+      }
+      .container.show {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
       }
       .calendar {
         padding: 4px 6px 8px;
@@ -276,10 +277,22 @@ const formFieldsDateInput = async () => {
         root.appendChild(style)
     }
 
+    let easepickCssText = ''
+    try {
+        const cssRes = await fetch(EASEPICK_CSS)
+        if (cssRes.ok) easepickCssText = await cssRes.text()
+    } catch (err) {
+        console.warn('Form Fields Pro: Failed to fetch easepick CSS', err)
+    }
+
     const bindDatePicker = (inputElement, { range = false } = {}) => {
         if (inputElement.dataset.ffpDateInit === '1') return
+        const createPicker = window.easepick?.create
+        if (typeof createPicker !== 'function') {
+            console.warn('Form Fields Pro: easepick.create is not available')
+            return
+        }
         inputElement.dataset.ffpDateInit = '1'
-        if (typeof window.easepick?.create !== 'function') return
 
         const formFieldsId = `${inputElement.getAttribute('name') || inputElement.id || 'date'}-${Date.now()}`
         inputElement.setAttribute('form-fields-id', formFieldsId)
@@ -291,36 +304,57 @@ const formFieldsDateInput = async () => {
         const format = inputElement.getAttribute('data-format') || 'MM/DD/YYYY'
         const zIndex = clamp(inputElement.getAttribute('data-zIndex'), 1, 2147483647, 999)
 
-        const plugins = ['AmpPlugin']
-        const pluginOptions = {
-            AmpPlugin: {
-                dropdown: { months: true, years: true },
-                resetButton: true,
-            },
-        }
-        if (range) {
-            plugins.unshift('RangePlugin')
+        const AmpPlugin = window.easepick.AmpPlugin
+        const RangePlugin = window.easepick.RangePlugin
+        const plugins = []
+        const pluginOptions = {}
+        if (range && typeof RangePlugin === 'function') {
+            plugins.push(RangePlugin)
             pluginOptions.RangePlugin = { delimiter: ' - ', tooltip: true }
         }
+        if (typeof AmpPlugin === 'function') {
+            plugins.push(AmpPlugin)
+            pluginOptions.AmpPlugin = {
+                dropdown: { months: true, years: true },
+                resetButton: true,
+            }
+        }
 
-        const picker = window.easepick.create({
-            element: inputElement,
-            css: [EASEPICK_CSS],
-            lang,
-            format,
-            firstDay,
-            grid,
-            calendars,
-            zIndex,
-            readonly: true,
-            autoApply: true,
-            plugins,
-            ...pluginOptions,
-        })
+        let picker
+        try {
+            picker = createPicker({
+                element: inputElement,
+                css: easepickCssText || [EASEPICK_CSS],
+                lang,
+                format,
+                firstDay,
+                grid,
+                calendars,
+                zIndex,
+                readonly: true,
+                autoApply: true,
+                plugins,
+                ...pluginOptions,
+            })
+        } catch (err) {
+            console.warn('Form Fields Pro: Date picker failed to initialize', err)
+            inputElement.dataset.ffpDateInit = '0'
+            return
+        }
+
+        if (picker?.ui?.wrapper) {
+            picker.ui.wrapper.style.display = ''
+            picker.ui.wrapper.style.pointerEvents = 'auto'
+            picker.ui.wrapper.style.zIndex = String(zIndex)
+        }
 
         applyPickerTheme(picker, inputElement)
         picker.on('show', () => {
             datePickerState[formFieldsId] = true
+            if (picker.ui?.wrapper) {
+                picker.ui.wrapper.style.display = ''
+                picker.ui.wrapper.style.pointerEvents = 'auto'
+            }
             applyPickerTheme(picker, inputElement)
         })
         picker.on('render', () => applyPickerTheme(picker, inputElement))
