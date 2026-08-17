@@ -345,119 +345,135 @@ const formFieldsDateInput = async () => {
         }
     }
 
+    const parseRgb = (color) => {
+        const value = String(color || '').trim()
+        const m = value.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i)
+        if (m) return [Number(m[1]), Number(m[2]), Number(m[3])]
+        if (value[0] === '#' && (value.length === 4 || value.length === 7)) {
+            let hex = value.slice(1)
+            if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('')
+            const n = parseInt(hex, 16)
+            return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+        }
+        return null
+    }
+
+    const isDarkColor = (color) => {
+        const rgb = parseRgb(color)
+        if (!rgb) return false
+        return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000 < 140
+    }
+
+    const pageLooksDark = (element) => {
+        let el = element
+        for (let i = 0; i < 12 && el; i += 1) {
+            const bg = window.getComputedStyle(el).backgroundColor
+            const rgb = parseRgb(bg)
+            if (rgb) {
+                const alphaMatch = String(bg).match(/rgba?\([^)]*?,\s*([0-9.]+)\s*\)$/)
+                const alpha = alphaMatch ? Number(alphaMatch[1]) : 1
+                if (alpha > 0.4) return isDarkColor(bg)
+            }
+            el = el.parentElement
+        }
+        return false
+    }
+
     const pickerThemeCss = (element) => {
         const theme = readDateTheme(element)
+        const dark = pageLooksDark(element)
+        const bg = dark ? theme.calendarBackgroundColorDark : theme.calendarBackgroundColorLight
+        const border = dark ? theme.calendarBorderColorDark : theme.calendarBorderColorLight
+        const dateText = dark ? theme.dateTextColorDark : theme.dateTextColorLight
+        const weekday = dark ? theme.weekdayTextColorDark : theme.weekdayTextColorLight
+        const header = dark ? theme.headerTextColorDark : theme.headerTextColorLight
+        const dropdown = dark ? theme.dropdownBackgroundColorDark : theme.dropdownBackgroundColorLight
+        const hover = dark ? theme.hoverBackgroundColorDark : theme.hoverBackgroundColorLight
+        const selectedBg = dark ? theme.selectedDateBackgroundColorDark : theme.selectedDateBackgroundColorLight
+        const selectedText = dark ? theme.selectedDateTextColorDark : theme.selectedDateTextColorLight
+        const today = dark ? theme.todayDateColorDark : theme.todayDateColorLight
         const radius = `${theme.borderRadius || 12}px`
-        const lightRange = toRgba(theme.selectedDateBackgroundColorLight, 0.14)
-        const darkRange = toRgba(theme.selectedDateBackgroundColorDark, 0.22)
+        const inRange = toRgba(selectedBg, dark ? 0.22 : 0.14)
 
         return `
-      :host {
+      :host,
+      .container,
+      .container[data-theme=dark] {
         font-family: inherit;
         font-size: 13px;
-        color: ${theme.dateTextColorLight};
-        --ffp-cal-bg: ${theme.calendarBackgroundColorLight};
-        --ffp-cal-border: ${theme.calendarBorderColorLight};
-        --ffp-date-text: ${theme.dateTextColorLight};
-        --ffp-weekday: ${theme.weekdayTextColorLight};
-        --ffp-header: ${theme.headerTextColorLight};
-        --ffp-dropdown-bg: ${theme.dropdownBackgroundColorLight};
-        --ffp-hover-bg: ${theme.hoverBackgroundColorLight};
-        --ffp-selected-bg: ${theme.selectedDateBackgroundColorLight};
-        --ffp-selected-text: ${theme.selectedDateTextColorLight};
-        --ffp-today: ${theme.todayDateColorLight};
-        --ffp-in-range: ${lightRange};
-        --ffp-radius: ${radius};
+        color: ${dateText};
+        --color-bg-default: ${bg};
+        --color-bg-secondary: ${dropdown};
+        --color-fg-default: ${dateText};
+        --color-fg-primary: ${selectedBg};
+        --color-fg-secondary: ${header};
+        --color-fg-selected: ${selectedText};
+        --color-fg-muted: ${weekday};
+        --color-fg-accent: ${today};
+        --color-btn-secondary-bg: ${dropdown};
+        --color-btn-secondary-fg: ${header};
+        --color-btn-secondary-border: ${border};
+        --color-border-default: ${border};
+        --color-bg-inrange: ${inRange};
+        --border-radius: ${radius};
       }
-      .container {
-        padding: 10px;
-        max-width: calc(100vw - 24px);
-        background: var(--ffp-cal-bg);
-        color: var(--ffp-date-text);
+      .container,
+      .container.show,
+      .container > main {
+        background-color: ${bg} !important;
+        color: ${dateText} !important;
       }
       .container.show {
         display: inline-block;
         height: auto !important;
         overflow: visible;
         transform: scale(1) !important;
-        border: 1px solid var(--ffp-cal-border);
-        border-radius: var(--ffp-radius);
+        border: 1px solid ${border};
+        border-radius: ${radius};
         box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
-        background: var(--ffp-cal-bg);
-        color: var(--ffp-date-text);
       }
-      .calendar {
-        padding: 4px 6px 8px;
+      .calendar > .header button,
+      .calendar > .header button svg,
+      .calendar > .header button svg path {
+        color: ${header} !important;
+        fill: ${header} !important;
       }
-      .header {
-        margin-bottom: 6px;
-        color: var(--ffp-header);
+      .calendar > .daynames-row > .dayname {
+        color: ${weekday} !important;
       }
-      .header button {
-        border-radius: 8px;
-        color: var(--ffp-header);
-      }
-      .header button svg,
-      .header button svg path {
-        fill: var(--ffp-header);
-        stroke: var(--ffp-header);
-        color: var(--ffp-header);
-      }
-      .dayname {
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: var(--ffp-weekday);
-      }
-      .days-grid > .day {
+      .calendar > .days-grid > .day {
+        color: ${dateText} !important;
         border-radius: 8px;
         font-weight: 500;
-        color: var(--ffp-date-text);
       }
-      .days-grid > .day:hover {
-        background-color: var(--ffp-hover-bg);
+      .calendar > .days-grid > .day:hover {
+        background-color: ${hover} !important;
+        border-color: ${hover} !important;
+        color: ${dateText} !important;
       }
-      .days-grid > .day.today {
-        color: var(--ffp-today);
+      .calendar > .days-grid > .day.today {
+        color: ${today} !important;
         font-weight: 600;
-        box-shadow: inset 0 0 0 1.5px var(--ffp-today);
+        box-shadow: inset 0 0 0 1.5px ${today};
       }
-      .days-grid > .day.selected,
-      .container.range-plugin .days-grid > .day.start,
-      .container.range-plugin .days-grid > .day.end {
-        color: var(--ffp-selected-text) !important;
-        background-color: var(--ffp-selected-bg) !important;
+      .calendar > .days-grid > .day.selected,
+      .container.range-plugin .calendar > .days-grid > .day.start,
+      .container.range-plugin .calendar > .days-grid > .day.end {
+        color: ${selectedText} !important;
+        background-color: ${selectedBg} !important;
         box-shadow: none;
       }
-      .container.range-plugin .days-grid > .day.in-range {
-        color: var(--ffp-date-text);
-        background-color: var(--ffp-in-range);
-        border-radius: 0;
+      .container.range-plugin .calendar > .days-grid > .day.in-range {
+        color: ${dateText} !important;
+        background-color: ${inRange} !important;
       }
-      .amp-plugin-unit select {
+      .container.amp-plugin .calendars .calendar > .header .month-name select {
+        background: ${dropdown} !important;
+        color: ${header} !important;
+        border: 1px solid ${border} !important;
         border-radius: 8px;
-        border: 1px solid var(--ffp-cal-border);
-        background: var(--ffp-dropdown-bg);
-        color: var(--ffp-header);
         font: inherit;
         padding: 4px 8px;
-      }
-      @media (prefers-color-scheme: dark) {
-        :host {
-          color: ${theme.dateTextColorDark};
-          --ffp-cal-bg: ${theme.calendarBackgroundColorDark};
-          --ffp-cal-border: ${theme.calendarBorderColorDark};
-          --ffp-date-text: ${theme.dateTextColorDark};
-          --ffp-weekday: ${theme.weekdayTextColorDark};
-          --ffp-header: ${theme.headerTextColorDark};
-          --ffp-dropdown-bg: ${theme.dropdownBackgroundColorDark};
-          --ffp-hover-bg: ${theme.hoverBackgroundColorDark};
-          --ffp-selected-bg: ${theme.selectedDateBackgroundColorDark};
-          --ffp-selected-text: ${theme.selectedDateTextColorDark};
-          --ffp-today: ${theme.todayDateColorDark};
-          --ffp-in-range: ${darkRange};
-        }
       }
     `
     }
@@ -469,9 +485,10 @@ const formFieldsDateInput = async () => {
         if (!style) {
             style = document.createElement('style')
             style.setAttribute('data-ffp-date-theme', '1')
-            root.appendChild(style)
         }
         style.textContent = pickerThemeCss(element)
+        root.appendChild(style)
+        picker.ui?.container?.removeAttribute('data-theme')
     }
 
     let easepickCssText = ''
@@ -503,6 +520,7 @@ const formFieldsDateInput = async () => {
         const AmpPlugin = {
             dropdown: { months: true, years: true },
             resetButton: true,
+            darkMode: false,
         }
         const RangePlugin = range ? { delimiter: ' - ', tooltip: true } : null
         if (range) plugins.unshift('RangePlugin')
