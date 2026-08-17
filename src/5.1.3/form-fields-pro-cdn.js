@@ -183,6 +183,7 @@ const formFieldsDateInput = async () => {
     }
 
     const DATE_STYLE_DEFAULTS = {
+        calendarTheme: 'light',
         selectedDateTextColorLight: 'rgb(255, 255, 255)',
         selectedDateTextColorDark: 'rgb(255, 255, 255)',
         selectedDateBackgroundColorLight: 'rgb(20, 110, 245)',
@@ -234,6 +235,7 @@ const formFieldsDateInput = async () => {
             dropdownBackgroundColorDark: parts[18],
             hoverBackgroundColorDark: parts[19],
             borderRadius: parts[20],
+            calendarTheme: parts[21],
         }
     }
 
@@ -342,6 +344,12 @@ const formFieldsDateInput = async () => {
             borderRadius: String(
                 pickColor(fromTheme.borderRadius, pickColor(fromConfig.borderRadius, DATE_STYLE_DEFAULTS.borderRadius)),
             ).replace(/px$/i, ''),
+            calendarTheme: String(
+                pickColor(
+                    fromTheme.calendarTheme,
+                    pickColor(attr('data-date-scheme'), pickColor(fromConfig.calendarTheme, DATE_STYLE_DEFAULTS.calendarTheme)),
+                ),
+            ).toLowerCase(),
         }
     }
 
@@ -379,45 +387,62 @@ const formFieldsDateInput = async () => {
         return false
     }
 
-    const pickerThemeCss = (element) => {
+    const isPickerDark = (element, theme) => {
+        const scheme = String(theme?.calendarTheme || 'light').toLowerCase()
+        if (scheme === 'dark') return true
+        if (scheme === 'auto') return pageLooksDark(element)
+        return false
+    }
+
+    const pickerPalette = (element) => {
         const theme = readDateTheme(element)
-        const dark = pageLooksDark(element)
-        const bg = dark ? theme.calendarBackgroundColorDark : theme.calendarBackgroundColorLight
-        const border = dark ? theme.calendarBorderColorDark : theme.calendarBorderColorLight
-        const dateText = dark ? theme.dateTextColorDark : theme.dateTextColorLight
-        const weekday = dark ? theme.weekdayTextColorDark : theme.weekdayTextColorLight
-        const header = dark ? theme.headerTextColorDark : theme.headerTextColorLight
-        const dropdown = dark ? theme.dropdownBackgroundColorDark : theme.dropdownBackgroundColorLight
-        const hover = dark ? theme.hoverBackgroundColorDark : theme.hoverBackgroundColorLight
-        const selectedBg = dark ? theme.selectedDateBackgroundColorDark : theme.selectedDateBackgroundColorLight
-        const selectedText = dark ? theme.selectedDateTextColorDark : theme.selectedDateTextColorLight
-        const today = dark ? theme.todayDateColorDark : theme.todayDateColorLight
-        const radius = `${theme.borderRadius || 12}px`
-        const inRange = toRgba(selectedBg, dark ? 0.22 : 0.14)
+        const dark = isPickerDark(element, theme)
+        return {
+            dark,
+            bg: dark ? theme.calendarBackgroundColorDark : theme.calendarBackgroundColorLight,
+            border: dark ? theme.calendarBorderColorDark : theme.calendarBorderColorLight,
+            dateText: dark ? theme.dateTextColorDark : theme.dateTextColorLight,
+            weekday: dark ? theme.weekdayTextColorDark : theme.weekdayTextColorLight,
+            header: dark ? theme.headerTextColorDark : theme.headerTextColorLight,
+            dropdown: dark ? theme.dropdownBackgroundColorDark : theme.dropdownBackgroundColorLight,
+            hover: dark ? theme.hoverBackgroundColorDark : theme.hoverBackgroundColorLight,
+            selectedBg: dark ? theme.selectedDateBackgroundColorDark : theme.selectedDateBackgroundColorLight,
+            selectedText: dark ? theme.selectedDateTextColorDark : theme.selectedDateTextColorLight,
+            today: dark ? theme.todayDateColorDark : theme.todayDateColorLight,
+            radius: `${theme.borderRadius || 12}px`,
+            inRange: toRgba(
+                dark ? theme.selectedDateBackgroundColorDark : theme.selectedDateBackgroundColorLight,
+                dark ? 0.22 : 0.14,
+            ),
+        }
+    }
+
+    const pickerThemeCss = (element) => {
+        const { bg, border, dateText, weekday, header, dropdown, hover, selectedBg, selectedText, today, radius, inRange } =
+            pickerPalette(element)
 
         return `
-      :host,
-      .container,
-      .container[data-theme=dark] {
+      :host {
         font-family: inherit;
         font-size: 13px;
         color: ${dateText};
-        --color-bg-default: ${bg};
-        --color-bg-secondary: ${dropdown};
-        --color-fg-default: ${dateText};
-        --color-fg-primary: ${selectedBg};
-        --color-fg-secondary: ${header};
-        --color-fg-selected: ${selectedText};
-        --color-fg-muted: ${weekday};
-        --color-fg-accent: ${today};
-        --color-btn-secondary-bg: ${dropdown};
-        --color-btn-secondary-fg: ${header};
-        --color-btn-secondary-border: ${border};
-        --color-border-default: ${border};
-        --color-bg-inrange: ${inRange};
-        --border-radius: ${radius};
+        --color-bg-default: ${bg} !important;
+        --color-bg-secondary: ${dropdown} !important;
+        --color-fg-default: ${dateText} !important;
+        --color-fg-primary: ${selectedBg} !important;
+        --color-fg-secondary: ${header} !important;
+        --color-fg-selected: ${selectedText} !important;
+        --color-fg-muted: ${weekday} !important;
+        --color-fg-accent: ${today} !important;
+        --color-btn-secondary-bg: ${dropdown} !important;
+        --color-btn-secondary-fg: ${header} !important;
+        --color-btn-secondary-border: ${border} !important;
+        --color-border-default: ${border} !important;
+        --color-bg-inrange: ${inRange} !important;
+        --border-radius: ${radius} !important;
       }
       .container,
+      .container[data-theme=dark],
       .container.show,
       .container > main {
         background-color: ${bg} !important;
@@ -438,35 +463,44 @@ const formFieldsDateInput = async () => {
         color: ${header} !important;
         fill: ${header} !important;
       }
+      .dayname,
       .calendar > .daynames-row > .dayname {
         color: ${weekday} !important;
       }
+      .days-grid > .day,
       .calendar > .days-grid > .day {
         color: ${dateText} !important;
         border-radius: 8px;
         font-weight: 500;
       }
+      .days-grid > .day:hover,
       .calendar > .days-grid > .day:hover {
         background-color: ${hover} !important;
         border-color: ${hover} !important;
         color: ${dateText} !important;
       }
+      .days-grid > .day.today,
       .calendar > .days-grid > .day.today {
         color: ${today} !important;
         font-weight: 600;
         box-shadow: inset 0 0 0 1.5px ${today};
       }
+      .days-grid > .day.selected,
       .calendar > .days-grid > .day.selected,
+      .container.range-plugin .days-grid > .day.start,
+      .container.range-plugin .days-grid > .day.end,
       .container.range-plugin .calendar > .days-grid > .day.start,
       .container.range-plugin .calendar > .days-grid > .day.end {
         color: ${selectedText} !important;
         background-color: ${selectedBg} !important;
         box-shadow: none;
       }
+      .container.range-plugin .days-grid > .day.in-range,
       .container.range-plugin .calendar > .days-grid > .day.in-range {
         color: ${dateText} !important;
         background-color: ${inRange} !important;
       }
+      .amp-plugin-unit select,
       .container.amp-plugin .calendars .calendar > .header .month-name select {
         background: ${dropdown} !important;
         color: ${header} !important;
@@ -476,6 +510,32 @@ const formFieldsDateInput = async () => {
         padding: 4px 8px;
       }
     `
+    }
+
+    const applyHostVars = (node, palette, paintBox = false) => {
+        if (!node?.style) return
+        const vars = {
+            '--color-bg-default': palette.bg,
+            '--color-bg-secondary': palette.dropdown,
+            '--color-fg-default': palette.dateText,
+            '--color-fg-primary': palette.selectedBg,
+            '--color-fg-secondary': palette.header,
+            '--color-fg-selected': palette.selectedText,
+            '--color-fg-muted': palette.weekday,
+            '--color-fg-accent': palette.today,
+            '--color-btn-secondary-bg': palette.dropdown,
+            '--color-btn-secondary-fg': palette.header,
+            '--color-btn-secondary-border': palette.border,
+            '--color-border-default': palette.border,
+            '--color-bg-inrange': palette.inRange,
+            '--border-radius': palette.radius,
+        }
+        Object.entries(vars).forEach(([name, value]) => node.style.setProperty(name, value, 'important'))
+        if (!paintBox) return
+        node.style.setProperty('background-color', palette.bg, 'important')
+        node.style.setProperty('color', palette.dateText, 'important')
+        node.style.setProperty('border-color', palette.border, 'important')
+        node.style.setProperty('border-radius', palette.radius, 'important')
     }
 
     const applyPickerTheme = (picker, element) => {
@@ -488,7 +548,16 @@ const formFieldsDateInput = async () => {
         }
         style.textContent = pickerThemeCss(element)
         root.appendChild(style)
-        picker.ui?.container?.removeAttribute('data-theme')
+        const palette = pickerPalette(element)
+        const container = picker.ui?.container
+        container?.removeAttribute('data-theme')
+        applyHostVars(root.host, palette, false)
+        applyHostVars(container, palette, true)
+        const main = container?.querySelector?.('main')
+        if (main) {
+            main.style.setProperty('background-color', palette.bg, 'important')
+            main.style.setProperty('color', palette.dateText, 'important')
+        }
     }
 
     let easepickCssText = ''
