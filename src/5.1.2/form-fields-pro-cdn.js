@@ -141,6 +141,10 @@ const formFieldsDateInput = async () => {
     if (!hasDateFields) return
 
     await loadScript('https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js')
+    if (typeof window.easepick?.create !== 'function') {
+        console.warn('Form Fields Pro: easepick.create is not available')
+        return
+    }
 
     const datePickerState = {}
     const EASEPICK_CSS = 'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css'
@@ -199,6 +203,10 @@ const formFieldsDateInput = async () => {
         max-width: calc(100vw - 24px);
       }
       .container.show {
+        display: inline-block;
+        height: auto !important;
+        overflow: visible;
+        transform: scale(1) !important;
         border: 1px solid #e5e7eb;
         border-radius: 12px;
         box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
@@ -279,7 +287,10 @@ const formFieldsDateInput = async () => {
 
     let easepickCssText = ''
     try {
-        const cssRes = await fetch(EASEPICK_CSS)
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 4000)
+        const cssRes = await fetch(EASEPICK_CSS, { signal: controller.signal })
+        clearTimeout(timer)
         if (cssRes.ok) easepickCssText = await cssRes.text()
     } catch (err) {
         console.warn('Form Fields Pro: Failed to fetch easepick CSS', err)
@@ -287,11 +298,6 @@ const formFieldsDateInput = async () => {
 
     const bindDatePicker = (inputElement, { range = false } = {}) => {
         if (inputElement.dataset.ffpDateInit === '1') return
-        const createPicker = window.easepick?.create
-        if (typeof createPicker !== 'function') {
-            console.warn('Form Fields Pro: easepick.create is not available')
-            return
-        }
         inputElement.dataset.ffpDateInit = '1'
 
         const formFieldsId = `${inputElement.getAttribute('name') || inputElement.id || 'date'}-${Date.now()}`
@@ -304,27 +310,29 @@ const formFieldsDateInput = async () => {
         const format = inputElement.getAttribute('data-format') || 'MM/DD/YYYY'
         const zIndex = clamp(inputElement.getAttribute('data-zIndex'), 1, 2147483647, 999)
 
-        const AmpPlugin = window.easepick.AmpPlugin
-        const RangePlugin = window.easepick.RangePlugin
-        const plugins = []
-        const pluginOptions = {}
-        if (range && typeof RangePlugin === 'function') {
-            plugins.push(RangePlugin)
-            pluginOptions.RangePlugin = { delimiter: ' - ', tooltip: true }
+        const plugins = ['AmpPlugin']
+        const AmpPlugin = {
+            dropdown: { months: true, years: true },
+            resetButton: true,
         }
-        if (typeof AmpPlugin === 'function') {
-            plugins.push(AmpPlugin)
-            pluginOptions.AmpPlugin = {
-                dropdown: { months: true, years: true },
-                resetButton: true,
-            }
+        const RangePlugin = range ? { delimiter: ' - ', tooltip: true } : null
+        if (range) plugins.unshift('RangePlugin')
+
+        const revealWrapper = (picker) => {
+            const wrap = picker?.ui?.wrapper
+            if (!wrap) return
+            wrap.style.display = ''
+            wrap.style.pointerEvents = 'auto'
+            wrap.style.zIndex = String(zIndex)
         }
 
         let picker
         try {
-            picker = createPicker({
+            // easepick.create is a class — calling it without `new` throws and the
+            // calendar never binds, so clicks appear to do nothing.
+            picker = new window.easepick.create({
                 element: inputElement,
-                css: easepickCssText || [EASEPICK_CSS],
+                css: easepickCssText ? `${easepickCssText}\n${pickerThemeCss(inputElement)}` : [EASEPICK_CSS],
                 lang,
                 format,
                 firstDay,
@@ -334,7 +342,8 @@ const formFieldsDateInput = async () => {
                 readonly: true,
                 autoApply: true,
                 plugins,
-                ...pluginOptions,
+                AmpPlugin,
+                ...(RangePlugin ? { RangePlugin } : {}),
             })
         } catch (err) {
             console.warn('Form Fields Pro: Date picker failed to initialize', err)
@@ -342,25 +351,26 @@ const formFieldsDateInput = async () => {
             return
         }
 
-        if (picker?.ui?.wrapper) {
-            picker.ui.wrapper.style.display = ''
-            picker.ui.wrapper.style.pointerEvents = 'auto'
-            picker.ui.wrapper.style.zIndex = String(zIndex)
+        revealWrapper(picker)
+        applyPickerTheme(picker, inputElement)
+
+        const openPicker = (event) => {
+            event.preventDefault()
+            revealWrapper(picker)
+            picker.show(event)
         }
 
-        applyPickerTheme(picker, inputElement)
         picker.on('show', () => {
             datePickerState[formFieldsId] = true
-            if (picker.ui?.wrapper) {
-                picker.ui.wrapper.style.display = ''
-                picker.ui.wrapper.style.pointerEvents = 'auto'
-            }
+            revealWrapper(picker)
             applyPickerTheme(picker, inputElement)
         })
         picker.on('render', () => applyPickerTheme(picker, inputElement))
         picker.on('hide', () => {
             datePickerState[formFieldsId] = false
         })
+
+        inputElement.addEventListener('click', openPicker)
 
         inputElement.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && datePickerState[formFieldsId]) {
@@ -377,7 +387,8 @@ const formFieldsDateInput = async () => {
             icon.addEventListener('click', (e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                picker.show()
+                revealWrapper(picker)
+                picker.show(e)
             })
         }
     }
