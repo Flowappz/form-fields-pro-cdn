@@ -341,9 +341,12 @@ const formFieldsDateInput = async () => {
                 'data-dark-theme-hover-background-color',
                 DATE_STYLE_DEFAULTS.hoverBackgroundColorDark,
             ),
-            borderRadius: String(
-                pickColor(fromTheme.borderRadius, pickColor(fromConfig.borderRadius, DATE_STYLE_DEFAULTS.borderRadius)),
-            ).replace(/px$/i, ''),
+            borderRadius: (() => {
+                const raw = [fromTheme.borderRadius, fromConfig.borderRadius, DATE_STYLE_DEFAULTS.borderRadius]
+                    .find((value) => value !== undefined && value !== null && String(value).trim() !== '')
+                const n = Number(String(raw ?? '').replace(/px$/i, '').trim())
+                return Number.isFinite(n) ? String(Math.max(0, Math.min(48, n))) : DATE_STYLE_DEFAULTS.borderRadius
+            })(),
             calendarTheme: String(
                 pickColor(
                     fromTheme.calendarTheme,
@@ -409,7 +412,7 @@ const formFieldsDateInput = async () => {
             selectedBg: dark ? theme.selectedDateBackgroundColorDark : theme.selectedDateBackgroundColorLight,
             selectedText: dark ? theme.selectedDateTextColorDark : theme.selectedDateTextColorLight,
             today: dark ? theme.todayDateColorDark : theme.todayDateColorLight,
-            radius: `${theme.borderRadius || 12}px`,
+            radius: `${Number.isFinite(Number(theme.borderRadius)) ? Number(theme.borderRadius) : 12}px`,
             inRange: toRgba(
                 dark ? theme.selectedDateBackgroundColorDark : theme.selectedDateBackgroundColorLight,
                 dark ? 0.22 : 0.14,
@@ -447,15 +450,21 @@ const formFieldsDateInput = async () => {
       .container > main {
         background-color: ${bg} !important;
         color: ${dateText} !important;
+        border-radius: ${radius} !important;
       }
       .container.show {
         display: inline-block;
         height: auto !important;
-        overflow: visible;
+        overflow: hidden !important;
         transform: scale(1) !important;
-        border: 1px solid ${border};
-        border-radius: ${radius};
+        border: 1px solid ${border} !important;
+        border-radius: ${radius} !important;
         box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
+      }
+      .container > main,
+      .container.show > main {
+        overflow: hidden !important;
+        border-radius: inherit !important;
       }
       .calendar > .header button,
       .calendar > .header button svg,
@@ -553,10 +562,16 @@ const formFieldsDateInput = async () => {
         container?.removeAttribute('data-theme')
         applyHostVars(root.host, palette, false)
         applyHostVars(container, palette, true)
+        if (container) {
+            container.style.setProperty('overflow', 'hidden', 'important')
+            container.style.setProperty('border-radius', palette.radius, 'important')
+        }
         const main = container?.querySelector?.('main')
         if (main) {
             main.style.setProperty('background-color', palette.bg, 'important')
             main.style.setProperty('color', palette.dateText, 'important')
+            main.style.setProperty('border-radius', palette.radius, 'important')
+            main.style.setProperty('overflow', 'hidden', 'important')
         }
     }
 
