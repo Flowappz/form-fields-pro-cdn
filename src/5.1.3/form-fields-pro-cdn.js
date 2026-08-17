@@ -182,95 +182,281 @@ const formFieldsDateInput = async () => {
         return value
     }
 
+    const DATE_STYLE_DEFAULTS = {
+        selectedDateTextColorLight: 'rgb(255, 255, 255)',
+        selectedDateTextColorDark: 'rgb(255, 255, 255)',
+        selectedDateBackgroundColorLight: 'rgb(20, 110, 245)',
+        selectedDateBackgroundColorDark: 'rgb(20, 110, 245)',
+        todayDateColorLight: 'rgb(20, 110, 245)',
+        todayDateColorDark: 'rgb(147, 197, 253)',
+        calendarBackgroundColorLight: 'rgb(255, 255, 255)',
+        calendarBackgroundColorDark: 'rgb(17, 24, 39)',
+        calendarBorderColorLight: 'rgb(229, 231, 235)',
+        calendarBorderColorDark: 'rgb(55, 65, 81)',
+        dateTextColorLight: 'rgb(17, 24, 39)',
+        dateTextColorDark: 'rgb(243, 244, 246)',
+        weekdayTextColorLight: 'rgb(107, 114, 128)',
+        weekdayTextColorDark: 'rgb(156, 163, 175)',
+        headerTextColorLight: 'rgb(17, 24, 39)',
+        headerTextColorDark: 'rgb(243, 244, 246)',
+        dropdownBackgroundColorLight: 'rgb(255, 255, 255)',
+        dropdownBackgroundColorDark: 'rgb(31, 41, 55)',
+        hoverBackgroundColorLight: 'rgb(243, 244, 246)',
+        hoverBackgroundColorDark: 'rgb(55, 65, 81)',
+        borderRadius: '12',
+    }
+
+    const pickColor = (value, fallback) => (value && String(value).trim() ? value : fallback)
+
+    const parseDateTheme = (raw) => {
+        if (!raw) return null
+        const parts = String(raw).split('~')
+        if (parts.length < 21) return null
+        return {
+            selectedDateTextColorLight: parts[0],
+            selectedDateBackgroundColorLight: parts[1],
+            todayDateColorLight: parts[2],
+            calendarBackgroundColorLight: parts[3],
+            calendarBorderColorLight: parts[4],
+            dateTextColorLight: parts[5],
+            weekdayTextColorLight: parts[6],
+            headerTextColorLight: parts[7],
+            dropdownBackgroundColorLight: parts[8],
+            hoverBackgroundColorLight: parts[9],
+            selectedDateTextColorDark: parts[10],
+            selectedDateBackgroundColorDark: parts[11],
+            todayDateColorDark: parts[12],
+            calendarBackgroundColorDark: parts[13],
+            calendarBorderColorDark: parts[14],
+            dateTextColorDark: parts[15],
+            weekdayTextColorDark: parts[16],
+            headerTextColorDark: parts[17],
+            dropdownBackgroundColorDark: parts[18],
+            hoverBackgroundColorDark: parts[19],
+            borderRadius: parts[20],
+        }
+    }
+
+    const styleFromConfig = (element) => {
+        try {
+            const wrapper = element.closest('[data-field-config], [form-fields-wrapper]')
+            const raw = wrapper && (wrapper.getAttribute('data-field-config') || wrapper.getAttribute('field-config'))
+            return raw ? JSON.parse(raw).style || {} : {}
+        } catch (err) {
+            return {}
+        }
+    }
+
+    const readDateTheme = (element) => {
+        const fromTheme = parseDateTheme(element.getAttribute('data-date-theme')) || {}
+        const fromConfig = styleFromConfig(element)
+        const attr = (name) => element.getAttribute(name)
+        const pick = (key, attrName, fallback) =>
+            pickColor(fromTheme[key], pickColor(attr(attrName), pickColor(fromConfig[key], fallback)))
+
+        return {
+            selectedDateTextColorLight: pick(
+                'selectedDateTextColorLight',
+                'data-light-theme-selected-date-text-color',
+                DATE_STYLE_DEFAULTS.selectedDateTextColorLight,
+            ),
+            selectedDateTextColorDark: pick(
+                'selectedDateTextColorDark',
+                'data-dark-theme-selected-date-text-color',
+                DATE_STYLE_DEFAULTS.selectedDateTextColorDark,
+            ),
+            selectedDateBackgroundColorLight: pick(
+                'selectedDateBackgroundColorLight',
+                'data-light-theme-selected-date-background-color',
+                DATE_STYLE_DEFAULTS.selectedDateBackgroundColorLight,
+            ),
+            selectedDateBackgroundColorDark: pick(
+                'selectedDateBackgroundColorDark',
+                'data-dark-theme-selected-date-background-color',
+                DATE_STYLE_DEFAULTS.selectedDateBackgroundColorDark,
+            ),
+            todayDateColorLight: pick('todayDateColorLight', 'data-light-theme-today-color', DATE_STYLE_DEFAULTS.todayDateColorLight),
+            todayDateColorDark: pick('todayDateColorDark', 'data-dark-theme-today-color', DATE_STYLE_DEFAULTS.todayDateColorDark),
+            calendarBackgroundColorLight: pick(
+                'calendarBackgroundColorLight',
+                'data-light-theme-calendar-background-color',
+                DATE_STYLE_DEFAULTS.calendarBackgroundColorLight,
+            ),
+            calendarBackgroundColorDark: pick(
+                'calendarBackgroundColorDark',
+                'data-dark-theme-calendar-background-color',
+                DATE_STYLE_DEFAULTS.calendarBackgroundColorDark,
+            ),
+            calendarBorderColorLight: pick(
+                'calendarBorderColorLight',
+                'data-light-theme-calendar-border-color',
+                DATE_STYLE_DEFAULTS.calendarBorderColorLight,
+            ),
+            calendarBorderColorDark: pick(
+                'calendarBorderColorDark',
+                'data-dark-theme-calendar-border-color',
+                DATE_STYLE_DEFAULTS.calendarBorderColorDark,
+            ),
+            dateTextColorLight: pick('dateTextColorLight', 'data-light-theme-date-text-color', DATE_STYLE_DEFAULTS.dateTextColorLight),
+            dateTextColorDark: pick('dateTextColorDark', 'data-dark-theme-date-text-color', DATE_STYLE_DEFAULTS.dateTextColorDark),
+            weekdayTextColorLight: pick(
+                'weekdayTextColorLight',
+                'data-light-theme-weekday-text-color',
+                DATE_STYLE_DEFAULTS.weekdayTextColorLight,
+            ),
+            weekdayTextColorDark: pick(
+                'weekdayTextColorDark',
+                'data-dark-theme-weekday-text-color',
+                DATE_STYLE_DEFAULTS.weekdayTextColorDark,
+            ),
+            headerTextColorLight: pick(
+                'headerTextColorLight',
+                'data-light-theme-header-text-color',
+                DATE_STYLE_DEFAULTS.headerTextColorLight,
+            ),
+            headerTextColorDark: pick(
+                'headerTextColorDark',
+                'data-dark-theme-header-text-color',
+                DATE_STYLE_DEFAULTS.headerTextColorDark,
+            ),
+            dropdownBackgroundColorLight: pick(
+                'dropdownBackgroundColorLight',
+                'data-light-theme-dropdown-background-color',
+                DATE_STYLE_DEFAULTS.dropdownBackgroundColorLight,
+            ),
+            dropdownBackgroundColorDark: pick(
+                'dropdownBackgroundColorDark',
+                'data-dark-theme-dropdown-background-color',
+                DATE_STYLE_DEFAULTS.dropdownBackgroundColorDark,
+            ),
+            hoverBackgroundColorLight: pick(
+                'hoverBackgroundColorLight',
+                'data-light-theme-hover-background-color',
+                DATE_STYLE_DEFAULTS.hoverBackgroundColorLight,
+            ),
+            hoverBackgroundColorDark: pick(
+                'hoverBackgroundColorDark',
+                'data-dark-theme-hover-background-color',
+                DATE_STYLE_DEFAULTS.hoverBackgroundColorDark,
+            ),
+            borderRadius: String(
+                pickColor(fromTheme.borderRadius, pickColor(fromConfig.borderRadius, DATE_STYLE_DEFAULTS.borderRadius)),
+            ).replace(/px$/i, ''),
+        }
+    }
+
     const pickerThemeCss = (element) => {
-        const lightBg =
-            element.getAttribute('data-light-theme-selected-date-background-color') || 'rgb(20, 110, 245)'
-        const lightText = element.getAttribute('data-light-theme-selected-date-text-color') || '#ffffff'
-        const lightToday = element.getAttribute('data-light-theme-today-color') || lightBg
-        const darkBg =
-            element.getAttribute('data-dark-theme-selected-date-background-color') || lightBg
-        const darkText = element.getAttribute('data-dark-theme-selected-date-text-color') || '#ffffff'
-        const darkToday = element.getAttribute('data-dark-theme-today-color') || 'rgb(147, 197, 253)'
+        const theme = readDateTheme(element)
+        const radius = `${theme.borderRadius || 12}px`
+        const lightRange = toRgba(theme.selectedDateBackgroundColorLight, 0.14)
+        const darkRange = toRgba(theme.selectedDateBackgroundColorDark, 0.22)
 
         return `
       :host {
         font-family: inherit;
         font-size: 13px;
-        color: #111827;
+        color: ${theme.dateTextColorLight};
+        --ffp-cal-bg: ${theme.calendarBackgroundColorLight};
+        --ffp-cal-border: ${theme.calendarBorderColorLight};
+        --ffp-date-text: ${theme.dateTextColorLight};
+        --ffp-weekday: ${theme.weekdayTextColorLight};
+        --ffp-header: ${theme.headerTextColorLight};
+        --ffp-dropdown-bg: ${theme.dropdownBackgroundColorLight};
+        --ffp-hover-bg: ${theme.hoverBackgroundColorLight};
+        --ffp-selected-bg: ${theme.selectedDateBackgroundColorLight};
+        --ffp-selected-text: ${theme.selectedDateTextColorLight};
+        --ffp-today: ${theme.todayDateColorLight};
+        --ffp-in-range: ${lightRange};
+        --ffp-radius: ${radius};
       }
       .container {
         padding: 10px;
         max-width: calc(100vw - 24px);
+        background: var(--ffp-cal-bg);
+        color: var(--ffp-date-text);
       }
       .container.show {
         display: inline-block;
         height: auto !important;
         overflow: visible;
         transform: scale(1) !important;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
+        border: 1px solid var(--ffp-cal-border);
+        border-radius: var(--ffp-radius);
         box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
+        background: var(--ffp-cal-bg);
+        color: var(--ffp-date-text);
       }
       .calendar {
         padding: 4px 6px 8px;
       }
       .header {
         margin-bottom: 6px;
+        color: var(--ffp-header);
       }
       .header button {
         border-radius: 8px;
+        color: var(--ffp-header);
+      }
+      .header button svg,
+      .header button svg path {
+        fill: var(--ffp-header);
+        stroke: var(--ffp-header);
+        color: var(--ffp-header);
       }
       .dayname {
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.04em;
         text-transform: uppercase;
-        color: #6b7280;
+        color: var(--ffp-weekday);
       }
       .days-grid > .day {
         border-radius: 8px;
         font-weight: 500;
+        color: var(--ffp-date-text);
       }
       .days-grid > .day:hover {
-        background-color: ${toRgba(lightBg, 0.12)};
+        background-color: var(--ffp-hover-bg);
       }
       .days-grid > .day.today {
-        color: ${lightToday};
+        color: var(--ffp-today);
         font-weight: 600;
-        box-shadow: inset 0 0 0 1.5px ${lightToday};
+        box-shadow: inset 0 0 0 1.5px var(--ffp-today);
       }
       .days-grid > .day.selected,
       .container.range-plugin .days-grid > .day.start,
       .container.range-plugin .days-grid > .day.end {
-        color: ${lightText} !important;
-        background-color: ${lightBg} !important;
+        color: var(--ffp-selected-text) !important;
+        background-color: var(--ffp-selected-bg) !important;
         box-shadow: none;
       }
       .container.range-plugin .days-grid > .day.in-range {
-        color: #111827;
-        background-color: ${toRgba(lightBg, 0.14)};
+        color: var(--ffp-date-text);
+        background-color: var(--ffp-in-range);
         border-radius: 0;
       }
       .amp-plugin-unit select {
         border-radius: 8px;
-        border-color: #e5e7eb;
+        border: 1px solid var(--ffp-cal-border);
+        background: var(--ffp-dropdown-bg);
+        color: var(--ffp-header);
         font: inherit;
         padding: 4px 8px;
       }
       @media (prefers-color-scheme: dark) {
-        :host, .container { color: #f3f4f6; background: #111827; border-color: #374151; }
-        .dayname { color: #9ca3af; }
-        .days-grid > .day:hover { background-color: ${toRgba(darkBg, 0.28)}; }
-        .days-grid > .day.today { color: ${darkToday}; box-shadow: inset 0 0 0 1.5px ${darkToday}; }
-        .days-grid > .day.selected,
-        .container.range-plugin .days-grid > .day.start,
-        .container.range-plugin .days-grid > .day.end {
-          color: ${darkText} !important;
-          background-color: ${darkBg} !important;
-        }
-        .container.range-plugin .days-grid > .day.in-range {
-          color: ${darkText};
-          background-color: ${toRgba(darkBg, 0.22)};
+        :host {
+          color: ${theme.dateTextColorDark};
+          --ffp-cal-bg: ${theme.calendarBackgroundColorDark};
+          --ffp-cal-border: ${theme.calendarBorderColorDark};
+          --ffp-date-text: ${theme.dateTextColorDark};
+          --ffp-weekday: ${theme.weekdayTextColorDark};
+          --ffp-header: ${theme.headerTextColorDark};
+          --ffp-dropdown-bg: ${theme.dropdownBackgroundColorDark};
+          --ffp-hover-bg: ${theme.hoverBackgroundColorDark};
+          --ffp-selected-bg: ${theme.selectedDateBackgroundColorDark};
+          --ffp-selected-text: ${theme.selectedDateTextColorDark};
+          --ffp-today: ${theme.todayDateColorDark};
+          --ffp-in-range: ${darkRange};
         }
       }
     `
@@ -278,11 +464,14 @@ const formFieldsDateInput = async () => {
 
     const applyPickerTheme = (picker, element) => {
         const root = picker?.ui?.shadowRoot
-        if (!root || root.querySelector('style[data-ffp-date-theme]')) return
-        const style = document.createElement('style')
-        style.setAttribute('data-ffp-date-theme', '1')
+        if (!root) return
+        let style = root.querySelector('style[data-ffp-date-theme]')
+        if (!style) {
+            style = document.createElement('style')
+            style.setAttribute('data-ffp-date-theme', '1')
+            root.appendChild(style)
+        }
         style.textContent = pickerThemeCss(element)
-        root.appendChild(style)
     }
 
     let easepickCssText = ''
