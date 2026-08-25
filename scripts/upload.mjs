@@ -258,6 +258,13 @@ const DEFAULT_EMAIL_NOTIFIER_URLS = {
   dev: "http://localhost:4000",
 };
 
+const DEFAULT_LICENSE_URLS = {
+  production: "https://license.flowappz.com/api/license",
+  staging: "https://license-staging.flowappz.com/api/license",
+  standalone: "https://license.flowappz.com/api/license",
+  dev: "https://license-staging.flowappz.com/api/license",
+};
+
 function normalizeServiceUrl(url) {
   return String(url || "")
     .trim()
@@ -271,16 +278,23 @@ const dataClientUrl = normalizeServiceUrl(
 const emailNotifierUrl = normalizeServiceUrl(
   process.env.EMAIL_NOTIFIER_URL || DEFAULT_EMAIL_NOTIFIER_URLS[env],
 );
+// Not run through normalizeServiceUrl: this one keeps its `/api/license` path.
+const licenseUrl = String(
+  process.env.LICENSE_VALIDATION_URL || DEFAULT_LICENSE_URLS[env] || "",
+)
+  .trim()
+  .replace(/\/+$/, "");
 
-if (!dataClientUrl || !emailNotifierUrl) {
+if (!dataClientUrl || !emailNotifierUrl || !licenseUrl) {
   console.error(
-    "✗ Missing DATA_CLIENT_URL/BACKEND_URL or EMAIL_NOTIFIER_URL for CDN placeholders.",
+    "✗ Missing DATA_CLIENT_URL/BACKEND_URL, EMAIL_NOTIFIER_URL or LICENSE_VALIDATION_URL for CDN placeholders.",
   );
   process.exit(1);
 }
 
 console.log(`Data client URL: ${dataClientUrl}`);
 console.log(`Email notifier URL: ${emailNotifierUrl}`);
+console.log(`License URL: ${licenseUrl}`);
 
 // ─── Minify before upload ─────────────────────────────────────────────────────
 // Source stays readable in src/; R2 + SRI hash use the minified bytes.
@@ -289,6 +303,7 @@ const rawSource = readFileSync(filePath, "utf8");
 const source = rawSource
   .replaceAll("__FFP_DATA_CLIENT_URL__", dataClientUrl)
   .replaceAll("__FFP_EMAIL_NOTIFIER_URL__", emailNotifierUrl)
+  .replaceAll("__FFP_LICENSE_URL__", licenseUrl)
   .replaceAll(
     "__FFP_SUBMISSION_SECRET__",
     process.env.FORM_SUBMISSION_SECRET || process.env.SUBMISSION_HMAC_SECRET || "",
@@ -297,10 +312,11 @@ const source = rawSource
 if (
   source.includes("__FFP_DATA_CLIENT_URL__") ||
   source.includes("__FFP_EMAIL_NOTIFIER_URL__") ||
+  source.includes("__FFP_LICENSE_URL__") ||
   source.includes("__FFP_SUBMISSION_SECRET__")
 ) {
   console.error(
-    "✗ CDN placeholders were not fully replaced. Check DATA_CLIENT_URL / EMAIL_NOTIFIER_URL / FORM_SUBMISSION_SECRET.",
+    "✗ CDN placeholders were not fully replaced. Check DATA_CLIENT_URL / EMAIL_NOTIFIER_URL / LICENSE_VALIDATION_URL / FORM_SUBMISSION_SECRET.",
   );
   process.exit(1);
 }
