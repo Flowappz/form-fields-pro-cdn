@@ -143,6 +143,10 @@ if (
   process.exit(1);
 }
 
+// A trailing slash here produces `//api/...`, which the backend answers with a
+// 308 and the release script reads as a failure.
+const API_BASE = String(BACKEND_URL).trim().replace(/\/+$/, "");
+
 if (!process.env.CDN_RELEASE_SECRET) {
   console.warn(
     `⚠ CDN_RELEASE_SECRET missing in ${envFile} — POST /api/cdn-release may fail if backend requires it.`,
@@ -153,7 +157,7 @@ if (!process.env.CDN_RELEASE_SECRET) {
 console.log(`Fetching current version from ${BACKEND_URL}...`);
 let release = null;
 try {
-  const latestRes = await fetch(`${BACKEND_URL}/api/cdn-release/latest`, {
+  const latestRes = await fetch(`${API_BASE}/api/cdn-release/latest`, {
     headers: authHeaders(),
   });
   if (latestRes.ok) {
@@ -191,6 +195,10 @@ if (!release?.version) {
 const currentVersion = release.version;
 const currentHostedLocation = release.hostedLocation ?? null;
 const currentIntegrityHash = release.integrityHash ?? null;
+// When the latest-release fetch failed we seeded `release` locally, so we do not
+// actually know what sites currently point at. Skipping registration on that
+// guess leaves every site on the previous script with no warning.
+const currentReleaseUnknown = currentHostedLocation === null;
 
 let version = currentVersion;
 let isNewVersion = false;
@@ -371,12 +379,15 @@ await client.send(
     CacheControl: "public, max-age=31536000, immutable",
   }),
 );
-console.log(`✓ Uploaded: ${R2_PUBLIC_URL}/${key}`);
+// A trailing slash on R2_PUBLIC_URL would otherwise register a `//` URL that 404s.
+const publicBase = String(R2_PUBLIC_URL).trim().replace(/\/+$/, "");
+
+console.log(`✓ Uploaded: ${publicBase}/${key}`);
 
 // ─── Save release metadata ────────────────────────────────────────────────────
-const hostedLocation = `${R2_PUBLIC_URL}/${key}`;
+const hostedLocation = `${publicBase}/${key}`;
 console.log(`\nSaving release metadata to DB...`);
-const releaseRes = await fetch(`${BACKEND_URL}/api/cdn-release`, {
+const releaseRes = await fetch(`${API_BASE}/api/cdn-release`, {
   method: "POST",
   headers: authHeaders(),
   body: JSON.stringify({
@@ -412,10 +423,15 @@ if (hashChanged && !isNewVersion) {
   );
 }
 
-if (isNewVersion || urlChanged || hashChanged || forceRegister) {
+if (isNewVersion || urlChanged || hashChanged || forceRegister || currentReleaseUnknown) {
+  if (currentReleaseUnknown && !isNewVersion && !forceRegister) {
+    console.log(
+      `\nCurrent release unknown (latest fetch failed) — registering rather than assuming sites are current.`,
+    );
+  }
   console.log(`\nRe-registering script on all sites...`);
   const registerRes = await fetch(
-    `${BACKEND_URL}/api/cdn-release/register-all`,
+    `${API_BASE}/api/cdn-release/register-all`,
     {
       method: "POST",
       headers: authHeaders(),
