@@ -17,17 +17,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const SCRIPT_FILENAME = "form-fields-pro-cdn.js";
 
+// Only reached for the very first release, before the DB has one: after that
+// the version comes from the latest release the backend knows about. It used to
+// scan `src/<semver>/`; the runtime no longer lives there.
 function getLatestLocalVersion() {
-  const srcDir = resolve(ROOT, "src");
-  const versions = readdirSync(srcDir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && /^\d+\.\d+\.\d+$/.test(d.name))
-    .map((d) => d.name)
-    .sort((a, b) => {
-      const [am, an, ap] = a.split(".").map(Number);
-      const [bm, bn, bp] = b.split(".").map(Number);
-      return am - bm || an - bn || ap - bp;
-    });
-  return versions.at(-1) ?? null;
+  const pkg = JSON.parse(readFileSync(resolve(ROOT, "package.json"), "utf8"));
+  return pkg.runtimeVersion ?? null;
 }
 
 function isSemver(v) {
@@ -63,7 +58,7 @@ function authHeaders() {
 
 // ─── Args: <env> [--nr [patch|minor|major]] [--version x.y.z] [--register] ───
 // Workflow (recommended):
-//   1. Create/edit src/<version>/form-fields-pro-cdn.js (readable source)
+//   1. Edit the source under packages/ and set `runtimeVersion` in package.json
 //   2. pnpm release:staging -- --version x.y.z
 //      → terser minify → upload form-fields-pro-cdn.<contentHash>.js
 //      → Cache-Control: public, max-age=31536000, immutable
@@ -182,13 +177,13 @@ if (!release?.version) {
   const localLatest = getLatestLocalVersion();
   if (!explicitVersion && !bump && !localLatest) {
     console.error(
-      "✗ No release found in DB and no local version folders. Use --version or --nr to create the first release.",
+      "✗ No release in the DB and no `runtimeVersion` in package.json. Use --version or --nr to create the first release.",
     );
     process.exit(1);
   }
   release = { version: localLatest ?? "0.0.0" };
   console.log(
-    `No DB release yet — seeding from local version folder: ${release.version}`,
+    `No DB release yet — seeding from package.json runtimeVersion: ${release.version}`,
   );
 }
 
@@ -226,8 +221,15 @@ if (explicitVersion) {
 }
 
 // ─── Resolve local script file ────────────────────────────────────────────────
+// The bundled core from scripts/build.mjs wins when it exists. It carries the
+// chunk manifest, so uploading src/<version>/ instead would publish a core whose
+// bytes have no idea the chunks exist - every field would fall back to its
+// native input and nothing would look broken enough to notice.
 const versionDir = resolve(ROOT, "src", version);
-const filePath = resolve(versionDir, SCRIPT_FILENAME);
+const builtPath = resolve(ROOT, "build", version, SCRIPT_FILENAME);
+const filePath = existsSync(builtPath)
+  ? builtPath
+  : resolve(versionDir, SCRIPT_FILENAME);
 const previousPath = resolve(ROOT, "src", currentVersion, SCRIPT_FILENAME);
 
 if (!existsSync(filePath)) {
@@ -283,6 +285,12 @@ function normalizeServiceUrl(url) {
 const dataClientUrl = normalizeServiceUrl(
   process.env.DATA_CLIENT_URL || BACKEND_URL || DEFAULT_DATA_CLIENT_URLS[env],
 );
+// Optional: the beacon endpoint. Absent means core skips telemetry entirely,
+// which is the right default for a self-hosted or standalone release.
+const beaconUrl = process.env.BEACON_URL
+  ? normalizeServiceUrl(process.env.BEACON_URL)
+  : "";
+
 const emailNotifierUrl = normalizeServiceUrl(
   process.env.EMAIL_NOTIFIER_URL || DEFAULT_EMAIL_NOTIFIER_URLS[env],
 );
@@ -293,38 +301,52 @@ const licenseUrl = String(
   .trim()
   .replace(/\/+$/, "");
 
-if (!dataClientUrl || !emailNotifierUrl || !licenseUrl) {
+// EMAIL_NOTIFIER_URL is deliberately not required. The runtime dropped
+// __FFP_EMAIL_NOTIFIER_URL__ in 5.1.5, so this script was hard-requiring an env
+// var for a placeholder the source no longer contains - a release that failed
+// for a reason that had stopped being real. The substitution below is kept so an
+// older pinned version can still be re-released.
+if (!dataClientUrl || !licenseUrl) {
   console.error(
-    "✗ Missing DATA_CLIENT_URL/BACKEND_URL, EMAIL_NOTIFIER_URL or LICENSE_VALIDATION_URL for CDN placeholders.",
+    "✗ Missing DATA_CLIENT_URL/BACKEND_URL or LICENSE_VALIDATION_URL for CDN placeholders.",
   );
   process.exit(1);
 }
 
 console.log(`Data client URL: ${dataClientUrl}`);
-console.log(`Email notifier URL: ${emailNotifierUrl}`);
+if (emailNotifierUrl) console.log(`Email notifier URL: ${emailNotifierUrl}`);
+if (beaconUrl) console.log(`Beacon URL: ${beaconUrl}`);
 console.log(`License URL: ${licenseUrl}`);
 
 // ─── Minify before upload ─────────────────────────────────────────────────────
-// Source stays readable in src/; R2 + SRI hash use the minified bytes.
+// The build in build/<version>/ is the input; R2 + SRI hash use the minified bytes.
 console.log(`\nMinifying with terser...`);
 const rawSource = readFileSync(filePath, "utf8");
 const source = rawSource
   .replaceAll("__FFP_DATA_CLIENT_URL__", dataClientUrl)
-  .replaceAll("__FFP_EMAIL_NOTIFIER_URL__", emailNotifierUrl)
+  .replaceAll("__FFP_EMAIL_NOTIFIER_URL__", emailNotifierUrl ?? "")
+  .replaceAll("__FFP_BEACON_URL__", beaconUrl ?? "")
   .replaceAll("__FFP_LICENSE_URL__", licenseUrl)
   .replaceAll(
     "__FFP_SUBMISSION_SECRET__",
     process.env.FORM_SUBMISSION_SECRET || process.env.SUBMISSION_HMAC_SECRET || "",
   );
 
-if (
-  source.includes("__FFP_DATA_CLIENT_URL__") ||
-  source.includes("__FFP_EMAIL_NOTIFIER_URL__") ||
-  source.includes("__FFP_LICENSE_URL__") ||
-  source.includes("__FFP_SUBMISSION_SECRET__")
-) {
+// Guard on the tokens, not on the env vars: a placeholder still present after
+// substitution ships a literal `__FFP_...` string into an immutable public
+// object, and there is no way to fix it afterwards without a new release.
+const leftover = [
+  "__FFP_DATA_CLIENT_URL__",
+  "__FFP_EMAIL_NOTIFIER_URL__",
+  "__FFP_LICENSE_URL__",
+  "__FFP_BEACON_URL__",
+  "__FFP_SUBMISSION_SECRET__",
+].filter((token) => source.includes(token));
+
+if (leftover.length) {
+  console.error(`✗ CDN placeholders were not replaced: ${leftover.join(", ")}`);
   console.error(
-    "✗ CDN placeholders were not fully replaced. Check DATA_CLIENT_URL / EMAIL_NOTIFIER_URL / LICENSE_VALIDATION_URL / FORM_SUBMISSION_SECRET.",
+    "  Set the matching env var in the .env file for this environment.",
   );
   process.exit(1);
 }
@@ -367,6 +389,62 @@ const client = new S3Client({
     secretAccessKey: R2_SECRET_ACCESS_KEY,
   },
 });
+
+// ─── Upload lazily-loaded chunks ──────────────────────────────────────────────
+// Chunks go up FIRST. Core carries their URLs and sha384 digests as literals, so
+// a core object that is reachable before its chunks are would fail every
+// integrity check for the length of that window. Order is the safety property.
+//
+// Keys are content-addressed, so re-uploading an unchanged chunk writes the same
+// bytes to the same key and is a no-op. Never mutate an existing key: that is
+// what makes `immutable` and rollback safe.
+const buildManifestPath = resolve(ROOT, "build", version, "build-manifest.json");
+if (existsSync(buildManifestPath)) {
+  const buildManifest = JSON.parse(readFileSync(buildManifestPath, "utf8"));
+  const chunkNames = Object.keys(buildManifest.chunks ?? {});
+
+  if (buildManifest.nodeEnv !== NODE_ENV || buildManifest.appSlug !== APP_SLUG) {
+    console.error(
+      `✗ build/${version} was built for ${buildManifest.appSlug}/${buildManifest.nodeEnv}, not ${APP_SLUG}/${NODE_ENV}.`,
+    );
+    console.error("  Chunk URLs are baked into core. Re-run: node scripts/build.mjs " + env + " --version " + version);
+    process.exit(1);
+  }
+
+  console.log(`\nUploading ${chunkNames.length} chunks to R2...`);
+  for (const name of chunkNames) {
+    const entry = buildManifest.chunks[name];
+    const chunkKey = new URL(entry.url).pathname.replace(/^\/+/, "");
+    const chunkBody = readFileSync(resolve(ROOT, "build", version, "chunks", chunkKey.split("/").pop()));
+
+    // The digest core will enforce, recomputed from the bytes actually being
+    // uploaded. A mismatch means build/ and the manifest have drifted, and every
+    // visitor would get a blocked script instead of a working field.
+    const actual = "sha384-" + createHash("sha384").update(chunkBody).digest("base64");
+    if (actual !== entry.integrity) {
+      console.error(`✗ ${name}: bytes on disk do not match the manifest digest.`);
+      console.error(`  manifest: ${entry.integrity}\n  on disk:  ${actual}`);
+      console.error("  Re-run scripts/build.mjs - core must be rebuilt with the new digest.");
+      process.exit(1);
+    }
+
+    await client.send(
+      new PutObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: chunkKey,
+        Body: chunkBody,
+        ContentType: "application/javascript",
+        CacheControl: "public, max-age=31536000, immutable",
+      }),
+    );
+    console.log(`  ✓ ${name.padEnd(10)} ${chunkKey}`);
+  }
+} else {
+  console.log(
+    `\nNo build/${version}/build-manifest.json - uploading core only.`,
+  );
+  console.log("  Run scripts/build.mjs first if this release is meant to ship chunks.");
+}
 
 console.log(`\nUploading ${key} to R2 bucket "${R2_BUCKET_NAME}"...`);
 await client.send(

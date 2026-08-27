@@ -2,11 +2,15 @@
   "name": "form-fields-pro-cdn",
   "private": true,
   "version": "1.2.4",
+  "runtimeVersion": "5.1.5",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npx tsc && vite build",
-    "preview": "vite preview",
+    "extract:countries": "node scripts/extract-countries.mjs",
+    "build": "node scripts/build.mjs",
+    "build:staging": "dotenv -e .env.staging -- node scripts/build.mjs staging",
+    "build:production": "dotenv -e .env.production -- node scripts/build.mjs production",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
     "release": "node scripts/upload.mjs dev",
     "release:staging": "dotenv -e .env.staging -- node scripts/upload.mjs staging",
     "release:production": "dotenv -e .env.production -- node scripts/upload.mjs production",
@@ -16,14 +20,12 @@
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.1091.0",
-    "concurrently": "^9.0.1",
     "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
-    "ga-gtag": "^1.2.0",
+    "esbuild": "^0.28.2",
     "prettier": "3.3.3",
     "terser": "^5.36.0",
     "typescript": "^5.6.3",
-    "vite": "^5.4.8",
-    "vite-plugin-css-injected-by-js": "^3.5.2"
+    "vitest": "^2.1.8"
   }
 }

@@ -1,0 +1,236 @@
+<!doctype html>
+<!-- `data-wf-site` is where core reads the site id, exactly as Webflow emits it. -->
+<html lang="en" data-wf-site="preview_site_000">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Form Fields Pro — local preview</title>
+<style>
+  :root { color-scheme: light dark }
+  body { margin:0; font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#f6f7f9; color:#111827 }
+  header { padding:20px 24px; background:#fff; border-bottom:1px solid #e5e7eb }
+  h1 { margin:0 0 4px; font-size:17px }
+  header p { margin:0; color:#6b7280; font-size:13px }
+  main { max-width:920px; margin:24px auto; padding:0 24px 80px }
+  .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:16px }
+  .card h2 { margin:0 0 14px; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#6b7280 }
+  label { display:block; margin-bottom:6px; font-size:13px; font-weight:600 }
+  .w-input, .w-select { width:100%; height:42px; padding:0 12px; font:inherit; border:1px solid #d4d4d8; border-radius:8px; background:#fff; color:inherit; box-sizing:border-box }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px }
+  .field { margin-bottom:16px }
+  .w-form-done, .w-form-fail { display:none; padding:12px; border-radius:8px }
+  .w-form-done { background:#dcfce7 } .w-form-fail { background:#fee2e2 }
+  .nps-scale { display:flex; gap:0 }
+  .nps-cell { flex:1; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #d4d4d8; margin-left:-1px; cursor:pointer; user-select:none }
+  button[type=submit] { height:42px; padding:0 20px; border:0; border-radius:8px; background:#146ef5; color:#fff; font:inherit; font-weight:600; cursor:pointer }
+  @media (prefers-color-scheme: dark) {
+    body { background:#0b0f19; color:#f3f4f6 }
+    header, .card { background:#111827; border-color:#1f2937 }
+    .w-input, .w-select { background:#0b0f19; border-color:#374151; color:#f3f4f6 }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Form Fields Pro — local preview</h1>
+  <p>Real built bundle, Webflow-shaped markup. Not a published Webflow page: no Webflow jQuery, no interactions. Every vendor is gone — the only external origin left is webflow.com, for the submission itself.</p>
+</header>
+
+<main>
+  <!-- The wrapper the runtime keys everything off. -->
+  <div class="w-form">
+  <div fa-form="true" fa-form-id="preview_form_1" fa-form-name="Preview form">
+    <form name="preview" data-name="Preview" data-wf-page-id="p_preview" data-wf-element-id="e_preview">
+
+      <div class="card">
+        <h2>Rewritten in phase 2 — date, no easepick</h2>
+        <div class="row">
+          <div class="field" form-fields-wrapper="true">
+            <label for="d1">Single date · MM/DD/YYYY</label>
+            <input class="w-input" id="d1" name="When" type="text" form-fields-pro-date-picker
+                   data-format="MM/DD/YYYY" data-months="1" data-columns="1" data-firstDay="0">
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <label for="d2">Range · 2 months, DD/MM/YYYY, Monday first</label>
+            <input class="w-input" id="d2" name="Stay" type="text" form-fields-pro-date-range-picker
+                   data-format="DD/MM/YYYY" data-months="2" data-columns="2" data-firstDay="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field" form-fields-wrapper="true">
+            <label for="d3">French, themed red</label>
+            <input class="w-input" id="d3" name="Quand" type="text" form-fields-pro-date-picker
+                   data-language="fr-FR" data-format="D MMMM YYYY"
+                   data-light-theme-selected-date-background-color="#e11d48"
+                   data-light-theme-today-date-color="#e11d48">
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <label for="d4">Required · legacy tilde theme blob</label>
+            <input class="w-input" id="d4" name="Deadline" type="text" form-fields-pro-date-picker required
+                   data-empty-error-msg="Pick a deadline"
+                   data-date-theme="rgb(255,255,255)~rgb(16,185,129)~rgb(16,185,129)~rgb(255,255,255)~rgb(229,231,235)~rgb(17,24,39)~rgb(107,114,128)~rgb(17,24,39)~rgb(255,255,255)~rgb(240,253,244)~rgb(255,255,255)~rgb(16,185,129)~rgb(110,231,183)~rgb(17,24,39)~rgb(55,65,81)~rgb(243,244,246)~rgb(156,163,175)~rgb(243,244,246)~rgb(31,41,55)~rgb(55,65,81)~12~light">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rewritten in phase 1 — select, no Select2</h2>
+        <div class="row">
+          <div class="field" form-fields-wrapper="true">
+            <label for="s1">Searchable</label>
+            <select class="w-select" id="s1" name="Topic" form-fields-type="select" data-searchable="true"
+                    data-placeholder="Choose a topic">
+              <option value="">Choose a topic</option>
+              <optgroup label="Sales">
+                <option value="pricing">Pricing</option>
+                <option value="demo">Book a demo</option>
+              </optgroup>
+              <optgroup label="Support">
+                <option value="bug">Report a bug</option>
+                <option value="billing">Billing question</option>
+                <option value="other" disabled>Something else (disabled)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <!-- The live 5.1.5 bug: this stayed searchable because "false" is truthy. -->
+            <label for="s2">data-searchable="false" — search must be off</label>
+            <select class="w-select" id="s2" name="Size" form-fields-type="select" data-searchable="false">
+              <option value="">Team size</option>
+              <option value="1">Just me</option>
+              <option value="2-10">2–10</option>
+              <option value="11+">11 or more</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rewritten in phase 1 — NPS, no jQuery</h2>
+        <div form-fields-wrapper="true" data-field-name="net-promoter-score"
+             data-extra-feedback-collection="7" data-nps-layout="connected"
+             data-light-theme-score-background-color="#146ef5">
+          <label>How likely are you to recommend us?</label>
+          <input type="hidden" form-fields-data-input data-input="net-promoter-score" name="NPS">
+          <div class="nps-scale" data-nps-scale>
+            <div class="nps-cell" data-name="net-promoter-score-value">0</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">1</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">2</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">3</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">4</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">5</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">6</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">7</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">8</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">9</div>
+            <div class="nps-cell" data-name="net-promoter-score-value">10</div>
+          </div>
+          <div class="field" data-field="extra-feedback-collection" style="margin-top:12px">
+            <label for="nps-why">What could we do better?</label>
+            <textarea class="w-input" id="nps-why" name="NPS reason" style="height:80px;padding:10px"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Core — validation and conditional logic</h2>
+        <div class="row">
+          <div class="field" form-fields-wrapper="true">
+            <label for="e1">Email · required</label>
+            <input class="w-input" id="e1" name="Email" type="email" required
+                   data-invalid-error-msg="That email does not look right"
+                   data-empty-error-msg="We need an email to reply">
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <label for="n1">Name · at least two letters</label>
+            <input class="w-input" id="n1" name="Name" type="text"
+                   data-plain-text="form-field-pro-plain-text">
+          </div>
+        </div>
+        <div class="field" form-fields-wrapper="true">
+          <label for="c1">Are you an existing customer?</label>
+          <select class="w-select" id="c1" name="Existing">
+            <option value="">Choose…</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <!-- Shown only when the answer above is "yes". No 450 ms poll now. -->
+        <div class="field" form-fields-wrapper="true"
+             conditional-logic='[[{"inputName":"Existing","compareLogic":"IS_EQUAL","compareValue":"yes"}]]'>
+          <label for="a1">Account ID</label>
+          <input class="w-input" id="a1" name="Account ID" type="text">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rewritten in phase 3 — slider, colour, file</h2>
+        <div class="row">
+          <div class="field" form-fields-wrapper="true">
+            <label>Budget · single, no noUiSlider</label>
+            <input form-fields-pro-number-slider form-fields-data-input name="Budget"
+                   data-min="0" data-max="100" data-default="40" style="display:none">
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <label>Team size · range, writes "20,80"</label>
+            <input form-fields-pro-number-slider allow-range form-fields-data-input name="Team"
+                   data-min="0" data-max="100" data-min-default="20" data-max-default="80"
+                   data-light-theme-slider-color="#e11d48" style="display:none">
+          </div>
+        </div>
+        <div class="row" style="margin-top:24px">
+          <div class="field" form-fields-wrapper="true">
+            <label for="col1">Brand colour · no spectrum</label><br>
+            <input class="color-input" id="col1" name="Brand colour" value="#146ef5">
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <label>Attachment · required, no Dropzone</label>
+            <div class="dropzone" id="cv" name="CV" required
+                 data-max-files="2" data-max-file-size="5" data-accepted-files=".png,.jpg,.pdf"
+                 style="border:1px dashed #d4d4d8;border-radius:8px;padding:18px;text-align:center"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rewritten in phase 4 — phone, no Iconify, no ipinfo, no jQuery</h2>
+        <div class="row">
+          <div class="field" form-fields-wrapper="true">
+            <label for="p1">Phone · flag is two Unicode characters</label>
+            <div data-form-field-pro="number-input-with-country-code" data-selected-country="BD"
+                 style="display:flex;align-items:center;gap:8px;border:1px solid #d4d4d8;border-radius:8px;padding:0 12px;height:42px">
+              <div class="number-input-icon-wrapper"></div>
+              <div class="number-input-dropdown"><input class="number-input-search-field"><ol></ol></div>
+              <input class="number-input-field" id="p1" name="Phone" type="tel"
+                     style="flex:1;border:0;outline:none;background:transparent;font:inherit;color:inherit">
+            </div>
+          </div>
+          <div class="field" form-fields-wrapper="true">
+            <label for="p2">Phone · country guessed from the browser, no request</label>
+            <div data-form-field-pro="number-input-with-country-code"
+                 style="display:flex;align-items:center;gap:8px;border:1px solid #d4d4d8;border-radius:8px;padding:0 12px;height:42px">
+              <div class="number-input-icon-wrapper"></div>
+              <div class="number-input-dropdown"><input class="number-input-search-field"><ol></ol></div>
+              <input class="number-input-field" id="p2" name="Mobile" type="tel"
+                     style="flex:1;border:0;outline:none;background:transparent;font:inherit;color:inherit">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  <div class="w-form-done">Thanks — this preview does not really post anywhere.</div>
+  <div class="w-form-fail">Submission failed.</div>
+  </div>
+</main>
+
+<!--
+  Loaded the way Webflow's registered script loads it: one classic script with
+  SRI. The integrity value is read from build-manifest.json by the preview
+  server's caller; locally the file is same-origin so the hash still applies.
+-->
+<script src="/form-fields-pro/staging/5.1.5/form-fields-pro-cdn.js"></script>
+</body>
+</html>

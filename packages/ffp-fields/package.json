@@ -1,0 +1,21 @@
+{
+  "name": "@flowappz/ffp-fields",
+  "version": "0.1.0",
+  "private": true,
+  "description": "One lazily-loaded chunk per Form Fields Pro field type",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@flowappz/ffp-config": "workspace:*",
+    "@flowappz/ffp-core": "workspace:*",
+    "@flowappz/ffp-primitives": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "linkedom": "^0.18.5",
+    "vitest": "^2.1.8"
+  }
+}

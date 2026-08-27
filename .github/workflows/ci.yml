@@ -1,0 +1,75 @@
+name: CI
+
+# None of the four repos had CI before this. The bundle-size job is the reason
+# it exists: "size is priority" erodes one convenient exception at a time over
+# five phases unless a build actually fails when it does.
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Placeholder values: chunk URLs only need to be the right shape and length
+      # class for the size measurement. Nothing is uploaded.
+      - name: Build
+        env:
+          NODE_ENV: staging
+          APP_SLUG: form-fields-pro
+          R2_PUBLIC_URL: https://cdn.example.com
+        run: node scripts/build.mjs
+
+      # build.mjs already fails when core exceeds its gzip budget. This step
+      # re-asserts per-chunk budgets and prints the table into the job log, so a
+      # regression shows up as a diff in the PR rather than a surprise at release.
+      - name: Check budgets
+        run: node scripts/check-bundle-budget.mjs
+
+  # The country table is generated, not typed. A hand-edit to a dial code or a
+  # reordered row would otherwise survive review and then be silently reverted by
+  # the next extraction - and a wrong dial code fails validation for a whole
+  # country. This is the last generated file left; every legacy.js is gone.
+  countries-are-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/extract-countries.mjs
+      - name: Fail if extraction produced a diff
+        run: |
+          if ! git diff --quiet -- packages/ffp-fields/src/phone/countries.ts; then
+            echo "countries.ts differs from src/5.1.5/form-fields-pro-cdn.js."
+            echo "It is generated - change the extractor, not the table."
+            git diff -- packages/ffp-fields/src/phone/countries.ts | head -40
+            exit 1
+          fi
