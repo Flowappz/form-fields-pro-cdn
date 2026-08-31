@@ -55,6 +55,8 @@ function mountSlider(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
     // same page still has to be recognised.
     if (parent.querySelector('.' + WRAP_CLASS)) return { destroy() {} }
 
+    parent.querySelector('[data-ffp-slider-placeholder]')?.remove()
+
     api.dom.injectStyle('ffp-slider', SLIDER_CSS + api.theme.schemeResolverCss('.' + WRAP_CLASS, THEME_TOKENS))
 
     const options = config.options as unknown as SliderOptions

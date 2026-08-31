@@ -177,6 +177,16 @@ describe('lifecycle', () => {
         expect(document.querySelector('.ffp-number-slider-wrap')).toBeNull()
     })
 
+    it('removes the Designer placeholder so the live slider is the only track', async () => {
+        const input = await mount(`<body><form><div form-fields-wrapper="true">
+  <input form-fields-pro-number-slider form-fields-data-input name="Budget" data-min="0" data-max="100" data-default="40">
+  <div data-ffp-slider-placeholder></div>
+</div></form></body>`)
+        expect(document.querySelector('[data-ffp-slider-placeholder]')).toBeNull()
+        expect(document.querySelector('.ffp-slider')).toBeTruthy()
+        expect(input.value).toBe('40')
+    })
+
     it('registers both slider and rangeslider from one chunk', async () => {
         resetDom('<body></body>')
         const defined = await loadChunk()
