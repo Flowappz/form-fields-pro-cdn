@@ -56,6 +56,43 @@ function authHeaders() {
   return headers;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Staging's GET /latest has returned a one-off Prisma 500 that succeeded on
+// the next call a few seconds later. Fail the release only after retries.
+async function fetchWithRetry(url, options, { retries = 3, label = url } = {}) {
+  let lastRes = null;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      if (res.status < 500 || attempt === retries) return res;
+      lastRes = res;
+      console.warn(
+        `⚠ ${label} returned ${res.status}, retrying (${attempt}/${retries})...`,
+      );
+    } catch (err) {
+      if (attempt === retries) throw err;
+      console.warn(
+        `⚠ ${label} failed (${err?.message || err}), retrying (${attempt}/${retries})...`,
+      );
+    }
+    await sleep(1000 * attempt);
+  }
+  return lastRes;
+}
+
+function latestFetchHint(status) {
+  if (status === 404) {
+    return "Hint: staging/production backend must have /api/cdn-release/* deployed (feature/cdn-release-pipeline).";
+  }
+  if (status === 401 || status === 403) {
+    return "Hint: check BASIC_AUTH / VITE_BASIC_AUTH_TOKEN / CDN_RELEASE_SECRET against the target backend.";
+  }
+  return "Hint: /api/cdn-release/latest is deployed but the backend threw. Retry; if it persists, check Railway logs for that route.";
+}
+
 // ─── Args: <env> [--nr [patch|minor|major]] [--version x.y.z] [--register] ───
 // Workflow (recommended):
 //   1. Edit the source under packages/ and set `runtimeVersion` in package.json
@@ -152,18 +189,18 @@ if (!process.env.CDN_RELEASE_SECRET) {
 console.log(`Fetching current version from ${BACKEND_URL}...`);
 let release = null;
 try {
-  const latestRes = await fetch(`${API_BASE}/api/cdn-release/latest`, {
-    headers: authHeaders(),
-  });
+  const latestRes = await fetchWithRetry(
+    `${API_BASE}/api/cdn-release/latest`,
+    { headers: authHeaders() },
+    { label: "GET /api/cdn-release/latest" },
+  );
   if (latestRes.ok) {
     ({ release } = await latestRes.json());
   } else {
     const body = await latestRes.text();
     console.warn(`⚠ Failed to fetch latest release (${latestRes.status}): ${body}`);
     if (!explicitVersion && !bump) {
-      console.error(
-        "\nHint: staging/production backend must have /api/cdn-release/* deployed (feature/cdn-release-pipeline).",
-      );
+      console.error(`\n${latestFetchHint(latestRes.status)}`);
       process.exit(1);
     }
     console.warn("Continuing with explicit --version / --nr despite latest fetch failure.");
@@ -465,15 +502,19 @@ console.log(`✓ Uploaded: ${publicBase}/${key}`);
 // ─── Save release metadata ────────────────────────────────────────────────────
 const hostedLocation = `${publicBase}/${key}`;
 console.log(`\nSaving release metadata to DB...`);
-const releaseRes = await fetch(`${API_BASE}/api/cdn-release`, {
-  method: "POST",
-  headers: authHeaders(),
-  body: JSON.stringify({
-    version,
-    hostedLocation,
-    integrityHash,
-  }),
-});
+const releaseRes = await fetchWithRetry(
+  `${API_BASE}/api/cdn-release`,
+  {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({
+      version,
+      hostedLocation,
+      integrityHash,
+    }),
+  },
+  { label: "POST /api/cdn-release" },
+);
 if (!releaseRes.ok) {
   console.error("✗ Failed to save release metadata:", await releaseRes.text());
   process.exit(1);
@@ -508,12 +549,13 @@ if (isNewVersion || urlChanged || hashChanged || forceRegister || currentRelease
     );
   }
   console.log(`\nRe-registering script on all sites...`);
-  const registerRes = await fetch(
+  const registerRes = await fetchWithRetry(
     `${API_BASE}/api/cdn-release/register-all`,
     {
       method: "POST",
       headers: authHeaders(),
     },
+    { label: "POST /api/cdn-release/register-all" },
   );
   if (!registerRes.ok) {
     console.error("✗ Failed to re-register scripts:", await registerRes.text());
