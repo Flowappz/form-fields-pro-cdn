@@ -1069,28 +1069,34 @@ const formFieldsSelect = async () => {
         const inputName = element.getAttribute('name')
         element.id = `${inputName.replace(' ', '')}-${Date.now()}`
 
-        const lightTheme = {
-            hoverTextColor: element.getAttribute('data-light-theme-hover-text-color'),
-            hoverBackground: element.getAttribute('data-light-theme-hover-background-color'),
-        }
+        // The Designer stores idle option colours on the "dark theme hover"
+        // attributes and highlighted colours on the "light theme hover"
+        // attributes. The Style panel is idle vs highlighted, not light vs
+        // dark — a prefers-color-scheme split paints the highlighted row with
+        // the idle palette on dark-mode machines and leaves Select2's grey
+        // selected state in place.
+        const optionText = element.getAttribute('data-dark-theme-hover-text-color')
+        const optionBg = element.getAttribute('data-dark-theme-hover-background-color')
+        const hoverText = element.getAttribute('data-light-theme-hover-text-color')
+        const hoverBg = element.getAttribute('data-light-theme-hover-background-color')
 
-        const darkTheme = {
-            hoverTextColor: element.getAttribute('data-dark-theme-hover-text-color'),
-            hoverBackground: element.getAttribute('data-dark-theme-hover-background-color'),
-        }
+        const decl = (prop, value) =>
+            value && String(value).trim() && value !== 'null' ? `${prop}: ${value} !important;` : ''
 
         const sheet = new CSSStyleSheet()
+        const root = `#select2-${element.id}-results`
         sheet.replaceSync(`
-        #select2-${element.id}-results li.select2-results__option--highlighted {
-          color: ${lightTheme.hoverTextColor};
-          background: ${lightTheme.hoverBackground}
+        ${root} {
+          ${decl('background-color', optionBg)}
         }
-    
-        @media (prefers-color-scheme: dark) {
-          #select2-${element.id}-results li.select2-results__option--highlighted {
-            color: ${darkTheme.hoverTextColor};
-            background: ${darkTheme.hoverBackground}
-          }
+        ${root} li.select2-results__option,
+        ${root} li.select2-results__option[aria-selected="true"] {
+          ${decl('color', optionText)}
+          ${decl('background-color', optionBg)}
+        }
+        ${root} li.select2-results__option--highlighted.select2-results__option--selectable {
+          ${decl('color', hoverText)}
+          ${decl('background-color', hoverBg)}
         }
         `)
 

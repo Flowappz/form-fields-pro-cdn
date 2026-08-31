@@ -189,6 +189,25 @@ describe('select field', () => {
         // pushing another sheet onto `document.adoptedStyleSheets`.
         expect(root.style.getPropertyValue('--ffp-hover-background-color-light')).toBe('#ff0000')
         expect(root.style.getPropertyValue('--ffp-hover-text-color-light')).toBe('#ffffff')
+        // Highlight is copied onto both scheme halves so dark-mode visitors
+        // still see the colour the author picked.
+        expect(root.style.getPropertyValue('--ffp-hover-background-color-dark')).toBe('#ff0000')
+        expect(root.style.getPropertyValue('--ffp-hover-text-color-dark')).toBe('#ffffff')
+    })
+
+    it('paints idle option colours from the dark-hover attributes', async () => {
+        const { trigger } = await mount(
+            MARKUP(
+                'data-light-theme-hover-background-color="#146ef5" data-light-theme-hover-text-color="#ffffff" data-dark-theme-hover-background-color="#fafafa" data-dark-theme-hover-text-color="#111111"',
+            ),
+        )
+        fire(trigger, 'pointerdown')
+        const root = listbox()!
+        expect(root.style.getPropertyValue('--ffp-text-color')).toBe('#111111')
+        expect(root.style.getPropertyValue('--ffp-dropdown-background-color')).toBe('#fafafa')
+        // Must not land on the hover-dark tokens: those are the highlighted row.
+        expect(root.style.getPropertyValue('--ffp-hover-background-color-dark')).toBe('#146ef5')
+        expect(root.style.getPropertyValue('--ffp-hover-text-color-dark')).toBe('#ffffff')
     })
 
     it('reflects a value changed by someone else', async () => {

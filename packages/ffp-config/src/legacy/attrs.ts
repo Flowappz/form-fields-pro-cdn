@@ -74,11 +74,13 @@ export const NPS_THEME_ATTRS: ThemeAttrMap = {
 }
 
 /**
- * Select exposes only a hover pair. Runtime 5.1.5 reads these four attributes
- * straight off the `<select>` and interpolates them into a constructed
- * CSSStyleSheet - including when they are absent, which emits `color: null` and
- * is simply ignored by the parser. The rewrite skips absent tokens instead,
- * which renders identically and stops shipping invalid declarations.
+ * Select's four published attributes are idle vs highlighted, not light vs dark.
+ *
+ * The Designer writes option colours onto the "dark theme hover" names and
+ * highlighted colours onto the "light theme hover" names - a leftover from the
+ * Style panel labelling a dimension the data does not have. `resolveSelect`
+ * remaps them; this table is the published attribute set, not the token names
+ * the listbox consumes.
  */
 export const SELECT_THEME_ATTRS: ThemeAttrMap = {
     hoverTextColorLight: 'data-light-theme-hover-text-color',

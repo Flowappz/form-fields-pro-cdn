@@ -110,6 +110,43 @@ describe('colour and phone - all-or-nothing attribute set', () => {
     })
 })
 
+describe('select - idle vs highlighted, not light vs dark', () => {
+    it('reads dark-hover attributes as idle option colours', () => {
+        // The Designer writes option colours onto the dark-hover names and
+        // highlighted colours onto the light-hover names. Treating them as a
+        // prefers-color-scheme pair paints the highlighted row with the idle
+        // palette on dark-mode machines.
+        const cfg = readFieldConfig(
+            el(`<select data-test-target name="s"
+                 data-light-theme-hover-text-color="#fff"
+                 data-light-theme-hover-background-color="#146ef5"
+                 data-dark-theme-hover-text-color="#111"
+                 data-dark-theme-hover-background-color="#fafafa"></select>`),
+            'select',
+        )
+        expect(cfg.theme.hoverTextColorLight).toBe('#fff')
+        expect(cfg.theme.hoverTextColorDark).toBe('#fff')
+        expect(cfg.theme.hoverBackgroundColorLight).toBe('#146ef5')
+        expect(cfg.theme.hoverBackgroundColorDark).toBe('#146ef5')
+        expect(cfg.theme.textColor).toBe('#111')
+        expect(cfg.theme.dropdownBackgroundColor).toBe('#fafafa')
+    })
+
+    it('reads the wrapper style keys when the attributes are absent', () => {
+        const cfg = readFieldConfig(
+            el(`<div data-field-config='{"style":{"textColor":"#222","backgroundColor":"#eee","hoverTextColor":"#fff","hoverBackgroundColor":"#000"}}'>
+                  <select data-test-target name="s"></select>
+                </div>`),
+            'select',
+        )
+        expect(cfg.theme.textColor).toBe('#222')
+        expect(cfg.theme.dropdownBackgroundColor).toBe('#eee')
+        expect(cfg.theme.hoverTextColorLight).toBe('#fff')
+        expect(cfg.theme.hoverBackgroundColorLight).toBe('#000')
+        expect(cfg.theme.hoverBackgroundColorDark).toBe('#000')
+    })
+})
+
 describe('options', () => {
     it('reads data-searchable="false" as false', () => {
         // Live bug in 5.1.5 L1106: the raw string "false" is truthy, so every

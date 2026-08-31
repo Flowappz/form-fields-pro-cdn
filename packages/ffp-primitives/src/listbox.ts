@@ -309,7 +309,7 @@ export function createListbox(config: ListboxOptions): ListboxHandle {
  * of it without `!important`.
  */
 export const LISTBOX_CSS = `
-.ffp-listbox{box-sizing:border-box;background:var(--ffp-dropdown-background-color,#fff);border:1px solid var(--ffp-border-color,#d4d4d4);border-radius:var(--ffp-border-radius,8px);box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;font:inherit;color:var(--ffp-text-color,inherit)}
+.ffp-listbox{box-sizing:border-box;background:var(--ffp-dropdown-background-color,var(--ffp-background-color,#fff));border:1px solid var(--ffp-border-color,#d4d4d4);border-radius:var(--ffp-border-radius,8px);box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;font:inherit;color:var(--ffp-text-color,inherit)}
 .ffp-listbox-search{box-sizing:border-box;width:100%;border:0;border-bottom:1px solid var(--ffp-border-color,#d4d4d4);padding:8px 10px;font:inherit;color:inherit;background:transparent;outline:none}
 .ffp-listbox-list{max-height:16rem;overflow-y:auto;overscroll-behavior:contain;outline:none}
 .ffp-listbox-option{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;user-select:none}

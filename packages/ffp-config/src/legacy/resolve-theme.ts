@@ -167,6 +167,63 @@ function resolveNps(el: Element, src: ThemeSources): ThemeTokens {
     }
 }
 
+const nonBlank = (value: unknown): string | undefined => {
+    if (value === undefined || value === null) return undefined
+    const text = String(value).trim()
+    return text ? text : undefined
+}
+
+/**
+ * Select's four attributes are idle vs highlighted, not light vs dark.
+ *
+ * Light-hover attrs are the highlighted row; dark-hover attrs are the idle
+ * option colours. Copying the highlight onto both scheme halves means a
+ * visitor in dark mode still sees the colour they picked, instead of the idle
+ * palette that 5.1.5 painted as "dark hover".
+ */
+function emitSelectTheme(
+    idleText: string | undefined,
+    idleBg: string | undefined,
+    hoverText: string | undefined,
+    hoverBg: string | undefined,
+): ThemeTokens {
+    const out: ThemeTokens = {}
+    const pair = (base: string, value: string | undefined) => {
+        if (!value) return
+        out[`${base}Light`] = value
+        out[`${base}Dark`] = value
+    }
+    pair('hoverTextColor', hoverText)
+    pair('hoverBackgroundColor', hoverBg)
+    if (idleText) out.textColor = idleText
+    if (idleBg) {
+        out.backgroundColor = idleBg
+        out.dropdownBackgroundColor = idleBg
+    }
+    return out
+}
+
+function resolveSelect(el: Element, src: ThemeSources): ThemeTokens {
+    const attr = attrReader(el)
+    const hoverText = nonBlank(attr('data-light-theme-hover-text-color'))
+    const hoverBg = nonBlank(attr('data-light-theme-hover-background-color'))
+    const idleText = nonBlank(attr('data-dark-theme-hover-text-color'))
+    const idleBg = nonBlank(attr('data-dark-theme-hover-background-color'))
+
+    if (hoverText || hoverBg || idleText || idleBg) {
+        return emitSelectTheme(idleText, idleBg, hoverText, hoverBg)
+    }
+
+    const wrap = src.wrapper
+    const fa = src.faForm
+    return emitSelectTheme(
+        nonBlank(pick(wrap.textColor, fa.textColor)),
+        nonBlank(pick(wrap.backgroundColor, fa.backgroundColor)),
+        nonBlank(pick(wrap.hoverTextColor, fa.hoverTextColor)),
+        nonBlank(pick(wrap.hoverBackgroundColor, fa.hoverBackgroundColor)),
+    )
+}
+
 /**
  * Select, phone and colour share one shape: four hover tokens, no defaults table.
  *
@@ -217,5 +274,6 @@ export function resolveTheme(
     if (family === 'date') return resolveDate(el, src)
     if (family === 'slider') return resolveSlider(el, src)
     if (family === 'nps') return resolveNps(el, src)
+    if (family === 'select') return resolveSelect(el, src)
     return resolveHoverPair(el, family, src)
 }
