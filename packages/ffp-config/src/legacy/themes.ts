@@ -134,6 +134,22 @@ export function isWhite(value: unknown): boolean {
     )
 }
 
+const colorKey = (value: unknown) =>
+    String(value || '')
+        .replace(/\s/g, '')
+        .toLowerCase()
+
+/**
+ * High contrast used to write the same colour onto fill and empty track in dark
+ * mode (both white). The filled portion then vanished into the track, and on a
+ * light page the thumb disappeared too. Keep the fill; flip the empty track.
+ */
+export function contrastSliderTrack(fill: string | undefined, track: string | undefined): string {
+    const next = track && String(track).trim() ? String(track) : ''
+    if (!fill || !next || colorKey(fill) !== colorKey(next)) return next
+    return isWhite(fill) ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)'
+}
+
 export function isStockBlue(value: unknown): boolean {
     const normalized = String(value || '')
         .replace(/\s/g, '')

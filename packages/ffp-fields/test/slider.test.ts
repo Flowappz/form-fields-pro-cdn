@@ -187,6 +187,37 @@ describe('lifecycle', () => {
         expect(input.value).toBe('40')
     })
 
+    it('hides the backing input so it cannot paint as a second bar above the track', async () => {
+        const input = await mount(MARKUP('data-min="0" data-max="100" data-default="40"'))
+        expect(input.getAttribute('type')).toBe('hidden')
+        const css = document.getElementById('ffp-slider')?.textContent || ''
+        expect(css).toContain('[form-fields-pro-number-slider]')
+        expect(css).toContain('display:none!important')
+        expect(css).toContain('[data-ffp-slider-placeholder]')
+    })
+
+    it('separates a colliding dark fill and track so high contrast stays visible', async () => {
+        await mount(
+            MARKUP(
+                'data-min="0" data-max="100" data-default="40" data-ffp=\'' +
+                    JSON.stringify({
+                        v: 2,
+                        type: 'slider',
+                        theme: {
+                            sliderColorLight: 'rgb(20, 110, 245)',
+                            sliderColorDark: 'rgb(255, 255, 255)',
+                            trackColorLight: 'rgb(0, 0, 0)',
+                            trackColorDark: 'rgb(255, 255, 255)',
+                        },
+                    }) +
+                    "'",
+            ),
+        )
+        const wrap = document.querySelector('.ffp-number-slider-wrap') as HTMLElement
+        expect(wrap.style.getPropertyValue('--ffp-slider-color-dark')).toBe('rgb(255, 255, 255)')
+        expect(wrap.style.getPropertyValue('--ffp-track-color-dark')).toBe('rgb(0, 0, 0)')
+    })
+
     it('registers both slider and rangeslider from one chunk', async () => {
         resetDom('<body></body>')
         const defined = await loadChunk()

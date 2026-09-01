@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createSlider, type SliderHandle } from '../src/slider'
+import { createSlider, SLIDER_CSS, type SliderHandle } from '../src/slider'
 import { fire } from './setup'
 
 let slider: SliderHandle | null = null
@@ -77,6 +77,12 @@ describe('rendering', () => {
     it('never submits the form it lives in', () => {
         build({ values: [20, 80], connect: 'range' })
         expect(handles().every((h) => (h as HTMLButtonElement).type === 'button')).toBe(true)
+    })
+
+    it('pins the handle onto the track so site button CSS cannot stack it below', () => {
+        expect(SLIDER_CSS).toContain('position:absolute!important')
+        expect(SLIDER_CSS).toContain('transform:translate(-50%,-50%)')
+        expect(SLIDER_CSS).toContain('.ffp-slider .ffp-slider-handle')
     })
 })
 

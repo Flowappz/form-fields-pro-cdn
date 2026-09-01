@@ -22,14 +22,7 @@ export {
     type ThemeFamily,
 } from './legacy/attrs'
 export { resolveTheme } from './legacy/resolve-theme'
-export {
-    followHoverIfStockBlue,
-    isStockBlue,
-    isWhite,
-    normalizeRadius,
-    parseCompactTheme,
-    pick,
-} from './legacy/themes'
+export { contrastSliderTrack, followHoverIfStockBlue, isStockBlue, isWhite, normalizeRadius, parseCompactTheme, pick } from './legacy/themes'
 export { readConditional, readFaFormField, readWrapperStyle, type FaFormField } from './legacy/wrapper'
 
 export * from './options/coerce'

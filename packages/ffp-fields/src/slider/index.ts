@@ -18,7 +18,7 @@
  * 2. **The value announces itself.** 5.1.5 only assigned `.value`, and got away
  *    with it because conditional logic polled every 450 ms.
  */
-import type { FfpFieldConfigV2 } from '@flowappz/ffp-config'
+import { contrastSliderTrack, type FfpFieldConfigV2 } from '@flowappz/ffp-config'
 import type { ChunkApi, FieldInstance, MountContext, Unbind } from '@flowappz/ffp-core'
 import { createSlider, SLIDER_CSS, type SliderHandle } from '@flowappz/ffp-primitives/src/slider'
 
@@ -34,6 +34,19 @@ const THEME_TOKENS = [
 ]
 
 const WRAP_CLASS = 'ffp-number-slider-wrap'
+
+/**
+ * The value input is a sibling of the widget, not inside it. Webflow themes
+ * often style every `input` (including `type="hidden"`) as a full-width field,
+ * which is the extra bar above the track. The Designer also leaves a grey
+ * stand-in that the runtime removes; this hides it if a cached bundle misses
+ * that step.
+ */
+const FIELD_CSS = `
+.ffp-number-slider-wrap{position:relative;isolation:isolate}
+[form-fields-pro-number-slider]{display:none!important;width:0!important;height:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;opacity:0!important;position:absolute!important;overflow:hidden!important;pointer-events:none!important;appearance:none!important;-webkit-appearance:none!important}
+[form-fields-wrapper]:has(.ffp-number-slider-wrap) [data-ffp-slider-placeholder],[form-fields-wrapper]:has(.ffp-slider) [data-ffp-slider-placeholder]{display:none!important;height:0!important;margin:0!important;padding:0!important;overflow:hidden!important}
+`
 
 type SliderOptions = {
     min: number
@@ -57,7 +70,17 @@ function mountSlider(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
 
     parent.querySelector('[data-ffp-slider-placeholder]')?.remove()
 
-    api.dom.injectStyle('ffp-slider', SLIDER_CSS + api.theme.schemeResolverCss('.' + WRAP_CLASS, THEME_TOKENS))
+    // Keep it in the form for submit, but never paint it. Preview markup used
+    // to ship as `type="text"`, and published hidden inputs still get unhidden
+    // by `input { display:block }` on some customer sites.
+    input.setAttribute('type', 'hidden')
+    input.setAttribute('aria-hidden', 'true')
+    input.tabIndex = -1
+
+    api.dom.injectStyle(
+        'ffp-slider',
+        SLIDER_CSS + FIELD_CSS + api.theme.schemeResolverCss('.' + WRAP_CLASS, THEME_TOKENS),
+    )
 
     const options = config.options as unknown as SliderOptions
     const range = input.hasAttribute('allow-range')
@@ -69,7 +92,10 @@ function mountSlider(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
         : [orElse(options.default, min)]
 
     const wrap = api.dom.h('div', { class: WRAP_CLASS })
-    api.theme.applyTheme(wrap, config.theme)
+    const theme = { ...config.theme }
+    theme.trackColorLight = contrastSliderTrack(theme.sliderColorLight, theme.trackColorLight)
+    theme.trackColorDark = contrastSliderTrack(theme.sliderColorDark, theme.trackColorDark)
+    api.theme.applyTheme(wrap, theme)
 
     let echoing = false
     function write(next: number[]): void {

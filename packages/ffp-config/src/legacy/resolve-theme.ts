@@ -15,6 +15,7 @@ import {
     normalizeRadius,
     parseCompactTheme,
     pick,
+    contrastSliderTrack,
 } from './themes'
 import { readWrapperStyle } from './wrapper'
 
@@ -122,6 +123,8 @@ function resolveSlider(el: Element, src: ThemeSources): ThemeTokens {
     for (const key of Object.keys(SLIDER_THEME_ATTRS)) {
         out[key] = pick(merged[key], SLIDER_STYLE_DEFAULTS[key]) as string
     }
+    out.trackColorLight = contrastSliderTrack(out.sliderColorLight, out.trackColorLight)
+    out.trackColorDark = contrastSliderTrack(out.sliderColorDark, out.trackColorDark)
     return out
 }
 

@@ -31,6 +31,17 @@ describe('slider - the all-white escape hatch', () => {
             SLIDER_STYLE_DEFAULTS,
         )
     })
+
+    it('splits a dark fill that was the same colour as the empty track', () => {
+        // High contrast used to write white onto both. The filled portion then
+        // vanished into the track on published pages.
+        const blob = ['#000', '#fff', '#146ef5', '#000', '#fff', '#000', '#ffffff', '#ffffff'].join('~')
+        const cfg = readFieldConfig(el(`<input data-test-target name="s" data-slider-theme="${blob}">`), 'slider')
+        expect(cfg.theme.sliderColorDark).toBe('#ffffff')
+        expect(cfg.theme.trackColorDark).toBe('rgb(0, 0, 0)')
+        expect(cfg.theme.sliderColorLight).toBe('#146ef5')
+        expect(cfg.theme.trackColorLight).toBe('#000')
+    })
 })
 
 describe('nps - selected follows hover', () => {
