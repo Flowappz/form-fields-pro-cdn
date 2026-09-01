@@ -35,7 +35,7 @@ function mockRail(overflows: boolean): HTMLElement {
     Object.defineProperty(rail, 'clientWidth', { configurable: true, get: () => 400 })
     Object.defineProperty(rail, 'scrollWidth', {
         configurable: true,
-        get: () => (rail.classList.contains('ffp-steps-compact') ? 400 : overflows ? 2000 : 400),
+        get: () => (rail.classList.contains('ffp-c') ? 400 : overflows ? 2000 : 400),
     })
     return rail
 }
@@ -145,7 +145,7 @@ describe('initMultiStepForms', () => {
         const css = document.getElementById('ffp-steps-rail')?.textContent ?? ''
         expect(css).toBe(STEPS_RAIL_CSS)
         expect(css).toContain('overflow-x:auto')
-        expect(css).toContain('.ffp-steps-compact')
+        expect(css).toContain('.ffp-c')
     })
 
     it('compacts a rail that does not fit the card', () => {
@@ -153,13 +153,13 @@ describe('initMultiStepForms', () => {
         build(['', '', '', '', ''])
         const rail = mockRail(true)
         initMultiStepForms()
-        expect(rail.classList.contains('ffp-steps-compact')).toBe(true)
+        expect(rail.classList.contains('ffp-c')).toBe(true)
     })
 
     it('leaves a rail that already fits alone', () => {
         build(['', ''])
         const rail = mockRail(false)
         initMultiStepForms()
-        expect(rail.classList.contains('ffp-steps-compact')).toBe(false)
+        expect(rail.classList.contains('ffp-c')).toBe(false)
     })
 })
