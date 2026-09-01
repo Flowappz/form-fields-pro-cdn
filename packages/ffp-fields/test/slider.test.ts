@@ -193,7 +193,25 @@ describe('lifecycle', () => {
         const css = document.getElementById('ffp-slider')?.textContent || ''
         expect(css).toContain('[form-fields-pro-number-slider]')
         expect(css).toContain('display:none!important')
+        expect(css).toContain('visibility:hidden!important')
         expect(css).toContain('[data-ffp-slider-placeholder]')
+        expect(css).toContain('body:has(.ffp-slider)')
+    })
+
+    it('removes the Designer placeholder even when a stale wrap already exists', async () => {
+        // A cached 5.1.5 wrap used to make mount return before removing the
+        // grey stand-in, which is the second bar above the live track.
+        resetDom(`<body><form><div form-fields-wrapper="true">
+  <input form-fields-pro-number-slider form-fields-data-input name="Budget" data-min="0" data-max="100" data-default="40">
+  <div data-ffp-slider-placeholder></div>
+  <div class="ffp-number-slider-wrap"></div>
+</div></form></body>`)
+        const defined = await loadChunk()
+        const input = document.querySelector('input') as HTMLInputElement
+        defined.slider.mount(input, defined.slider.parse!(input), { form: null, version: 'test' })
+        expect(document.querySelector('[data-ffp-slider-placeholder]')).toBeNull()
+        expect(input.getAttribute('type')).toBe('hidden')
+        expect(document.querySelectorAll('.ffp-number-slider-wrap').length).toBe(1)
     })
 
     it('separates a colliding dark fill and track so high contrast stays visible', async () => {

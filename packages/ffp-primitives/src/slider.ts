@@ -40,9 +40,9 @@ export type SliderHandle = {
  * leaves a stray native input bar above the widget.
  */
 export const SLIDER_CSS = `
-.ffp-slider{--track:var(--ffp-track-color,#ededed);--fill:var(--ffp-slider-color,#146ef5);box-sizing:border-box;position:relative;height:12px;margin:28px 0 0;background:var(--track);border-radius:11.5px;touch-action:none;overflow:visible;box-shadow:0 0 0 1px rgba(0,0,0,.28)}
+.ffp-slider{--track:var(--ffp-track-color,#ededed);--fill:var(--ffp-slider-color,#146ef5);box-sizing:border-box;position:relative!important;height:12px;margin:28px 0 0;background:var(--track);border:0!important;border-radius:11.5px;touch-action:none;overflow:visible;box-shadow:none!important}
 .ffp-slider *{box-sizing:border-box}
-.ffp-slider-connect{position:absolute!important;top:0!important;bottom:0!important;height:100%!important;background:var(--fill)!important;border-radius:11.5px;pointer-events:none;z-index:1}
+.ffp-slider .ffp-slider-connect{position:absolute!important;top:0!important;bottom:0!important;height:100%!important;margin:0!important;padding:0!important;background:var(--fill)!important;border:0!important;border-radius:11.5px;box-shadow:none!important;pointer-events:none;z-index:1}
 .ffp-slider .ffp-slider-handle{appearance:none!important;-webkit-appearance:none!important;box-sizing:border-box!important;position:absolute!important;top:50%!important;display:block!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;max-width:22px!important;max-height:22px!important;margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;background:var(--fill)!important;background-image:none!important;box-shadow:0 0 0 2px #fff,0 0 0 3px #111,0 6px 24px rgba(0,0,0,.12)!important;cursor:grab!important;touch-action:none;transform:translate(-50%,-50%)!important;z-index:2;line-height:0!important;font-size:0!important;color:transparent!important;overflow:visible!important}
 .ffp-slider .ffp-slider-handle:active{cursor:grabbing!important}
 .ffp-slider .ffp-slider-handle:focus-visible{outline:2px solid var(--fill)!important;outline-offset:3px}

@@ -83,6 +83,8 @@ describe('rendering', () => {
         expect(SLIDER_CSS).toContain('position:absolute!important')
         expect(SLIDER_CSS).toContain('transform:translate(-50%,-50%)')
         expect(SLIDER_CSS).toContain('.ffp-slider .ffp-slider-handle')
+        expect(SLIDER_CSS).toContain('.ffp-slider .ffp-slider-connect')
+        expect(SLIDER_CSS).toContain('box-shadow:none!important')
     })
 })
 
