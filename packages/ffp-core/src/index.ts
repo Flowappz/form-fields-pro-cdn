@@ -107,6 +107,15 @@ function isPreviewMode(): boolean {
 }
 
 async function boot(): Promise<void> {
+    // Designer leaves a grey Number Slider stand-in on the canvas. Published
+    // pages load this script; hide it before the slider chunk arrives so it
+    // cannot sit above the live track and read as a shadow.
+    injectStyle(
+        'ffp-designer-standins',
+        '[data-ffp-slider-placeholder],.fa-slider-placeholder{display:none!important;width:0!important;height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;visibility:hidden!important;position:absolute!important;clip:rect(0,0,0,0)!important;pointer-events:none!important}',
+    )
+    document.querySelectorAll('[data-ffp-slider-placeholder]').forEach((node) => node.remove())
+
     const siteId = readSiteId()
 
     if (isPreviewMode()) {

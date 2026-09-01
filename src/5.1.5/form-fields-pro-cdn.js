@@ -129,6 +129,23 @@ function injectStyle(id, css) {
     style.textContent = css
 }
 
+/**
+ * Designer paints a grey stand-in so the canvas is not empty. This script only
+ * runs on the published page, where the live noUiSlider is the track. Hide and
+ * remove that stand-in immediately - before vendors load - or it sits above
+ * the widget and reads as a shadow behind the tooltip.
+ */
+function hideSliderStandIns() {
+    injectStyle(
+        'ffp-slider-standin',
+        '[data-ffp-slider-placeholder],.fa-slider-placeholder{display:none!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;visibility:hidden!important;position:absolute!important;clip:rect(0,0,0,0)!important;pointer-events:none!important}',
+    )
+    if (!document.querySelectorAll) return
+    document.querySelectorAll('[data-ffp-slider-placeholder]').forEach((node) => node.remove())
+}
+hideSliderStandIns()
+document.addEventListener('DOMContentLoaded', hideSliderStandIns)
+
 const sleep = (ms = 5) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /** Date pickers (easepick — honors months, columns, language, format, first day) */
@@ -758,6 +775,8 @@ const formFieldsUserIp = async () => {
 const formFieldsNumberSlider = async () => {
     if (!document.querySelector('[form-fields-pro-number-slider]')) return
 
+    hideSliderStandIns()
+
     await loadStylesheet('https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css')
     await loadScript('https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js')
 
@@ -810,17 +829,25 @@ const formFieldsNumberSlider = async () => {
       border: none;
       border-radius: 50%;
       background: var(--ffp-slider-color);
-      box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+      box-shadow: none;
     }
     .ffp-number-slider-wrap .noUi-handle:after,
     .ffp-number-slider-wrap .noUi-handle:before {
-      display: none;
+      display: none !important;
+      content: none !important;
     }
     .ffp-number-slider-wrap .noUi-tooltip {
       border: none;
       color: var(--ffp-tooltip-text);
       background: var(--ffp-slider-color);
-      box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+      box-shadow: none;
+    }
+    [data-ffp-slider-placeholder],
+    .fa-slider-placeholder {
+      display: none !important;
+      height: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
     }
     .ffp-slider-minmax {
       display: flex;
@@ -920,12 +947,17 @@ const formFieldsNumberSlider = async () => {
     const tooltipFormat = { to: (val) => Math.round(val), from: (val) => Number(val) }
 
     const createSliderWrap = (sliderInput, min, max) => {
-        const existing = sliderInput.parentElement && sliderInput.parentElement.querySelector('.ffp-number-slider-wrap')
+        const parent = sliderInput.parentElement
+        if (!parent) return null
+        const host = sliderInput.closest('[form-fields-wrapper]') || parent
+        host.querySelectorAll('[data-ffp-slider-placeholder]').forEach((node) => node.remove())
+
+        const existing = parent.querySelector('.ffp-number-slider-wrap')
         if (existing) return null
 
         const wrap = document.createElement('div')
         wrap.className = 'ffp-number-slider-wrap'
-        sliderInput.parentElement.appendChild(wrap)
+        parent.appendChild(wrap)
 
         const container = document.createElement('div')
         wrap.appendChild(container)
@@ -2855,6 +2887,7 @@ function hasValidLicenseKey(siteId) {
 }
 
 async function makeTheFormInteractive() {
+    hideSliderStandIns()
     const initializers = [
         formFieldsDateInput,
         formFieldsUserIp,
