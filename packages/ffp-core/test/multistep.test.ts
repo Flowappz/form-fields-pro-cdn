@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { initMultiStepForms } from '../src/multistep'
+import { initMultiStepForms, STEPS_RAIL_CSS } from '../src/multistep'
 import { addValidationMessageNodes } from '../src/validate'
 import { resetDom } from './setup'
 
@@ -17,7 +17,9 @@ const required = (name: string) =>
 
 function build(pages: string[]): HTMLElement {
     resetDom(`<body><div fa-webflow-form>
+        <div fa-form-steps>
         ${pages.map((_, i) => STEP(i)).join('')}
+        </div>
         ${pages.map((inner, i) => PAGE(i, inner)).join('')}
         <button fa-form-previous-button>back</button>
         <button fa-form-next-button>next</button>
@@ -26,6 +28,16 @@ function build(pages: string[]): HTMLElement {
     const root = document.querySelector('[fa-webflow-form]') as HTMLElement
     addValidationMessageNodes(root)
     return root
+}
+
+function mockRail(overflows: boolean): HTMLElement {
+    const rail = document.querySelector('[fa-form-steps]') as HTMLElement
+    Object.defineProperty(rail, 'clientWidth', { configurable: true, get: () => 400 })
+    Object.defineProperty(rail, 'scrollWidth', {
+        configurable: true,
+        get: () => (rail.classList.contains('ffp-steps-compact') ? 400 : overflows ? 2000 : 400),
+    })
+    return rail
 }
 
 function click(el: Element | null): void {
@@ -125,5 +137,29 @@ describe('initMultiStepForms', () => {
         resetDom('<body><div fa-webflow-form></div></body>')
         expect(() => initMultiStepForms()).not.toThrow()
         expect(document.querySelector('[fa-webflow-form]')!.getAttribute('data-ffp-multi-step-init')).toBeNull()
+    })
+
+    it('injects rail CSS that contains overflow on already-published forms', () => {
+        build(['', ''])
+        initMultiStepForms()
+        const css = document.getElementById('ffp-steps-rail')?.textContent ?? ''
+        expect(css).toBe(STEPS_RAIL_CSS)
+        expect(css).toContain('overflow-x:auto')
+        expect(css).toContain('.ffp-steps-compact')
+    })
+
+    it('compacts a rail that does not fit the card', () => {
+        // Nineteen labelled steps on the QA form were 2639px in a 574px card.
+        build(['', '', '', '', ''])
+        const rail = mockRail(true)
+        initMultiStepForms()
+        expect(rail.classList.contains('ffp-steps-compact')).toBe(true)
+    })
+
+    it('leaves a rail that already fits alone', () => {
+        build(['', ''])
+        const rail = mockRail(false)
+        initMultiStepForms()
+        expect(rail.classList.contains('ffp-steps-compact')).toBe(false)
     })
 })

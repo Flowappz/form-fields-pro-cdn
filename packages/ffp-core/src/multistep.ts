@@ -11,8 +11,32 @@
  * as though the runtime validated the current page on boot. It does not - it
  * initialises multi-step forms, once, and validates nothing. The name is gone.
  */
-import { on, type Unbind } from './dom'
+import { injectStyle, on, type Unbind } from './dom'
 import { validateRequiredFields } from './validate'
+
+/**
+ * The rail is generated as a nowrap flex row of labelled steps. Three of those
+ * fit a 640px card. Nineteen do not: they spill out of the card and stretch the
+ * page. Containment has to live here, not only on the generated class - a form
+ * already published will not pick up a Designer style change until it is
+ * re-synced.
+ *
+ * `overflow-x: auto` is the page-level fix: a scrollport does not contribute
+ * its overflowing descendants to ancestor scroll overflow. Compact mode is
+ * the rest of it - hide idle labels and let the connectors collapse so the
+ * numbered circles fit without a scrollbar. Measured, not counted, because six
+ * short names can fit the same column that four long ones cannot.
+ */
+export const STEPS_RAIL_CSS = [
+    '[fa-form-steps]{max-width:100%!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;overscroll-behavior-x:contain;scrollbar-width:none;-ms-overflow-style:none}',
+    '[fa-form-steps]::-webkit-scrollbar{height:0}',
+    '[fa-form-steps].ffp-steps-compact{column-gap:0!important}',
+    '[fa-form-steps].ffp-steps-compact [fa-form-step]:not(.active-step) [fa-form-step-label]{display:none!important}',
+    '[fa-form-steps].ffp-steps-compact [fa-form-spacer]{min-width:2px!important;flex:1 1 0%!important;width:auto!important}',
+    '[fa-form-steps].ffp-steps-compact .active-step [fa-form-step-label]{max-width:8em;overflow:hidden;text-overflow:ellipsis}',
+].join('')
+
+const COMPACT = 'ffp-steps-compact'
 
 export function initMultiStepForms(root: ParentNode = document): Unbind {
     const unbinds: Unbind[] = []
@@ -24,6 +48,19 @@ export function initMultiStepForms(root: ParentNode = document): Unbind {
     }
 }
 
+export function fitStepsRail(formElement: HTMLElement): void {
+    const rail = formElement.querySelector('[fa-form-steps]') as HTMLElement | null
+    if (!rail) return
+
+    rail.classList.remove(COMPACT)
+    if (rail.scrollWidth > rail.clientWidth + 1) rail.classList.add(COMPACT)
+
+    const active = rail.querySelector('.active-step') as HTMLElement | null
+    if (active && typeof active.scrollIntoView === 'function') {
+        active.scrollIntoView({ block: 'nearest', inline: 'center' })
+    }
+}
+
 export function initSingleMultiStepForm(formElement: HTMLElement): Unbind {
     if (!formElement || formElement.getAttribute('data-ffp-multi-step-init') === '1') return () => {}
 
@@ -32,6 +69,7 @@ export function initSingleMultiStepForm(formElement: HTMLElement): Unbind {
     if (!steps.length || !pages.length) return () => {}
 
     formElement.setAttribute('data-ffp-multi-step-init', '1')
+    injectStyle('ffp-steps-rail', STEPS_RAIL_CSS)
 
     const previousButton = formElement.querySelector('[fa-form-previous-button]') as HTMLElement | null
     const nextButton = formElement.querySelector('[fa-form-next-button]') as HTMLElement | null
@@ -66,6 +104,7 @@ export function initSingleMultiStepForm(formElement: HTMLElement): Unbind {
 
         currentStepIndex = index
         updateButtonVisibility()
+        fitStepsRail(formElement)
     }
 
     function validatePageAt(index: number): boolean {
@@ -117,6 +156,15 @@ export function initSingleMultiStepForm(formElement: HTMLElement): Unbind {
                 if (currentStepIndex > 0) showPageByIndex(currentStepIndex - 1)
             }),
         )
+    }
+
+    const rail = formElement.querySelector('[fa-form-steps]')
+    if (rail && typeof ResizeObserver !== 'undefined') {
+        const observer = new ResizeObserver(() => fitStepsRail(formElement))
+        observer.observe(rail)
+        unbinds.push(() => observer.disconnect())
+    } else {
+        unbinds.push(on(window, 'resize', () => fitStepsRail(formElement)))
     }
 
     showPageByIndex(0)

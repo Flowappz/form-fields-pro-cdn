@@ -12,7 +12,7 @@ import {
     type LicenseState,
 } from './license'
 import { installConditionalLogic, FORM_STATE } from './conditional'
-import { initMultiStepForms } from './multistep'
+import { initMultiStepForms, STEPS_RAIL_CSS } from './multistep'
 import { installFormSubmission } from './submit'
 import { installValidationEvents } from './validate'
 import { registerDialCodes } from './phone-value'
@@ -114,6 +114,9 @@ async function boot(): Promise<void> {
         'ffp-designer-standins',
         '[data-ffp-slider-placeholder],.fa-slider-placeholder{display:none!important;width:0!important;height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;visibility:hidden!important;position:absolute!important;clip:rect(0,0,0,0)!important;pointer-events:none!important}',
     )
+    // Before the licence wait: a 19-step rail otherwise paints across the page
+    // for up to 1500 ms while we ask whether this site may mount widgets.
+    injectStyle('ffp-steps-rail', STEPS_RAIL_CSS)
     document.querySelectorAll('[data-ffp-slider-placeholder]').forEach((node) => node.remove())
 
     const siteId = readSiteId()
