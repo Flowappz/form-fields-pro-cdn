@@ -32,9 +32,16 @@ function isSemver(v) {
 function authHeaders() {
   const headers = { "Content-Type": "application/json" };
 
-  // Prefer Basic when available — staging often has BASIC_AUTH without a matching
-  // CDN_RELEASE_SECRET. Bearer is used when Basic is absent.
-  const basicToken = process.env.BASIC_AUTH_TOKEN || process.env.VITE_BASIC_AUTH_TOKEN;
+  // Bearer first: CDN_RELEASE_SECRET is the ops credential for this env file.
+  // Never use VITE_BASIC_AUTH_TOKEN — that is the Designer's local token and
+  // staging Railway will 401 it while skipping the matching Bearer secret.
+  const secret = (process.env.CDN_RELEASE_SECRET || "").trim();
+  if (secret) {
+    headers.Authorization = `Bearer ${secret}`;
+    return headers;
+  }
+
+  const basicToken = process.env.BASIC_AUTH_TOKEN;
   if (basicToken) {
     headers.Authorization = basicToken.startsWith("Basic ")
       ? basicToken
@@ -46,14 +53,15 @@ function authHeaders() {
   const pass = process.env.BASIC_AUTH_PASSWORD;
   if (user && pass) {
     headers.Authorization = `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`;
-    return headers;
-  }
-
-  const secret = process.env.CDN_RELEASE_SECRET;
-  if (secret) {
-    headers.Authorization = `Bearer ${secret}`;
   }
   return headers;
+}
+
+function authSchemeLabel() {
+  const value = authHeaders().Authorization || "";
+  if (value.startsWith("Bearer ")) return "Bearer (CDN_RELEASE_SECRET)";
+  if (value.startsWith("Basic ")) return "Basic";
+  return "none";
 }
 
 function sleep(ms) {
@@ -88,7 +96,7 @@ function latestFetchHint(status) {
     return "Hint: staging/production backend must have /api/cdn-release/* deployed (feature/cdn-release-pipeline).";
   }
   if (status === 401 || status === 403) {
-    return "Hint: check BASIC_AUTH / VITE_BASIC_AUTH_TOKEN / CDN_RELEASE_SECRET against the target backend.";
+    return "Hint: CDN_RELEASE_SECRET in this env file must match the backend (Railway) CDN_RELEASE_SECRET. Designer VITE_BASIC_AUTH_TOKEN is not used.";
   }
   return "Hint: /api/cdn-release/latest is deployed but the backend threw. Retry; if it persists, check Railway logs for that route.";
 }
@@ -144,11 +152,7 @@ if (explicitVersion && bump) {
 
 // ─── Load env file ────────────────────────────────────────────────────────────
 const envFile = env === "dev" ? ".env" : `.env.${env}`;
-dotenv.config({ path: resolve(ROOT, envFile) });
-// Optional designer Basic auth for cdn-release when Bearer secret is unset/mismatched
-dotenv.config({
-  path: resolve(ROOT, "../advanced-forms-frontend/.env"),
-});
+dotenv.config({ path: resolve(ROOT, envFile), override: true });
 
 const {
   NODE_ENV,
@@ -179,11 +183,13 @@ if (
 // 308 and the release script reads as a failure.
 const API_BASE = String(BACKEND_URL).trim().replace(/\/+$/, "");
 
-if (!process.env.CDN_RELEASE_SECRET) {
-  console.warn(
-    `⚠ CDN_RELEASE_SECRET missing in ${envFile} — POST /api/cdn-release may fail if backend requires it.`,
+if (!authHeaders().Authorization) {
+  console.error(
+    `✗ No CDN_RELEASE_SECRET or BASIC_AUTH_* in ${envFile}. Cannot call /api/cdn-release.`,
   );
+  process.exit(1);
 }
+console.log(`Auth scheme: ${authSchemeLabel()}`);
 
 // ─── Resolve version from DB ──────────────────────────────────────────────────
 console.log(`Fetching current version from ${BACKEND_URL}...`);
