@@ -542,13 +542,12 @@ if (hashChanged && !isNewVersion) {
   );
 }
 
-if (isNewVersion || urlChanged || hashChanged || forceRegister || currentReleaseUnknown) {
-  if (currentReleaseUnknown && !isNewVersion && !forceRegister) {
-    console.log(
-      `\nCurrent release unknown (latest fetch failed) — registering rather than assuming sites are current.`,
-    );
-  }
-  console.log(`\nRe-registering script on all sites...`);
+// ─── Re-register on all sites ────────────────────────────────────────────────
+// Marketplace: never push new bytes to existing sites from this pipeline.
+// New JS is a new immutable CdnRelease version and an App update. Installs and
+// the Designer's "Apply version" path register a pin per site.
+if (forceRegister && NODE_ENV !== "production") {
+  console.log(`\nRe-registering script on all sites (--register, non-production)...`);
   const registerRes = await fetchWithRetry(
     `${API_BASE}/api/cdn-release/register-all`,
     {
@@ -576,9 +575,13 @@ if (isNewVersion || urlChanged || hashChanged || forceRegister || currentRelease
   }
 } else {
   console.log(
-    `\nSkipping site re-registration (same version, URL and integrity hash — sites already point at this exact file).`,
+    `\nSkipping site re-registration. Marketplace sites stay on their pinned version until a reviewer-approved App update and a per-site Apply.`,
   );
-  console.log(`Use --register to force re-registration.`);
+  if (NODE_ENV === "production") {
+    console.log(`Production uploads never call register-all.`);
+  } else {
+    console.log(`Use --register to force re-registration in non-production.`);
+  }
 }
 
 console.log(`\nDone. v${version} deployed and injected.`);

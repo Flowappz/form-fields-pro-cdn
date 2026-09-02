@@ -87,7 +87,18 @@ function typeOf(el: Element): string {
  * Webflow's own form handler behaves the same way and the backend's exports
  * depend on it.
  */
+function isCredentialInput(input: Element, name: string): boolean {
+    const type = typeOf(input)
+    const autocomplete = String(input.getAttribute('autocomplete') || '').toLowerCase()
+    if (type === 'password') return true
+    if (autocomplete === 'password' || autocomplete === 'current-password' || autocomplete === 'new-password') {
+        return true
+    }
+    return /(^|[\[\]_.-])(password|passwd|secret)($|[\[\]_.-])/i.test(name)
+}
+
 function collect(data: Record<string, string>, input: Element, name: string): void {
+    if (isCredentialInput(input, name)) return
     const type = typeOf(input)
     const value = (input as HTMLInputElement).value
 

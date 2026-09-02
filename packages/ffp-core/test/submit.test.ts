@@ -110,9 +110,22 @@ describe('payload collection', () => {
         expect(getWebflowInputFieldsData(form)['fields[agree]']).toBe('true')
     })
 
-    it('collects our own fields from form-fields-data-input', () => {
+    it("collects our own fields from form-fields-data-input", () => {
         const form = page('<input form-fields-data-input name="Date" value="2026-08-26">')
         expect(getFormFieldsInputData(form)['fields[Date]']).toBe('2026-08-26')
+    })
+
+    it('never collects password or credential inputs', () => {
+        const form = page(
+            '<input class="w-input" type="password" name="Password" value="secret">' +
+                '<input form-fields-data-input type="password" name="pwd" value="secret2">' +
+                '<input class="w-input" name="Email" value="a@b.com">',
+        )
+        const webflow = getWebflowInputFieldsData(form)
+        const ours = getFormFieldsInputData(form)
+        expect(webflow['fields[Password]']).toBeUndefined()
+        expect(ours['fields[pwd]']).toBeUndefined()
+        expect(webflow['fields[Email]']).toBe('a@b.com')
     })
 
     it('carries the Webflow form metadata', () => {
