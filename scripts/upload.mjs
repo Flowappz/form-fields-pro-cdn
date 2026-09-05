@@ -31,37 +31,16 @@ function isSemver(v) {
 
 function authHeaders() {
   const headers = { "Content-Type": "application/json" };
-
-  // Bearer first: CDN_RELEASE_SECRET is the ops credential for this env file.
-  // Never use VITE_BASIC_AUTH_TOKEN — that is the Designer's local token and
-  // staging Railway will 401 it while skipping the matching Bearer secret.
+  // CDN_RELEASE_SECRET is the only credential the backend's /api/cdn-release*
+  // routes accept. Basic auth used to be a fallback here; the backend dropped
+  // it because the same credential shipped inside every Designer bundle.
   const secret = (process.env.CDN_RELEASE_SECRET || "").trim();
-  if (secret) {
-    headers.Authorization = `Bearer ${secret}`;
-    return headers;
-  }
-
-  const basicToken = process.env.BASIC_AUTH_TOKEN;
-  if (basicToken) {
-    headers.Authorization = basicToken.startsWith("Basic ")
-      ? basicToken
-      : `Basic ${basicToken}`;
-    return headers;
-  }
-
-  const user = process.env.BASIC_AUTH_USER;
-  const pass = process.env.BASIC_AUTH_PASSWORD;
-  if (user && pass) {
-    headers.Authorization = `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`;
-  }
+  if (secret) headers.Authorization = `Bearer ${secret}`;
   return headers;
 }
 
 function authSchemeLabel() {
-  const value = authHeaders().Authorization || "";
-  if (value.startsWith("Bearer ")) return "Bearer (CDN_RELEASE_SECRET)";
-  if (value.startsWith("Basic ")) return "Basic";
-  return "none";
+  return authHeaders().Authorization ? "Bearer (CDN_RELEASE_SECRET)" : "none";
 }
 
 function sleep(ms) {
@@ -185,7 +164,7 @@ const API_BASE = String(BACKEND_URL).trim().replace(/\/+$/, "");
 
 if (!authHeaders().Authorization) {
   console.error(
-    `✗ No CDN_RELEASE_SECRET or BASIC_AUTH_* in ${envFile}. Cannot call /api/cdn-release.`,
+    `✗ No CDN_RELEASE_SECRET in ${envFile}. Cannot call /api/cdn-release.`,
   );
   process.exit(1);
 }
@@ -298,10 +277,14 @@ if (!existsSync(filePath)) {
 console.log(`\nUsing local file: ${filePath}`);
 
 // ─── Inject environment-specific service URLs ─────────────────────────────────
+// Production is the Railway backend behind form-fields-pro.flowappz.com. The
+// Vercel host this used to name answers 500 and has not been the backend for a
+// long time; a production release built on the default would have shipped a
+// runtime that posts every submission to a dead host.
 const DEFAULT_DATA_CLIENT_URLS = {
-  production: "https://flowapps-data-client.vercel.app",
-  staging: "https://flowapps-data-client-staging.up.railway.app",
-  standalone: "https://flowapps-data-client.vercel.app",
+  production: "https://form-fields-pro.flowappz.com",
+  staging: "https://form-fields-pro-staging.flowappz.com",
+  standalone: "https://form-fields-pro.flowappz.com",
   dev: "http://localhost:3000",
 };
 const DEFAULT_EMAIL_NOTIFIER_URLS = {
