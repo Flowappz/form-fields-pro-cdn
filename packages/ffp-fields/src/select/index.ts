@@ -38,6 +38,8 @@ const THEME_TOKENS = [
 
 const SELECT_CSS = `
 .ffp-select{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;user-select:none;font:inherit;color:inherit}
+.ffp-select:focus{outline:none}
+.ffp-select.is-open,.ffp-select.is-open:focus{outline:none!important;box-shadow:none!important}
 .ffp-select[aria-disabled="true"]{cursor:default;opacity:.6}
 .ffp-select-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ffp-select-value:empty::before{content:attr(data-placeholder);opacity:.6}
@@ -113,6 +115,9 @@ function readOptions(select: HTMLSelectElement): ListboxOption[] {
         } else if (!parent || parent.tagName !== 'OPTGROUP') {
             group = null
         }
+        // The empty placeholder already lives on the closed trigger. Putting it
+        // in the menu too made the first row a filled "Choose one..." highlight.
+        if (option.value === '') continue
         out.push({
             value: option.value,
             label: option.text,
@@ -120,6 +125,18 @@ function readOptions(select: HTMLSelectElement): ListboxOption[] {
         })
     }
     return out
+}
+
+/** Match the open menu to the designed trigger it sits under. */
+function inheritTriggerChrome(trigger: HTMLElement, menu: HTMLElement): void {
+    // linkedom (the unit-test document) has no layout engine.
+    if (typeof getComputedStyle !== 'function') return
+    const style = getComputedStyle(trigger)
+    menu.style.fontFamily = style.fontFamily
+    menu.style.fontSize = style.fontSize
+    menu.style.borderRadius = style.borderRadius
+    if (style.paddingTop) menu.style.setProperty('--ffp-option-pad-y', style.paddingTop)
+    if (style.paddingLeft) menu.style.setProperty('--ffp-option-pad-x', style.paddingLeft)
 }
 
 function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): FieldInstance {
@@ -216,7 +233,7 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
         const listbox = createListbox({
             id,
             options: readOptions(select),
-            value: select.value,
+            value: select.value || null,
             searchable,
             searchPlaceholder: select.getAttribute('data-search-placeholder') || 'Search',
             emptyText: select.getAttribute('data-empty-text') || 'No results',
@@ -228,6 +245,7 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
         // page can carry different hover colours, which the adopted stylesheet in
         // 5.1.5 could only do by mutating each select's `id` at runtime.
         api.theme.applyTheme(listbox.element, config.theme)
+        inheritTriggerChrome(trigger, listbox.element)
 
         const unlayer = openLayer({
             element: listbox.element,
@@ -237,6 +255,7 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
         const floating = positionFloating(trigger, listbox.element, {
             placement: 'bottom-start',
             matchWidth: true,
+            offset: 8,
             zIndex: layerZIndex(),
         })
 

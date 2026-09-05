@@ -118,7 +118,7 @@ export function createListbox(config: ListboxOptions): ListboxHandle {
             node.id = optionId(index)
             node.setAttribute('role', 'option')
             node.setAttribute('data-value', option.value)
-            node.setAttribute('aria-selected', String(option.value === value))
+            node.setAttribute('aria-selected', String(option.value === value && value !== ''))
             if (option.disabled) node.setAttribute('aria-disabled', 'true')
             if (option.prefix) node.appendChild(option.prefix.cloneNode(true))
             node.appendChild(document.createTextNode(option.label))
@@ -128,8 +128,14 @@ export function createListbox(config: ListboxOptions): ListboxHandle {
         empty.hidden = visible.length > 0
         list.hidden = visible.length === 0
 
-        const selected = visible.findIndex((o) => o.value === value)
-        setActive(selected !== -1 ? selected : firstEnabled())
+        // An empty value is "nothing chosen", not "the blank row is selected".
+        // Auto-activating the first option painted the placeholder (or the
+        // first real choice) as a filled highlight the moment the menu opened.
+        const selected =
+            value !== undefined && value !== null && value !== ''
+                ? visible.findIndex((o) => o.value === value)
+                : -1
+        setActive(selected)
     }
 
     function firstEnabled(): number {
@@ -314,12 +320,12 @@ export function createListbox(config: ListboxOptions): ListboxHandle {
  * of it without `!important`.
  */
 export const LISTBOX_CSS = `
-.ffp-listbox{box-sizing:border-box;background:var(--ffp-dropdown-background-color,var(--ffp-background-color,#fff));border:1px solid var(--ffp-border-color,#d4d4d4);border-radius:var(--ffp-border-radius,8px);box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;font:inherit;color:var(--ffp-text-color,inherit)}
-.ffp-listbox-search{box-sizing:border-box;width:100%;border:0;border-bottom:1px solid var(--ffp-border-color,#d4d4d4);padding:8px 10px;font:inherit;color:inherit;background:transparent;outline:none}
+.ffp-listbox{box-sizing:border-box;background:var(--ffp-dropdown-background-color,var(--ffp-background-color,#fff));border:1px solid var(--ffp-border-color,#e5e7eb);border-bottom-color:var(--ffp-border-color,#e5e7eb);border-radius:var(--ffp-border-radius,8px);box-shadow:0 10px 28px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);overflow:hidden;padding:4px;font:inherit;color:var(--ffp-text-color,inherit);isolation:isolate}
+.ffp-listbox-search{box-sizing:border-box;width:100%;border:0;border-bottom:1px solid var(--ffp-border-color,#e5e7eb);margin:0 0 4px;padding:10px 12px;font:inherit;color:inherit;background:transparent;outline:none}
 .ffp-listbox-list{max-height:16rem;overflow-y:auto;overscroll-behavior:contain;outline:none}
-.ffp-listbox-option{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;user-select:none}
+.ffp-listbox-option{display:flex;align-items:center;gap:8px;padding:var(--ffp-option-pad-y,10px) var(--ffp-option-pad-x,12px);border-radius:6px;cursor:pointer;user-select:none;line-height:1.35}
 .ffp-listbox-option.is-active{background:var(--ffp-hover-background-color,#f3f4f6);color:var(--ffp-hover-text-color,inherit)}
 .ffp-listbox-option[aria-selected="true"]{font-weight:600}
 .ffp-listbox-option[aria-disabled="true"]{opacity:.5;cursor:default}
-.ffp-listbox-empty{padding:8px 10px;opacity:.7}
+.ffp-listbox-empty{padding:10px 12px;opacity:.7}
 `

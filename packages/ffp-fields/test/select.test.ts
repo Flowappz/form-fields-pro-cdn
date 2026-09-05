@@ -161,7 +161,7 @@ describe('select field', () => {
         select.addEventListener('change', change)
 
         fire(trigger, 'pointerdown')
-        fire(rows()[1], 'click')
+        fire(rows()[0], 'click')
 
         expect(select.value).toBe('us')
         // Both, once each: conditional logic listens on `input`, Webflow
@@ -174,7 +174,7 @@ describe('select field', () => {
     it('closes after a choice and on a second click of the trigger', async () => {
         const { trigger } = await mount(MARKUP())
         fire(trigger, 'pointerdown')
-        fire(rows()[1], 'click')
+        fire(rows()[0], 'click')
         expect(listbox()).toBeNull()
         expect(trigger.getAttribute('aria-expanded')).toBe('false')
 
@@ -201,7 +201,7 @@ describe('select field', () => {
     it('marks a disabled option disabled', async () => {
         const { trigger } = await mount(MARKUP('', 'disabled'))
         fire(trigger, 'pointerdown')
-        expect(rows()[2].getAttribute('aria-disabled')).toBe('true')
+        expect(rows()[1].getAttribute('aria-disabled')).toBe('true')
     })
 
     it('turns an optgroup label into a disabled header row', async () => {
@@ -217,6 +217,21 @@ describe('select field', () => {
             ['Europe', 'true'],
             ['United Kingdom', null],
         ])
+    })
+
+    it('omits the empty placeholder from the open menu', async () => {
+        const { trigger } = await mount(MARKUP('data-placeholder="Choose one..."'))
+        fire(trigger, 'pointerdown')
+        expect(rows().map((row) => row.textContent)).toEqual(['United States', 'United Kingdom'])
+        expect(rows().every((row) => row.classList.contains('is-active'))).toBe(false)
+    })
+
+    it('highlights the current choice when the menu opens', async () => {
+        const { trigger } = await mount(MARKUP('data-placeholder="Choose one..."', 'selected'))
+        fire(trigger, 'pointerdown')
+        expect(rows()[1].textContent).toBe('United Kingdom')
+        expect(rows()[1].classList.contains('is-active')).toBe(true)
+        expect(rows()[1].getAttribute('aria-selected')).toBe('true')
     })
 
     it('applies the hover theme to the listbox, not to the document', async () => {

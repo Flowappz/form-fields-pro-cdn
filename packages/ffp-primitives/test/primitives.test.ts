@@ -172,6 +172,14 @@ describe('createListbox', () => {
         expect(nodes(handle.element)[2].getAttribute('aria-selected')).toBe('true')
     })
 
+    it('does not highlight a row when nothing is chosen', () => {
+        const handle = createListbox({ id: 'x', options, value: '', onSelect: () => {} })
+        expect(nodes(handle.element).some((node) => node.classList.contains('is-active'))).toBe(false)
+        expect(nodes(handle.element).some((node) => node.getAttribute('aria-selected') === 'true')).toBe(
+            false,
+        )
+    })
+
     it('skips disabled options when arrowing', () => {
         const handle = createListbox({ id: 'x', options, value: 'a', onSelect: () => {} })
         const list = handle.element.querySelector('.ffp-listbox-list') as HTMLElement
