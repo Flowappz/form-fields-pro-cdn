@@ -211,6 +211,18 @@ describe('createListbox', () => {
         expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ value: 'c' }))
     })
 
+    it('selects on pointerup, because preventDefault on pointerdown suppresses click', () => {
+        // A real mouse: canceled pointerdown → no click. The live select field
+        // sat open over Submit and every option press did nothing.
+        const onSelect = vi.fn()
+        const onDismiss = vi.fn()
+        const handle = createListbox({ id: 'x', options, onSelect, onDismiss })
+        fire(nodes(handle.element)[2], 'pointerdown')
+        fire(nodes(handle.element)[2], 'pointerup')
+        expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ value: 'c' }))
+        expect(onDismiss).toHaveBeenCalledTimes(1)
+    })
+
     it('shows the empty state when a search matches nothing', () => {
         const handle = createListbox({ id: 'x', options, searchable: true, emptyText: 'Nope', onSelect: () => {} })
         const search = handle.element.querySelector('.ffp-listbox-search') as HTMLInputElement

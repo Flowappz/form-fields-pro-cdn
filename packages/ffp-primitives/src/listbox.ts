@@ -261,15 +261,20 @@ export function createListbox(config: ListboxOptions): ListboxHandle {
     list.addEventListener('keydown', onKey)
 
     // Delegated: a 252-country list binds once, not 252 times.
-    list.addEventListener('pointerdown', (event) => {
-        // Keep focus where it is so the search box does not lose its caret.
-        event.preventDefault()
-    })
-    list.addEventListener('click', (event) => {
+    const pick = (event: Event) => {
         const target = (event.target as Element).closest('.ffp-listbox-option')
         if (!target || !list.contains(target)) return
         choose(Array.prototype.indexOf.call(list.children, target))
+    }
+    list.addEventListener('pointerdown', (event) => {
+        // Keep focus in the search box. A canceled pointerdown also suppresses
+        // the subsequent `click`, so a real mouse never reaches a click-only
+        // picker - the dropdown stays open over the Submit button and the form
+        // looks dead. `pointerup` is the event that still fires.
+        event.preventDefault()
     })
+    list.addEventListener('pointerup', pick)
+    list.addEventListener('click', pick)
     list.addEventListener('pointermove', (event) => {
         const target = (event.target as Element).closest('.ffp-listbox-option')
         if (!target || !list.contains(target)) return

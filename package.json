@@ -2,7 +2,7 @@
   "name": "form-fields-pro-cdn",
   "private": true,
   "version": "1.2.4",
-  "runtimeVersion": "5.1.6",
+  "runtimeVersion": "5.1.7",
   "type": "module",
   "scripts": {
     "extract:countries": "node scripts/extract-countries.mjs",

@@ -75,6 +75,15 @@ describe('select field', () => {
         expect(select.getAttribute('tabindex')).toBe('-1')
         expect(select.isConnected).toBe(true)
         expect(select.form).not.toBeNull()
+        expect(select.style.getPropertyValue('pointer-events')).toBe('none')
+    })
+
+    it('beats an inline width:100% !important so the native control cannot overlay Submit', async () => {
+        const { select } = await mount(
+            MARKUP().replace('<select', '<select style="width: 100% !important;"'),
+        )
+        expect(select.style.getPropertyValue('width')).toBe('1px')
+        expect(select.style.getPropertyValue('pointer-events')).toBe('none')
     })
 
     it('carries the author own classes onto the trigger', async () => {
@@ -218,13 +227,14 @@ describe('select field', () => {
     })
 
     it('restores the native select on destroy', async () => {
-        const { select } = await mount(MARKUP())
+        const { select } = await mount(MARKUP('style="width: 100% !important;"'))
         mounted!.destroy()
         mounted = null
         expect(document.querySelector('.ffp-select')).toBeNull()
         expect(select.classList.contains('ffp-select-native')).toBe(false)
         expect(select.getAttribute('tabindex')).toBeNull()
         expect(select.getAttribute('aria-hidden')).toBeNull()
+        expect(select.getAttribute('style')).toBe('width: 100% !important;')
     })
 
     it('leaves the native select alone when the shared chunk is missing', async () => {

@@ -43,7 +43,7 @@ const SELECT_CSS = `
 .ffp-select-value:empty::before{content:attr(data-placeholder);opacity:.6}
 .ffp-select-arrow{flex:none;width:10px;height:6px;background:currentColor;opacity:.6;clip-path:polygon(0 0,100% 0,50% 100%);transition:transform .12s ease}
 .ffp-select.is-open .ffp-select-arrow{transform:rotate(180deg)}
-.ffp-select-native{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+.ffp-select-native{position:absolute!important;width:1px!important;height:1px!important;min-width:0!important;min-height:0!important;max-width:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;opacity:0!important;appearance:none!important;-webkit-appearance:none!important;pointer-events:none!important}
 `
 
 /**
@@ -131,9 +131,16 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
     }
     if (select.required) trigger.setAttribute('aria-required', 'true')
 
+    const originalStyle = select.getAttribute('style')
     select.classList.add('ffp-select-native')
     select.setAttribute('tabindex', '-1')
     select.setAttribute('aria-hidden', 'true')
+    // The builder stamps `width: 100% !important` on the native control.
+    // Inline `!important` beats the stylesheet, so the clip-hide class alone
+    // left a full-width overlay sitting on the trigger and the Submit button.
+    select.style.setProperty('width', '1px', 'important')
+    select.style.setProperty('height', '1px', 'important')
+    select.style.setProperty('pointer-events', 'none', 'important')
     select.insertAdjacentElement('afterend', trigger)
 
     const id = `ffp-select-${Math.random().toString(36).slice(2, 8)}`
@@ -246,6 +253,8 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
             select.classList.remove('ffp-select-native')
             select.removeAttribute('tabindex')
             select.removeAttribute('aria-hidden')
+            if (originalStyle === null) select.removeAttribute('style')
+            else select.setAttribute('style', originalStyle)
         },
         value: () => select.value,
         setValue: (next) => commit(String(next)),
