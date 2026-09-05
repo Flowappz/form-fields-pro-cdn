@@ -47,6 +47,46 @@ const SELECT_CSS = `
 `
 
 /**
+ * Empty-value option already in the markup, if any.
+ *
+ * A required select whose first option has a real value is never empty, so
+ * `data-empty-error-msg` cannot fire. The builder writes the placeholder as
+ * `data-placeholder` and (now) as this option; older pages only have the
+ * attribute. We look the option up either way.
+ */
+function emptyOption(select: HTMLSelectElement): HTMLOptionElement | null {
+    for (let index = 0; index < select.options.length; index++) {
+        if (select.options[index].value === '') return select.options[index]
+    }
+    return null
+}
+
+function placeholderText(select: HTMLSelectElement): string {
+    return select.getAttribute('data-placeholder') || emptyOption(select)?.text || ''
+}
+
+/**
+ * Sit on an empty option when the author set a placeholder and did not mark
+ * another option `selected`.
+ *
+ * A native `<select>` with no `selected` attribute picks the first option.
+ * The builder's options are real choices ("One", "Two"), so that default
+ * hid "Choose one..." and made required validation a no-op.
+ */
+function ensurePlaceholder(select: HTMLSelectElement, text: string): void {
+    let empty = emptyOption(select)
+    if (!empty && text) {
+        empty = document.createElement('option')
+        empty.value = ''
+        empty.textContent = text
+        select.insertBefore(empty, select.firstChild)
+    }
+    if (!empty) return
+    const picked = Array.from(select.options).some((option) => option.value !== '' && option.hasAttribute('selected'))
+    if (!picked) select.value = ''
+}
+
+/**
  * Flatten `<option>`s, turning each `<optgroup>` label into a disabled row.
  *
  * The listbox is deliberately flat - a grouped listbox needs `role="group"`
@@ -101,7 +141,8 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
     )
 
     const searchable = config.options.searchable === true
-    const placeholder = select.getAttribute('data-placeholder') || ''
+    const placeholder = placeholderText(select)
+    ensurePlaceholder(select, placeholder)
 
     const value = api.dom.h('span', { class: 'ffp-select-value', 'data-placeholder': placeholder })
     const trigger = api.dom.h(
@@ -151,7 +192,10 @@ function mountSelect(el: Element, config: FfpFieldConfigV2, api: ChunkApi): Fiel
 
     function syncLabel(): void {
         const option = select.options[select.selectedIndex]
-        value.textContent = option ? option.text : ''
+        // Empty value: leave the span empty so `:empty::before` paints the
+        // faded placeholder. Copying the option text made "Choose one..."
+        // look like a real choice and hid `data-placeholder` entirely.
+        value.textContent = option && option.value !== '' ? option.text : ''
     }
 
     function commit(next: string): void {

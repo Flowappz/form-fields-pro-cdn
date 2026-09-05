@@ -94,9 +94,41 @@ describe('select field', () => {
         expect(trigger.classList.contains('my-field')).toBe(true)
     })
 
-    it('shows the selected option label', async () => {
-        const { trigger } = await mount(MARKUP())
-        expect((trigger.querySelector('.ffp-select-value') as HTMLElement).textContent).toBe('Choose one')
+    it('shows the placeholder, not the empty option text, while nothing is chosen', async () => {
+        const { select, trigger } = await mount(MARKUP())
+        const label = trigger.querySelector('.ffp-select-value') as HTMLElement
+        // The span stays empty so `:empty::before` can paint data-placeholder.
+        expect(label.textContent).toBe('')
+        expect(label.getAttribute('data-placeholder')).toBe('Choose one')
+        expect(select.value).toBe('')
+    })
+
+    it('sits on data-placeholder when the first option is a real choice', async () => {
+        // The builder writes placeholder as an attribute and the options as
+        // real values. Without an empty option the native select picks "us"
+        // and both the label and required validation die.
+        const { select, trigger } = await mount(`<form>
+          <select id="country" name="Country" class="w-select" form-fields-type="select"
+                  data-placeholder="Choose one..." required>
+            <option value="us">United States</option>
+            <option value="gb">United Kingdom</option>
+          </select>
+        </form>`)
+        expect(select.value).toBe('')
+        expect(select.options[0].value).toBe('')
+        expect(select.options[0].text).toBe('Choose one...')
+        expect((trigger.querySelector('.ffp-select-value') as HTMLElement).getAttribute('data-placeholder')).toBe(
+            'Choose one...',
+        )
+        expect((trigger.querySelector('.ffp-select-value') as HTMLElement).textContent).toBe('')
+    })
+
+    it('keeps an option the author marked selected', async () => {
+        const { select, trigger } = await mount(
+            MARKUP('data-placeholder="Choose one..."', 'selected'),
+        )
+        expect(select.value).toBe('gb')
+        expect((trigger.querySelector('.ffp-select-value') as HTMLElement).textContent).toBe('United Kingdom')
     })
 
     it('respects data-searchable="false"', async () => {

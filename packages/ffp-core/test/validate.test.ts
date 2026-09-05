@@ -119,6 +119,19 @@ describe('validateRequiredFields', () => {
         expect(validateRequiredFields(ok)).toBe(true)
     })
 
+    it('uses a required select empty-error message while it sits on the placeholder', () => {
+        const form = page(
+            wrap(
+                '<select name="s" required data-empty-error-msg="Please select an option">' +
+                    '<option value="">Choose one...</option>' +
+                    '<option value="a">A</option>' +
+                    '</select>',
+            ),
+        )
+        expect(validateRequiredFields(form)).toBe(false)
+        expect(messages()).toEqual(['Please select an option'])
+    })
+
     it('treats a phone showing only its dial code as empty', () => {
         resetDialCodes()
         registerDialCodes({ BD: 880 })
