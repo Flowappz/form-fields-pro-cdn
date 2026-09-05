@@ -108,7 +108,18 @@ async function bundle(entry) {
 }
 
 async function compress(code) {
-    const out = await minify(code, { compress: true, mangle: true, format: { comments: false } })
+    const out = await minify(code, {
+        ecma: 2019,
+        // Every output is an IIFE, so top-level bindings are private to the
+        // bundle and can be mangled and dropped like any other local. Three
+        // compress passes let terser fold what the first pass exposes. Neither
+        // option changes behaviour; together they are worth ~80 B gzipped on
+        // core, which is the margin the credential filter needed.
+        toplevel: true,
+        compress: { passes: 3 },
+        mangle: true,
+        format: { comments: false },
+    })
     if (!out.code) throw new Error('terser produced empty output')
     return Buffer.from(out.code, 'utf8')
 }

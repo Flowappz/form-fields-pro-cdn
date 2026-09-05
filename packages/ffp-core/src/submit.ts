@@ -88,13 +88,13 @@ function typeOf(el: Element): string {
  * depend on it.
  */
 function isCredentialInput(input: Element, name: string): boolean {
-    const type = typeOf(input)
-    const autocomplete = String(input.getAttribute('autocomplete') || '').toLowerCase()
-    if (type === 'password') return true
-    if (autocomplete === 'password' || autocomplete === 'current-password' || autocomplete === 'new-password') {
-        return true
-    }
-    return /(^|[\[\]_.-])(password|passwd|secret)($|[\[\]_.-])/i.test(name)
+    if (typeOf(input) === 'password') return true
+    // `password`, `current-password` and `new-password` are the autocomplete
+    // tokens that mean a credential. Matching the last token, not the whole
+    // attribute, also covers `autocomplete="section-x new-password"`, which the
+    // exact comparison missed.
+    if (/(^|[\s-])password$/i.test(input.getAttribute('autocomplete') || '')) return true
+    return /(^|[\[\]_.-])(passw(or)?d|secret)($|[\[\]_.-])/i.test(name)
 }
 
 function collect(data: Record<string, string>, input: Element, name: string): void {
