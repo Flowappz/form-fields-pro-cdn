@@ -48,6 +48,19 @@ const calendar = () => document.querySelector('.ffp-cal')
 const day = (iso: string) => document.querySelector(`.ffp-cal-day[data-date="${iso}"]`) as HTMLElement
 const title = () => Array.from(document.querySelectorAll('.ffp-cal-select')).map((n) => n.textContent)
 
+/**
+ * An empty range opens on today, so August fixtures vanish the moment the
+ * calendar rolls into September. Days 10 and 14 exist in every month the grid
+ * can show; the default format is MM/DD/YYYY.
+ */
+function thisMonth(dayNum: number): { iso: string; mdY: string } {
+    const now = new Date()
+    const pad = (n: number) => String(n).padStart(2, '0')
+    const month = pad(now.getMonth() + 1)
+    const date = pad(dayNum)
+    return { iso: `${now.getFullYear()}-${month}-${date}`, mdY: `${month}/${date}/${now.getFullYear()}` }
+}
+
 afterEach(() => {
     if (mounted) mounted.destroy()
     mounted = null
@@ -174,11 +187,13 @@ describe('single date', () => {
 describe('range', () => {
     it('writes both ends with the easepick delimiter', async () => {
         const input = await mount(MARKUP('form-fields-pro-date-range-picker'), 'daterange')
+        const start = thisMonth(10)
+        const end = thisMonth(14)
         fire(input, 'click')
-        day('2026-08-10').click()
+        day(start.iso).click()
         expect(input.value).toBe('')
-        day('2026-08-14').click()
-        expect(input.value).toBe('08/10/2026 - 08/14/2026')
+        day(end.iso).click()
+        expect(input.value).toBe(`${start.mdY} - ${end.mdY}`)
     })
 
     it('reopens on the range it wrote', async () => {
@@ -194,9 +209,9 @@ describe('range', () => {
     it('stays open between the two picks', async () => {
         const input = await mount(MARKUP('form-fields-pro-date-range-picker'), 'daterange')
         fire(input, 'click')
-        day('2026-08-10').click()
+        day(thisMonth(10).iso).click()
         expect(calendar()).not.toBeNull()
-        day('2026-08-14').click()
+        day(thisMonth(14).iso).click()
         expect(calendar()).toBeNull()
     })
 })

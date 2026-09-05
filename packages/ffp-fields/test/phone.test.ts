@@ -92,7 +92,14 @@ describe('no vendors', () => {
     it('draws flags with regional indicators, not Iconify spans', async () => {
         await mount(MARKUP('data-selected-country="GB"'))
         expect(document.querySelector('.iconify')).toBeNull()
-        expect(trigger().querySelector('.ffp-flag')!.textContent).toBe('\u{1F1EC}\u{1F1E7}')
+        const flag = trigger().querySelector('.ffp-flag')!
+        // Windows has no flag glyphs, so the field paints a two-letter chip
+        // instead. Either drawing is ours; Iconify is what this test forbids.
+        if (flag.getAttribute('data-chip') === 'true') {
+            expect(flag.textContent).toBe('GB')
+        } else {
+            expect(flag.textContent).toBe('\u{1F1EC}\u{1F1E7}')
+        }
     })
 
     it('builds no country rows until the picker is opened', async () => {

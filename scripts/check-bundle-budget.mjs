@@ -79,8 +79,13 @@ const BUDGETS = {
      * remove links it used to download.
      */
     file: 3.5 * 1024,
-    // Phase 3: 2403 -> 2477 B, against ~7 kB of noUiSlider and its CSS.
-    slider: 3 * 1024,
+    /**
+     * Phase 3 was 2477 B against ~7 kB of noUiSlider. The Designer stand-in
+     * hide and the Webflow / high-contrast thumb rules that followed are CSS
+     * that has to ship in this chunk: a lazy split would leave a grey bar on
+     * the page until the extra file arrived. 3088 B gz today.
+     */
+    slider: 3.25 * 1024,
     select: 2 * 1024,
     /**
      * Phase 3: 1471 -> 3363 B, against ~17 kB of spectrum and its CSS. It also
