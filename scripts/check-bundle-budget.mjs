@@ -46,11 +46,16 @@ const BUDGETS = {
      * The number to judge this against is the 5.1.5 monolith: 21,471 B gz for
      * this same code plus all nine widgets, on every page. Core now carries the
      * whole non-widget runtime for 11.4 kB, and a select page totals 13.3 kB
-     * against 21.5 kB plus roughly 27 kB of Select2. The budget stays tight
-     * (~600 B of headroom) so the next kilobyte is still an argument someone has
-     * to make on purpose.
+     * against 21.5 kB plus roughly 27 kB of Select2.
+     *
+     * Raised again, to 13 kB, for the capture-phase submit guard. A bubble
+     * listener on the form is too late: Webflow binds first, treats a phone
+     * showing only its dial code as filled, and swaps in `.w-form-done`. That
+     * guard cannot live in a chunk — a missing widget is survivable, a missing
+     * submit intercept loses the lead and hides the error. The next kilobyte
+     * is still an argument.
      */
-    core: 12 * 1024,
+    core: 13 * 1024,
     // Shared by select, phone and date. Paid once per page, not per field, so it
     // is cheaper than it looks next to the per-field numbers below.
     'ui-popover': 3 * 1024,

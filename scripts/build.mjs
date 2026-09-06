@@ -43,10 +43,10 @@ const PLACEHOLDERS = [
 
 /**
  * Core budget in gzipped bytes. Exceeding it fails the build, not a review.
- * Raised from 9 kB when the submission pipeline landed; the reasoning is in
+ * Raised from 12 kB for the capture-phase submit guard; the reasoning is in
  * scripts/check-bundle-budget.mjs next to the same number.
  */
-const CORE_GZIP_BUDGET = 12 * 1024
+const CORE_GZIP_BUDGET = 13 * 1024
 
 const args = process.argv.slice(2)
 const versionFlag = args.indexOf('--version')
