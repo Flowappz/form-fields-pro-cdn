@@ -98,6 +98,29 @@ export function submitGuardAttribute(root: Document = document): 'on' | 'off' | 
  * `handle` is the submission path. It is called synchronously with the form and
  * the original event, after the event has been stopped.
  */
+function formFromSubmitEvent(event: Event): HTMLFormElement | null {
+    const form = event.target as HTMLFormElement | null
+    if (!form || form.tagName !== 'FORM') return null
+    return isFfpNativeForm(form) ? form : null
+}
+
+/**
+ * Webflow's AJAX handler is sometimes bound to the button click, not the
+ * form submit. A phone that only shows `+880 ` then posts and the success
+ * block replaces the field before our submit listener can fail it.
+ */
+function formFromSubmitClick(event: Event): HTMLFormElement | null {
+    const target = event.target as Element | null
+    if (!target || !target.closest) return null
+    const control = target.closest(
+        'input[type="submit"], button[type="submit"], button:not([type]), [fa-form-submit-button]',
+    ) as (HTMLButtonElement | HTMLInputElement | null)
+    if (!control) return null
+    const form = control.form || (control.closest && (control.closest('form') as HTMLFormElement | null))
+    if (!form || form.tagName !== 'FORM') return null
+    return isFfpNativeForm(form) ? form : null
+}
+
 export function installSubmitGuard(
     handle: (form: HTMLFormElement, event: Event) => void,
     options: SubmitGuardOptions = {},
@@ -109,23 +132,36 @@ export function installSubmitGuard(
     // behaviour we have since rolled back.
     if (attribute === 'off' || options.enabled !== true) return () => {}
 
-    return on(
+    const take = (event: Event, form: HTMLFormElement) => {
+        event.preventDefault()
+        // Not `stopImmediatePropagation`: the event is at `document` in the
+        // capture phase, so nothing of ours is queued behind it, and the
+        // immediate variant would also silence any later capture listener
+        // core itself adds.
+        event.stopPropagation()
+        handle(form, event)
+    }
+
+    const unbindSubmit = on(
         root,
         'submit',
         (event) => {
-            const form = event.target as HTMLFormElement | null
-            if (!form || form.tagName !== 'FORM') return
-            if (!isFfpNativeForm(form)) return
-
-            event.preventDefault()
-            // Not `stopImmediatePropagation`: the event is at `document` in the
-            // capture phase, so nothing of ours is queued behind it, and the
-            // immediate variant would also silence any later capture listener
-            // core itself adds.
-            event.stopPropagation()
-
-            handle(form, event)
+            const form = formFromSubmitEvent(event)
+            if (form) take(event, form)
         },
         { capture: true },
     )
+    const unbindClick = on(
+        root,
+        'click',
+        (event) => {
+            const form = formFromSubmitClick(event)
+            if (form) take(event, form)
+        },
+        { capture: true },
+    )
+    return () => {
+        unbindSubmit()
+        unbindClick()
+    }
 }

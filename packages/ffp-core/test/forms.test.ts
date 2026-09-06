@@ -141,6 +141,21 @@ describe('installSubmitGuard', () => {
         expect(handle).not.toHaveBeenCalled()
         expect(event.defaultPrevented).toBe(false)
     })
+
+    it('takes over a submit-button click so Webflow cannot post first', () => {
+        resetDom(`<body><div fa-form="true"><form name="ours">
+            <input type="submit" value="Send">
+        </form></div></body>`)
+        const handle = vi.fn()
+        installSubmitGuard(handle, { root: document, enabled: true })
+        const button = document.querySelector('input[type="submit"]')!
+        const w = globalThis as unknown as { window: { Event: new (t: string, i?: unknown) => Event } }
+        const event = new w.window.Event('click', { bubbles: true, cancelable: true })
+        button.dispatchEvent(event)
+        expect(handle).toHaveBeenCalledTimes(1)
+        expect(handle.mock.calls[0][0]).toBe(document.querySelector('[name="ours"]'))
+        expect(event.defaultPrevented).toBe(true)
+    })
 })
 
 describe('isFfpNativeForm', () => {
