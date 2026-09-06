@@ -52,6 +52,11 @@ export function schemeResolverCss(scope: string, tokens: string[]): string {
         `@media (prefers-color-scheme: dark){${scope}{${assign('dark')}}}` +
         // An explicit page-level opt-out, for sites that force one scheme.
         `[data-ffp-scheme="light"] ${scope}{${assign('light')}}` +
-        `[data-ffp-scheme="dark"] ${scope}{${assign('dark')}}`
+        `[data-ffp-scheme="dark"] ${scope}{${assign('dark')}}` +
+        // The widget itself, for fields that publish a scheme (date's
+        // calendarTheme). The calendar is portalled to body, so an ancestor
+        // selector never sees it.
+        `${scope}[data-ffp-scheme="light"]{${assign('light')}}` +
+        `${scope}[data-ffp-scheme="dark"]{${assign('dark')}}`
     )
 }

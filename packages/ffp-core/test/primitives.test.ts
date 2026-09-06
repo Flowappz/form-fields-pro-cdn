@@ -68,6 +68,7 @@ describe('theme tokens', () => {
         expect(css).toContain('.ffp-x{--ffp-hover-text-color: var(--ffp-hover-text-color-light);}')
         expect(css).toContain('@media (prefers-color-scheme: dark)')
         expect(css).toContain('[data-ffp-scheme="dark"] .ffp-x')
+        expect(css).toContain('.ffp-x[data-ffp-scheme="dark"]')
         // A scheme-independent token has no pair to resolve.
         expect(css).not.toContain('--ffp-border-radius:')
     })

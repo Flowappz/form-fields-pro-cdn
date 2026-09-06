@@ -229,12 +229,12 @@ describe('options', () => {
     it('honours firstDay, including 7 for Sunday', async () => {
         const input = await mount(MARKUP('form-fields-pro-date-picker', 'data-firstDay="7"'))
         fire(input, 'click')
-        expect(document.querySelector('.ffp-cal-week span')!.textContent).toBe('S')
+        expect(document.querySelector('.ffp-cal-week span')!.textContent).toBe('Sun')
 
         mounted!.destroy()
         const monday = await mount(MARKUP('form-fields-pro-date-picker', 'data-firstDay="1"'))
         fire(monday, 'click')
-        expect(document.querySelector('.ffp-cal-week span')!.textContent).toBe('M')
+        expect(document.querySelector('.ffp-cal-week span')!.textContent).toBe('Mon')
     })
 
     it('honours the language, with no locale pack to download', async () => {
@@ -278,6 +278,31 @@ describe('theme', () => {
         )
         fire(input, 'click')
         expect(day('2026-08-10').getAttribute('style')).toBeNull()
+    })
+
+    it('forces the published calendarTheme onto the overlay', async () => {
+        const input = await mount(MARKUP('form-fields-pro-date-picker', 'data-date-scheme="dark"'))
+        fire(input, 'click')
+        const overlay = calendar() as HTMLElement
+        expect(overlay.getAttribute('data-ffp-scheme')).toBe('dark')
+        expect(overlay.style.colorScheme).toBe('dark')
+        expect(overlay.style.getPropertyValue('--ffp-border-radius')).toMatch(/px$/)
+    })
+
+    it('copies the palette onto the portalled month menu', async () => {
+        const input = await mount(
+            MARKUP(
+                'form-fields-pro-date-picker',
+                'data-date-scheme="dark" data-dark-theme-calendar-background-color="rgb(17, 24, 39)"',
+            ),
+        )
+        fire(input, 'click')
+        ;(document.querySelector('.ffp-cal-select') as HTMLElement).click()
+        const menu = document.querySelector('.ffp-cal-menu') as HTMLElement
+        expect(menu).not.toBeNull()
+        expect(menu.getAttribute('data-ffp-scheme')).toBe('dark')
+        expect(menu.style.getPropertyValue('--ffp-border-radius')).toMatch(/px$/)
+        expect(menu.style.getPropertyValue('--ffp-calendar-theme')).toBe('dark')
     })
 })
 

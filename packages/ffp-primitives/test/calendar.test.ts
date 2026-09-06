@@ -72,8 +72,8 @@ describe('layout', () => {
     it('starts the week on the requested day', () => {
         build({ firstDay: 1, start: new Date(2026, 7, 1) })
         const labels = Array.from(document.querySelectorAll('.ffp-cal-week span')).map((n) => n.textContent)
-        expect(labels[0]).toBe('M')
-        expect(labels[6]).toBe('S')
+        expect(labels[0]).toBe('Mon')
+        expect(labels[6]).toBe('Sun')
     })
 
     it('names months in the field locale', () => {
@@ -224,6 +224,21 @@ describe('keyboard', () => {
 })
 
 describe('month and year dropdowns', () => {
+    it('paints the portalled month menu with the calendar palette', () => {
+        const { element } = build({ start: new Date(2026, 7, 10) })
+        element.style.setProperty('--ffp-dropdown-background-color', 'rgb(31, 41, 55)')
+        element.style.setProperty('--ffp-date-text-color', 'rgb(243, 244, 246)')
+        element.setAttribute('data-ffp-scheme', 'dark')
+        ;(document.querySelectorAll('.ffp-cal-select')[0] as HTMLElement).click()
+
+        const menu = document.querySelector('.ffp-cal-menu') as HTMLElement
+        expect(menu).not.toBeNull()
+        expect(menu.parentElement).toBe(document.body)
+        expect(menu.getAttribute('data-ffp-scheme')).toBe('dark')
+        expect(menu.style.getPropertyValue('--ffp-dropdown-background-color')).toBe('rgb(31, 41, 55)')
+        expect(menu.style.getPropertyValue('--ffp-text-color')).toBe('rgb(243, 244, 246)')
+    })
+
     it('opens a listbox of months and jumps the view', () => {
         build({ start: new Date(2026, 7, 10) })
         const monthButton = document.querySelectorAll('.ffp-cal-select')[0] as HTMLElement

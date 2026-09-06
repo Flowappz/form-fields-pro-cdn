@@ -96,6 +96,29 @@ function mountDate(el: Element, config: FfpFieldConfigV2, api: ChunkApi, range: 
     const pattern = options.format
     const locale = options.language
 
+    /**
+     * Theme tokens land as custom properties; two of them need a second step.
+     *
+     * `borderRadius` is a bare number (5.1.5 stored it that way). `border-radius`
+     * rejects a unitless non-zero, so the published 12 became 0px and every
+     * styled calendar went square. `calendarTheme` is the field's own light/dark
+     * choice and must win over the visitor's OS, which is why it is stamped as
+     * `data-ffp-scheme` on the calendar itself - the overlay is portalled to
+     * body, so an ancestor selector never sees it.
+     */
+    function paintCalendar(el: HTMLElement, theme: FfpFieldConfigV2['theme']): void {
+        api.theme.applyTheme(el, theme)
+        const radius = String(theme.borderRadius ?? '')
+            .replace(/px$/i, '')
+            .trim()
+        if (radius) el.style.setProperty('--ffp-border-radius', `${radius}px`)
+        const scheme = String(theme.calendarTheme || '').toLowerCase()
+        if (scheme === 'light' || scheme === 'dark') {
+            el.setAttribute('data-ffp-scheme', scheme)
+            el.style.colorScheme = scheme
+        }
+    }
+
     // easepick set `readonly` through its own option; keep it. The value has to
     // match `data-format` exactly for the payload, and a free-text date field is
     // the single most common source of unparseable submissions.
@@ -159,7 +182,7 @@ function mountDate(el: Element, config: FfpFieldConfigV2, api: ChunkApi, range: 
             },
         })
 
-        api.theme.applyTheme(calendar.element, config.theme)
+        paintCalendar(calendar.element, config.theme)
 
         const unlayer = (popover as PopoverApi).openLayer({
             element: calendar.element,

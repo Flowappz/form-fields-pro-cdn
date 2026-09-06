@@ -70,20 +70,20 @@ export const CALENDAR_CSS = `
 .ffp-cal-nav[disabled]{opacity:0;pointer-events:none}
 .ffp-cal-nav svg{display:block;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
 .ffp-cal-week,.ffp-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.ffp-cal-week{margin-bottom:4px;color:var(--ffp-weekday-text-color,#6b7280);font-size:12px;text-align:center}
+.ffp-cal-week{margin-bottom:8px;color:var(--ffp-weekday-text-color,#6b7280);font-size:11px;font-weight:600;letter-spacing:.02em;text-align:center;text-transform:uppercase}
 .ffp-cal-day{font:inherit;color:inherit;background:none;border:0;padding:0;height:32px;border-radius:8px;cursor:pointer;text-align:center}
-.ffp-cal-day[data-other="true"]{opacity:.35}
+.ffp-cal-day[data-other="true"]{opacity:.55}
 .ffp-cal-day[disabled]{opacity:.25;cursor:default}
 .ffp-cal-day:hover:not([disabled]){background:var(--ffp-hover-background-color,#f3f4f6)}
-.ffp-cal-day[data-today="true"]{color:var(--ffp-today-date-color,#146ef5);font-weight:700}
+.ffp-cal-day[data-today="true"]{color:var(--ffp-today-date-color,#146ef5);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--ffp-today-date-color,#146ef5)}
 .ffp-cal-day[data-in-range="true"]{background:var(--ffp-hover-background-color,#f3f4f6);border-radius:0}
-.ffp-cal-day[data-selected="true"]{background:var(--ffp-selected-date-background-color,#146ef5);color:var(--ffp-selected-date-text-color,#fff);font-weight:600}
+.ffp-cal-day[data-selected="true"]{background:var(--ffp-selected-date-background-color,#146ef5);color:var(--ffp-selected-date-text-color,#fff);font-weight:600;box-shadow:none}
 .ffp-cal-day[data-edge="start"]{border-radius:8px 0 0 8px}
 .ffp-cal-day[data-edge="end"]{border-radius:0 8px 8px 0}
 .ffp-cal-day[data-edge="both"]{border-radius:8px}
 .ffp-cal-day:focus-visible{outline:2px solid var(--ffp-selected-date-background-color,#146ef5);outline-offset:1px}
 .ffp-cal-foot{display:flex;justify-content:flex-end;margin-top:8px}
-.ffp-cal .ffp-listbox{background:var(--ffp-dropdown-background-color,#fff);color:var(--ffp-date-text-color,#111827)}
+.ffp-cal .ffp-listbox,.ffp-cal-menu{background:var(--ffp-dropdown-background-color,#fff);color:var(--ffp-date-text-color,#111827);border-color:var(--ffp-calendar-border-color,#e5e7eb)}
 `
 
 const CHEVRON = (direction: 'left' | 'right') =>
@@ -92,6 +92,63 @@ const CHEVRON = (direction: 'left' | 'right') =>
     }"/></svg>`
 
 const KEY_STEP: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }
+
+/**
+ * Copy the calendar palette onto a portalled overlay.
+ *
+ * Month and year menus render on `document.body`, so they cannot inherit the
+ * custom properties on `.ffp-cal`. Without this they fall back to a white
+ * listbox on a dark calendar.
+ */
+const MENU_ALIASES: Record<string, string> = {
+    '--ffp-date-text-color': '--ffp-text-color',
+    '--ffp-calendar-border-color': '--ffp-border-color',
+    '--ffp-dropdown-background-color': '--ffp-background-color',
+}
+
+function readThemeVar(el: HTMLElement, name: string): string {
+    const inline = el.style.getPropertyValue(name).trim()
+    if (inline) return inline
+    try {
+        return getComputedStyle(el).getPropertyValue(name).trim()
+    } catch {
+        // linkedom has no getComputedStyle. Inline tokens still copy.
+        return ''
+    }
+}
+
+function syncTheme(from: HTMLElement, to: HTMLElement): void {
+    // Walk the style attribute, not CSSStyleDeclaration.item: linkedom (and
+    // some older engines) expose setProperty but not the indexed iterator.
+    const cssText = from.getAttribute('style') || from.style.cssText || ''
+    for (const part of cssText.split(';')) {
+        const cut = part.indexOf(':')
+        if (cut < 0) continue
+        const name = part.slice(0, cut).trim()
+        if (name.startsWith('--ffp-')) to.style.setProperty(name, part.slice(cut + 1).trim())
+    }
+    const scheme = from.getAttribute('data-ffp-scheme')
+    if (scheme) {
+        to.setAttribute('data-ffp-scheme', scheme)
+        to.style.colorScheme = scheme
+    }
+    for (const [src, dest] of Object.entries(MENU_ALIASES)) {
+        const value = readThemeVar(from, src)
+        if (value) {
+            to.style.setProperty(src, value)
+            to.style.setProperty(dest, value)
+        }
+    }
+    for (const name of [
+        '--ffp-dropdown-background-color',
+        '--ffp-hover-background-color',
+        '--ffp-header-text-color',
+        '--ffp-border-radius',
+    ]) {
+        const value = readThemeVar(from, name)
+        if (value) to.style.setProperty(name, value)
+    }
+}
 
 function button(className: string, label: string): HTMLButtonElement {
     const node = document.createElement('button')
@@ -226,6 +283,8 @@ export function createCalendar(options: CalendarOptions): CalendarHandle {
             },
             onDismiss: () => closeDropdown && closeDropdown(),
         })
+        listbox.element.classList.add('ffp-cal-menu')
+        syncTheme(root, listbox.element)
         const floating = popover.positionFloating(anchor, listbox.element, {
             placement: 'bottom-start',
             zIndex: popover.layerZIndex(),
@@ -319,7 +378,7 @@ export function createCalendar(options: CalendarOptions): CalendarHandle {
 
         const week = document.createElement('div')
         week.className = 'ffp-cal-week'
-        for (const name of weekdayNames(locale, 'narrow', firstDay)) {
+        for (const name of weekdayNames(locale, 'short', firstDay)) {
             const cell = document.createElement('span')
             cell.textContent = name
             week.appendChild(cell)
