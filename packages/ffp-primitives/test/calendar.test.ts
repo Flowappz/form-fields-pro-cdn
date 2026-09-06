@@ -227,7 +227,7 @@ describe('month and year dropdowns', () => {
     it('paints the portalled month menu with the calendar palette', () => {
         const { element } = build({ start: new Date(2026, 7, 10) })
         element.style.setProperty('--ffp-dropdown-background-color', 'rgb(31, 41, 55)')
-        element.style.setProperty('--ffp-date-text-color', 'rgb(243, 244, 246)')
+        element.style.setProperty('--ffp-header-text-color', 'rgb(243, 244, 246)')
         element.setAttribute('data-ffp-scheme', 'dark')
         ;(document.querySelectorAll('.ffp-cal-select')[0] as HTMLElement).click()
 
@@ -237,6 +237,17 @@ describe('month and year dropdowns', () => {
         expect(menu.getAttribute('data-ffp-scheme')).toBe('dark')
         expect(menu.style.getPropertyValue('--ffp-dropdown-background-color')).toBe('rgb(31, 41, 55)')
         expect(menu.style.getPropertyValue('--ffp-text-color')).toBe('rgb(243, 244, 246)')
+    })
+
+    it('resolves Header and dropdown from the published dark token', () => {
+        const { element } = build({ start: new Date(2026, 7, 10) })
+        element.style.setProperty('--ffp-header-text-color-dark', 'rgb(10, 20, 30)')
+        element.setAttribute('data-ffp-scheme', 'dark')
+        ;(document.querySelectorAll('.ffp-cal-select')[0] as HTMLElement).click()
+
+        const menu = document.querySelector('.ffp-cal-menu') as HTMLElement
+        expect(menu.style.getPropertyValue('--ffp-text-color')).toBe('rgb(10, 20, 30)')
+        expect(menu.style.getPropertyValue('--ffp-header-text-color')).toBe('rgb(10, 20, 30)')
     })
 
     it('opens a listbox of months and jumps the view', () => {

@@ -83,7 +83,7 @@ export const CALENDAR_CSS = `
 .ffp-cal-day[data-edge="both"]{border-radius:8px}
 .ffp-cal-day:focus-visible{outline:2px solid var(--ffp-selected-date-background-color,#146ef5);outline-offset:1px}
 .ffp-cal-foot{display:flex;justify-content:flex-end;margin-top:8px}
-.ffp-cal .ffp-listbox,.ffp-cal-menu{background:var(--ffp-dropdown-background-color,#fff);color:var(--ffp-date-text-color,#111827);border-color:var(--ffp-calendar-border-color,#e5e7eb)}
+.ffp-cal .ffp-listbox,.ffp-cal-menu{background:var(--ffp-dropdown-background-color,#fff);color:var(--ffp-header-text-color,var(--ffp-date-text-color,#111827));border-color:var(--ffp-calendar-border-color,#e5e7eb)}
 `
 
 const CHEVRON = (direction: 'left' | 'right') =>
@@ -101,7 +101,8 @@ const KEY_STEP: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp
  * listbox on a dark calendar.
  */
 const MENU_ALIASES: Record<string, string> = {
-    '--ffp-date-text-color': '--ffp-text-color',
+    '--ffp-header-text-color': '--ffp-text-color',
+    '--ffp-date-text-color': '--ffp-date-text-color',
     '--ffp-calendar-border-color': '--ffp-border-color',
     '--ffp-dropdown-background-color': '--ffp-background-color',
 }
@@ -115,6 +116,17 @@ function readThemeVar(el: HTMLElement, name: string): string {
         // linkedom has no getComputedStyle. Inline tokens still copy.
         return ''
     }
+}
+
+function resolveThemedVar(from: HTMLElement, name: string): string {
+    const direct = readThemeVar(from, name)
+    if (direct) return direct
+    // applyTheme writes `--ffp-*-light` / `--ffp-*-dark`. The unresolved base
+    // token only exists after schemeResolverCss runs. A portalled menu that
+    // opens first, or a test DOM without computed styles, still needs a colour.
+    const scheme = from.getAttribute('data-ffp-scheme')
+    if (scheme === 'light' || scheme === 'dark') return readThemeVar(from, `${name}-${scheme}`)
+    return ''
 }
 
 function syncTheme(from: HTMLElement, to: HTMLElement): void {
@@ -133,7 +145,7 @@ function syncTheme(from: HTMLElement, to: HTMLElement): void {
         to.style.colorScheme = scheme
     }
     for (const [src, dest] of Object.entries(MENU_ALIASES)) {
-        const value = readThemeVar(from, src)
+        const value = resolveThemedVar(from, src)
         if (value) {
             to.style.setProperty(src, value)
             to.style.setProperty(dest, value)
@@ -145,7 +157,7 @@ function syncTheme(from: HTMLElement, to: HTMLElement): void {
         '--ffp-header-text-color',
         '--ffp-border-radius',
     ]) {
-        const value = readThemeVar(from, name)
+        const value = resolveThemedVar(from, name)
         if (value) to.style.setProperty(name, value)
     }
 }

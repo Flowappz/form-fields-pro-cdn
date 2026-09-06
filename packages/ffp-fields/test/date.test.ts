@@ -289,6 +289,29 @@ describe('theme', () => {
         expect(overlay.style.getPropertyValue('--ffp-border-radius')).toMatch(/px$/)
     })
 
+    it('paints Header and dropdown onto the portalled month menu', async () => {
+        const theme = {
+            v: 2,
+            type: 'date',
+            theme: {
+                calendarTheme: 'dark',
+                headerTextColorDark: 'rgb(10, 20, 30)',
+                dateTextColorDark: 'rgb(200, 200, 200)',
+                dropdownBackgroundColorDark: 'rgb(31, 41, 55)',
+            },
+        }
+        const input = await mount(
+            MARKUP('form-fields-pro-date-picker', `data-ffp='${JSON.stringify(theme)}'`),
+        )
+        fire(input, 'click')
+        const overlay = calendar() as HTMLElement
+        expect(overlay.style.getPropertyValue('--ffp-header-text-color-dark')).toBe('rgb(10, 20, 30)')
+        ;(document.querySelector('.ffp-cal-select') as HTMLElement).click()
+        const menu = document.querySelector('.ffp-cal-menu') as HTMLElement
+        expect(menu.style.getPropertyValue('--ffp-text-color')).toBe('rgb(10, 20, 30)')
+        expect(menu.style.getPropertyValue('--ffp-header-text-color')).toBe('rgb(10, 20, 30)')
+    })
+
     it('copies the palette onto the portalled month menu', async () => {
         const input = await mount(
             MARKUP(
