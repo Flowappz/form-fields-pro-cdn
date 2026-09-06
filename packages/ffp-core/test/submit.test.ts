@@ -11,6 +11,8 @@ import {
     waitForPendingFileUploads,
     type SubmissionConfig,
 } from '../src/submit'
+import { registerDialCodes, resetDialCodes } from '../src/phone-value'
+import { addValidationMessageNodes } from '../src/validate'
 import { resetDom } from './setup'
 
 type Call = { url: string; init: RequestInit }
@@ -251,6 +253,22 @@ describe('submitForm', () => {
         expect(form.getAttribute('data-ffp-submitting')).toBe('0')
     })
 
+    it('will not post a required phone that still only shows its dial code', async () => {
+        resetDialCodes()
+        registerDialCodes({ BD: 880 })
+        const form = page(
+            wrap(
+                '<input type="tel" name="phone" required value="+880 " data-invalid-error-msg="Please enter a phone number">',
+            ),
+        )
+        addValidationMessageNodes(form)
+        await submitForm(form, config())
+        expect(calls.length).toBe(0)
+        expect(form.querySelector('.form-fields-data-validation-message')!.textContent).toBe(
+            'Please enter a phone number',
+        )
+    })
+
     it('waits for file encoding before it reads the values', async () => {
         // Validation reads the hidden input the dropzone populates. Reversing
         // this order fails a form that has a file on it.
@@ -297,6 +315,18 @@ describe('installFormSubmission', () => {
         const form = page(wrap('<input name="a" required>'))
         installFormSubmission(config({ root: document }))
         expect(form.querySelectorAll('.form-fields-data-validation-message').length).toBe(1)
+    })
+
+    it('arms the document capture guard once', () => {
+        // Webflow binds on the form first. Without this, an empty required
+        // phone (value `+880 `) posts through Webflow and the success block
+        // replaces the field before our message can show.
+        page('')
+        const first = installFormSubmission(config({ root: document }))
+        installFormSubmission(config({ root: document }))
+        expect(document.documentElement.getAttribute('data-ffp-submit-guard-bound')).toBe('1')
+        first()
+        expect(document.documentElement.getAttribute('data-ffp-submit-guard-bound')).toBeNull()
     })
 })
 

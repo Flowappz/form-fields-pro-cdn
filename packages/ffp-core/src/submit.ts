@@ -19,7 +19,7 @@
  * it authenticates anything. The fix is server-side and is tracked separately.
  */
 import { on, injectStyle, type Unbind } from './dom'
-import { getFfpNativeForms } from './forms'
+import { getFfpNativeForms, installSubmitGuard } from './forms'
 import { addValidationMessageNodes, VALIDATION_CSS, validateRequiredFields } from './validate'
 
 export type SubmissionConfig = {
@@ -326,6 +326,22 @@ export function installFormSubmission(config: SubmissionConfig): Unbind {
                 void submitForm(form, config)
             }),
         )
+    }
+
+    // Capture on `document` so a handler Webflow bound on the form first never
+    // sees the event. The per-form listeners above stay as the fallback when
+    // the page opts out with `data-ffp-submit-guard="off"`. observe() re-runs
+    // this function for newly inserted forms; the attribute keeps the guard
+    // from stacking a second capture listener on every refresh.
+    if (root.documentElement.getAttribute('data-ffp-submit-guard-bound') !== '1') {
+        root.documentElement.setAttribute('data-ffp-submit-guard-bound', '1')
+        const unguard = installSubmitGuard((form) => {
+            void submitForm(form, config)
+        }, { enabled: true, root })
+        unbinds.push(() => {
+            root.documentElement.removeAttribute('data-ffp-submit-guard-bound')
+            unguard()
+        })
     }
 
     return () => {

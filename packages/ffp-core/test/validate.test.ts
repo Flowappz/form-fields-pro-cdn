@@ -137,6 +137,21 @@ describe('validateRequiredFields', () => {
         registerDialCodes({ BD: 880 })
         const form = page(wrap('<input type="tel" name="p" required value="+880 ">'))
         expect(validateRequiredFields(form)).toBe(false)
+        expect(messages()).toEqual(['This field is required'])
+    })
+
+    it('uses the builder phone message when the empty attribute was never written', () => {
+        // Published phone fields write `data-invalid-error-msg` only. Empty
+        // submit has to show that string, not the generic required fallback.
+        resetDialCodes()
+        registerDialCodes({ BD: 880 })
+        const form = page(
+            wrap(
+                '<input type="tel" name="p" required value="+880 " data-invalid-error-msg="Please enter a phone number">',
+            ),
+        )
+        expect(validateRequiredFields(form)).toBe(false)
+        expect(messages()).toEqual(['Please enter a phone number'])
     })
 })
 
@@ -225,6 +240,23 @@ describe('installValidationEvents', () => {
         unbind()
     })
 
+    it('rejects a short phone number as the visitor types', () => {
+        resetDialCodes()
+        registerDialCodes({ GB: 44 })
+        const form = page(
+            wrap(
+                '<div data-form-field-pro="number-input-with-country-code" data-selected-country="GB">' +
+                    '<input type="tel" class="number-input-field" name="p" data-invalid-error-msg="Please enter a phone number"></div>',
+            ),
+        )
+        const unbind = installValidationEvents(document)
+        const input = form.querySelector('input') as HTMLInputElement
+        input.value = '+44 12'
+        fire(input, 'input')
+        expect(messages()).toEqual(['Please enter a phone number'])
+        unbind()
+    })
+
     it('unbinds', () => {
         const form = page(wrap('<input type="email" name="e">'))
         const unbind = installValidationEvents(document)
@@ -240,6 +272,12 @@ describe('getEmptyErrorMessage', () => {
     it('falls back to the string live pages already show', () => {
         const el = document.createElement('input')
         expect(getEmptyErrorMessage(el)).toBe('This field is required')
+    })
+
+    it('uses the invalid message when the empty attribute is missing', () => {
+        const el = document.createElement('input')
+        el.setAttribute('data-invalid-error-msg', 'Please enter a phone number')
+        expect(getEmptyErrorMessage(el)).toBe('Please enter a phone number')
     })
 })
 

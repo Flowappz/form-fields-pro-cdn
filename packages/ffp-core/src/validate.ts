@@ -27,7 +27,12 @@ export const PLAIN_TEXT_MIN_LETTERS = 2
 
 const WRAPPER = '[form-fields-wrapper="true"] '
 const MESSAGE_CLASS = 'form-fields-data-validation-message'
-const PHONE_SELECTOR = '[data-form-field-pro="number-input-with-country-code"] input[type="tel"]'
+const PHONE_IN_WIDGET = '[data-form-field-pro="number-input-with-country-code"] input[type="tel"]'
+const PHONE_BY_CLASS = 'input.number-input-field[type="tel"]'
+
+function phoneSelector(prefix: string): string {
+    return prefix + PHONE_IN_WIDGET + ', ' + prefix + PHONE_BY_CLASS
+}
 
 type Field = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 
@@ -81,7 +86,7 @@ export function addValidationMessageNodes(form: ParentNode): void {
     }
 }
 
-export const VALIDATION_CSS = `.${MESSAGE_CLASS}{color:#FF2626;font-size:11px}`
+export const VALIDATION_CSS = `.${MESSAGE_CLASS}{display:block;color:#FF2626;font-size:11px;margin-top:4px}`
 
 export function validateFieldData(
     field: Element,
@@ -105,7 +110,14 @@ export function isValidPlainTextValue(value: unknown): boolean {
 }
 
 export function getEmptyErrorMessage(input: Element): string {
-    return input.getAttribute('data-empty-error-msg') || 'This field is required'
+    // Phone (and the other single-message fields) write the builder copy onto
+    // `data-invalid-error-msg` only. Empty-submit has to honour that, or the
+    // customer sees "This field is required" instead of the string they set.
+    return (
+        input.getAttribute('data-empty-error-msg') ||
+        input.getAttribute('data-invalid-error-msg') ||
+        'This field is required'
+    )
 }
 
 export function validatePlainTextField(field: Element, value: unknown): boolean {
@@ -154,27 +166,36 @@ export function validateTypedFields(root: ParentNode = document, options: { scop
         if (isFieldVisiblyHidden(f)) continue
         if (!validatePlainTextField(f, valueOf(f))) return false
     }
-    for (const f of Array.from(
-        root.querySelectorAll(
-            prefix + PHONE_SELECTOR + ', ' + prefix + 'input.number-input-field[type="tel"]',
-        ),
-    )) {
+    for (const f of Array.from(root.querySelectorAll(phoneSelector(prefix)))) {
         if (isFieldVisiblyHidden(f)) continue
-        const raw = valueOf(f).trim()
-        if (!raw || isDialCodeOnlyPhoneValue(raw)) continue
-        const dial = getSelectedDialCodeForPhoneInput(f)
-        const e164 = normalizePhoneToE164(raw, dial)
-        if (!/^\+\d{8,}$/.test(e164)) {
-            setValidationMessage(f, f.getAttribute('data-invalid-error-msg') || 'Invalid phone number')
-            return false
-        }
-        // Write the normalised value back, so the payload carries E.164 rather
-        // than whatever autofill produced. This is a mutation during validation
-        // and it is intentional: it is the only point where both the raw value
-        // and the selected country are in hand.
-        const formatted = formatPhoneDisplay(e164, dial)
-        if (formatted && formatted !== raw) (f as HTMLInputElement).value = formatted
+        if (!validatePhoneField(f)) return false
     }
+    return true
+}
+
+/**
+ * Type check for a phone value. Empty / dial-code-only is the required check's
+ * job, matching email and url: running both would show two messages for one field.
+ */
+export function validatePhoneField(field: Element): boolean {
+    const raw = valueOf(field).trim()
+    if (!raw || isDialCodeOnlyPhoneValue(raw)) {
+        setValidationMessage(field, '')
+        return true
+    }
+    const dial = getSelectedDialCodeForPhoneInput(field)
+    const e164 = normalizePhoneToE164(raw, dial)
+    if (!/^\+\d{8,}$/.test(e164)) {
+        setValidationMessage(field, field.getAttribute('data-invalid-error-msg') || 'Invalid phone number')
+        return false
+    }
+    // Write the normalised value back, so the payload carries E.164 rather
+    // than whatever autofill produced. This is a mutation during validation
+    // and it is intentional: it is the only point where both the raw value
+    // and the selected country are in hand.
+    const formatted = formatPhoneDisplay(e164, dial)
+    if (formatted && formatted !== raw) (field as HTMLInputElement).value = formatted
+    setValidationMessage(field, '')
     return true
 }
 
@@ -258,6 +279,8 @@ export function installValidationEvents(root: Document = document): Unbind {
             WRAPPER + 'input[data-plain-text="form-field-pro-plain-text"]',
             (_event, field) => validatePlainTextField(field, valueOf(field)),
         ),
+        delegate(root, 'input', WRAPPER + PHONE_IN_WIDGET, (_event, field) => validatePhoneField(field)),
+        delegate(root, 'input', WRAPPER + PHONE_BY_CLASS, (_event, field) => validatePhoneField(field)),
     ]
     return () => {
         for (const unbind of unbinds) unbind()
