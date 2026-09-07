@@ -30,6 +30,11 @@ export function applyTheme(root: HTMLElement, theme: ThemeTokens): void {
     for (const token of Object.keys(theme)) {
         const value = theme[token]
         if (value === undefined || value === null || String(value) === '') continue
+        // An unsuffixed token alongside both halves would freeze the working
+        // variable as an inline style and beat schemeResolverCss, so dark
+        // mode would never flip. Older runtimes still consume the unsuffixed
+        // idle colours; this skip is what lets a dual-write theme work on both.
+        if (!SUFFIX.test(token) && theme[`${token}Light`] && theme[`${token}Dark`]) continue
         root.style.setProperty(tokenToVar(token), String(value))
     }
 }

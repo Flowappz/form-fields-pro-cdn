@@ -28,12 +28,16 @@ import type { FfpFieldConfigV2 } from '@flowappz/ffp-config'
 import type { ChunkApi, FieldInstance, MountContext, Unbind } from '@flowappz/ffp-core'
 import type { ListboxOption, PopoverApi } from '@flowappz/ffp-primitives'
 
-/** Tokens this field themes. Only the four the DX has ever written for select. */
+/** Tokens this field themes. Hover plus idle, each a Light/Dark pair. */
 const THEME_TOKENS = [
     'hoverTextColorLight',
     'hoverTextColorDark',
     'hoverBackgroundColorLight',
     'hoverBackgroundColorDark',
+    'textColorLight',
+    'textColorDark',
+    'dropdownBackgroundColorLight',
+    'dropdownBackgroundColorDark',
 ]
 
 const SELECT_CSS = `

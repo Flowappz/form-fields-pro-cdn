@@ -63,6 +63,21 @@ describe('theme tokens', () => {
         expect(root.style.getPropertyValue('--ffp-text-color-dark')).toBe('')
     })
 
+    it('does not freeze a paired token as an inline unsuffixed value', () => {
+        resetDom('<body><div id="w"></div></body>')
+        const root = document.getElementById('w') as unknown as HTMLElement
+        applyTheme(root, {
+            textColor: '#111111',
+            textColorLight: '#111111',
+            textColorDark: '#eeeeee',
+            borderRadius: '8px',
+        })
+        expect(root.style.getPropertyValue('--ffp-text-color')).toBe('')
+        expect(root.style.getPropertyValue('--ffp-text-color-light')).toBe('#111111')
+        expect(root.style.getPropertyValue('--ffp-text-color-dark')).toBe('#eeeeee')
+        expect(root.style.getPropertyValue('--ffp-border-radius')).toBe('8px')
+    })
+
     it('resolves each light/dark pair in CSS, so no JS runs on a scheme change', () => {
         const css = schemeResolverCss('.ffp-x', ['hoverTextColorLight', 'hoverTextColorDark', 'borderRadius'])
         expect(css).toContain('.ffp-x{--ffp-hover-text-color: var(--ffp-hover-text-color-light);}')

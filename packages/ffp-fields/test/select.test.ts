@@ -266,6 +266,38 @@ describe('select field', () => {
         expect(root.style.getPropertyValue('--ffp-hover-text-color-dark')).toBe('#ffffff')
     })
 
+    it('applies Light/Dark pairs from data-ffp without collapsing them', async () => {
+        const config = JSON.stringify({
+            v: 2,
+            type: 'select',
+            name: 'Country',
+            required: false,
+            messages: {},
+            options: {},
+            theme: {
+                hoverTextColorLight: '#ffffff',
+                hoverTextColorDark: '#111111',
+                hoverBackgroundColorLight: '#ff0000',
+                hoverBackgroundColorDark: '#00ff00',
+                textColorLight: '#222222',
+                textColorDark: '#eeeeee',
+                dropdownBackgroundColorLight: '#fafafa',
+                dropdownBackgroundColorDark: '#111111',
+            },
+        })
+        const { trigger } = await mount(MARKUP(`data-ffp='${config}'`))
+        fire(trigger, 'pointerdown')
+        const root = listbox()!
+        expect(root.style.getPropertyValue('--ffp-hover-background-color-light')).toBe('#ff0000')
+        expect(root.style.getPropertyValue('--ffp-hover-background-color-dark')).toBe('#00ff00')
+        expect(root.style.getPropertyValue('--ffp-hover-text-color-light')).toBe('#ffffff')
+        expect(root.style.getPropertyValue('--ffp-hover-text-color-dark')).toBe('#111111')
+        expect(root.style.getPropertyValue('--ffp-text-color-light')).toBe('#222222')
+        expect(root.style.getPropertyValue('--ffp-text-color-dark')).toBe('#eeeeee')
+        expect(root.style.getPropertyValue('--ffp-dropdown-background-color-light')).toBe('#fafafa')
+        expect(root.style.getPropertyValue('--ffp-dropdown-background-color-dark')).toBe('#111111')
+    })
+
     it('reflects a value changed by someone else', async () => {
         const { select, trigger } = await mount(MARKUP())
         select.value = 'gb'
