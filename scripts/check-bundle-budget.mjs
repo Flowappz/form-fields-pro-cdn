@@ -63,9 +63,10 @@ const BUDGETS = {
      * Phase 2 grew the chunk (4600 -> 5323 B) because it now *is* the calendar
      * rather than two `loadScript` calls and a blocking stylesheet fetch, while
      * removing 17 kB of easepick, 3 kB of its CSS and a round trip to jsdelivr.
-     * Same shape as `select` in phase 1: judge it on the page total below.
+     * Raised to 6 kB after 5.1.11 shipped 5849 B gz (portalled month menu +
+     * Light/Dark idle colours). Judge it on the page total below.
      */
-    date: 5.5 * 1024,
+    date: 6 * 1024,
     /**
      * The biggest chunk, and the only one that is mostly data: 252 countries
      * with names and dial codes, plus the time-zone table the geo default reads.
@@ -91,7 +92,11 @@ const BUDGETS = {
      * the page until the extra file arrived. 3088 B gz today.
      */
     slider: 3.25 * 1024,
-    select: 2 * 1024,
+    /**
+     * 5.1.11 already shipped 2381 B gz. 2 kB was the phase-1 Select2-replacement
+     * figure, before the listbox gained placeholder-idle and scheme tokens.
+     */
+    select: 2.5 * 1024,
     /**
      * Phase 3: 1471 -> 3363 B, against ~17 kB of spectrum and its CSS. It also
      * retires the one dependency that was **unpinned**, so an upstream publish

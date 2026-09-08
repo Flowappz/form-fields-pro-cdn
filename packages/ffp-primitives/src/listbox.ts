@@ -138,10 +138,6 @@ export function createListbox(config: ListboxOptions): ListboxHandle {
         setActive(selected)
     }
 
-    function firstEnabled(): number {
-        return visible.findIndex((o) => !o.disabled)
-    }
-
     function setActive(index: number, scroll = true): void {
         const nodes = list.children
         if (active >= 0 && nodes[active]) (nodes[active] as HTMLElement).classList.remove('is-active')

@@ -159,9 +159,20 @@ export async function mountAll(
     }
     if (!work.length) return
 
-    const chunks = Array.from(new Set(work.map((item) => CHUNK_FOR_TYPE[item.type])))
-    await Promise.all(chunks.map((key) => loadChunk(key, options.manifest, options.timeoutMs)))
-    for (const key of chunks) runFactory(key)
+    // A field that is already registered does not need its chunk. Preview and
+    // tests define the widget up front; fetching the generated manifest would
+    // hang on `ui-popover` until timeout and then miss the mount window.
+    const chunks = Array.from(
+        new Set(
+            work
+                .filter((item) => !definitions.has(item.type))
+                .map((item) => CHUNK_FOR_TYPE[item.type]),
+        ),
+    )
+    if (chunks.length) {
+        await Promise.all(chunks.map((key) => loadChunk(key, options.manifest, options.timeoutMs)))
+        for (const key of chunks) runFactory(key)
+    }
 
     for (const { type, elements } of work) {
         // A chunk that failed to load leaves no definition registered, so these
