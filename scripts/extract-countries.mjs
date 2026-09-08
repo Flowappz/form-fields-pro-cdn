@@ -19,7 +19,7 @@ import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const SOURCE = resolve(ROOT, 'src/5.1.5/form-fields-pro-cdn.js')
+const SOURCE = resolve(ROOT, 'src/2.0.1/countries-source.js')
 const TARGET = resolve(ROOT, 'packages/ffp-fields/src/phone/countries.ts')
 
 const source = readFileSync(SOURCE, 'utf8')
@@ -38,7 +38,7 @@ if (!Array.isArray(rows) || rows.length < 200) {
 const file = `/**
  * ISO 3166-1 alpha-2 code, English name, dial code.
  *
- * GENERATED from src/5.1.5/form-fields-pro-cdn.js by scripts/extract-countries.mjs
+ * GENERATED from src/2.0.1/countries-source.js by scripts/extract-countries.mjs
  * - the same ${rows.length} rows, in the same order, so the dropdown a customer's visitor
  * sees is ordered exactly as it was. Not hand-transcribed: a typo in a dial code
  * here is a phone number that fails validation for a whole country.

@@ -1,7 +1,7 @@
 /**
  * ISO 3166-1 alpha-2 code, English name, dial code.
  *
- * GENERATED from src/5.1.5/form-fields-pro-cdn.js by scripts/extract-countries.mjs
+ * GENERATED from src/2.0.1/countries-source.js by scripts/extract-countries.mjs
  * - the same 252 rows, in the same order, so the dropdown a customer's visitor
  * sees is ordered exactly as it was. Not hand-transcribed: a typo in a dial code
  * here is a phone number that fails validation for a whole country.

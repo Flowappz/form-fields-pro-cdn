@@ -1,30 +1,26 @@
 /**
- * FORM FIELDS PRO CDN SCRIPT - v5.1.6
- * pnpm release:staging -- --version 5.1.6
- * Built from packages/ (core + lazy field chunks). Zero vendor CDNs.
- *
- * Release-time placeholders (replaced by scripts/upload.mjs):
- *   __FFP_DATA_CLIENT_URL__
- *   __FFP_LICENSE_URL__
- *   __FFP_BEACON_URL__
- *   __FFP_SUBMISSION_SECRET__
+ * FORM FIELDS PRO CDN SCRIPT - v2.0.1
+ * https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/form-fields-pro-cdn.282a7ce9ca27.js
+ * sha384-l+Y2elW6rpgGfBLPY1xy7Y20urtcAhuHlc82LR3X3kTZFw5HtOCyYDhWFZ0nKZpD
+ * pnpm release:staging -- --version 2.0.1 --register
+ * Built from packages/ (core + lazy field chunks). Snapshot of 5.1.11 as 2.0.1. Zero vendor CDNs.
  */
 
 "use strict";
 (() => {
   // packages/ffp-core/src/manifest.generated.ts
   var MANIFEST = {
-    "color": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-color.d3629f8dcdee.js", "integrity": "sha384-IzeCdK/VkrZqRI5H+mkvLdyKpCkDmYjIX5unVLV6jH5J6Of+w+SWmCu7ZegTpRjQ", "deps": ["ui-popover"], "bytes": 8411 },
-    "date": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-date.be51a0ce90b5.js", "integrity": "sha384-4KI2lPWEQYKSfN21wwiNklQN7v2DxiQ0ODbTpCiYUYZHBfuAmSNzjyTM+kzUend8", "deps": ["ui-popover"], "bytes": 14868 },
-    "file": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-file.b8cad3e7765e.js", "integrity": "sha384-2lv/E+e+1v9gBUUIndfopJZ+Vwcnwgps8t6uxjWDV1/CDpe07hP0hjPQY8zUaQdM", "deps": [], "bytes": 7575 },
-    "nps": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-nps.6597c0f7afe9.js", "integrity": "sha384-bCRBXHH+8JO28Y2vM8ofXfRRWsG+iSctm6ieeqhVNIMF9bkyLEJbcHd4tXOC107y", "deps": [], "bytes": 9899 },
-    "phone": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-phone.8ec2e05aa679.js", "integrity": "sha384-PH56/tX8Ghl34GWiRZsE1amOwi9zhJX1iopKllFwxV5mPxjcdYZdAzUSDd2lVWe0", "deps": ["ui-popover"], "bytes": 14919 },
-    "select": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-select.1fb6f95dcb13.js", "integrity": "sha384-lEworxoU+4DtcpONEmFb3TKASmSEaS/33ZV9rl/gcs69K2dTfdjsB7EVb+fxAbnc", "deps": ["ui-popover"], "bytes": 4282 },
-    "slider": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-slider.3f4ccfcbb037.js", "integrity": "sha384-K1WFQt5xtfR5L9vSULgRu+LMqQY8W7eAbgYp/jrrySBsftOAbYUWI9tV1xRI5pma", "deps": [], "bytes": 8765 },
-    "ui-popover": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/ui-popover.7ff9d5a9083e.js", "integrity": "sha384-iVwFqsGMCkRhCtwLbfsSnbbYnIXficGDv1yos4I5wf4Sk6fYrNg9ITFUWvjYHEjS", "deps": [], "bytes": 7453 },
-    "userip": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/5.1.6/chunks/field-userip.4572c36abc1b.js", "integrity": "sha384-VeaU20mJjq4cooZ+BgMGDJ2L2eLoC77gLZqvVn/4mL2vQDiPIU7y5BYhhGwQuaIw", "deps": [], "bytes": 799 }
+    "color": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-color.d3629f8dcdee.js", "integrity": "sha384-IzeCdK/VkrZqRI5H+mkvLdyKpCkDmYjIX5unVLV6jH5J6Of+w+SWmCu7ZegTpRjQ", "deps": ["ui-popover"], "bytes": 8411 },
+    "date": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-date.d612c2eefbd5.js", "integrity": "sha384-QEbyrHUI02e3pLK04Mu4cbq1Pj1G6KziEzMhQApNizCYRN4B5VrDyR9H8sa6LxYq", "deps": ["ui-popover"], "bytes": 16561 },
+    "file": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-file.b8cad3e7765e.js", "integrity": "sha384-2lv/E+e+1v9gBUUIndfopJZ+Vwcnwgps8t6uxjWDV1/CDpe07hP0hjPQY8zUaQdM", "deps": [], "bytes": 7575 },
+    "nps": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-nps.6597c0f7afe9.js", "integrity": "sha384-bCRBXHH+8JO28Y2vM8ofXfRRWsG+iSctm6ieeqhVNIMF9bkyLEJbcHd4tXOC107y", "deps": [], "bytes": 9899 },
+    "phone": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-phone.8ec2e05aa679.js", "integrity": "sha384-PH56/tX8Ghl34GWiRZsE1amOwi9zhJX1iopKllFwxV5mPxjcdYZdAzUSDd2lVWe0", "deps": ["ui-popover"], "bytes": 14919 },
+    "select": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-select.d6defcac7c74.js", "integrity": "sha384-kRZVyt+BWfelRQg7FrMjpMzU1TLbgrwxHzAGIdmdlULMjSvAP1RFrOYDOcHTjf+H", "deps": ["ui-popover"], "bytes": 5804 },
+    "slider": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-slider.3f4ccfcbb037.js", "integrity": "sha384-K1WFQt5xtfR5L9vSULgRu+LMqQY8W7eAbgYp/jrrySBsftOAbYUWI9tV1xRI5pma", "deps": [], "bytes": 8765 },
+    "ui-popover": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/ui-popover.22445fc9d3b4.js", "integrity": "sha384-fkHyf6rzX0BnAYSadiwedNtIE5ULm9DRdzSXNUN/ja9LGG9wZBxSu0ksKQr9AEGX", "deps": [], "bytes": 7691 },
+    "userip": { "url": "https://cdn.flowappz.cloud/form-fields-pro/staging/2.0.1/chunks/field-userip.4572c36abc1b.js", "integrity": "sha384-VeaU20mJjq4cooZ+BgMGDJ2L2eLoC77gLZqvVn/4mL2vQDiPIU7y5BYhhGwQuaIw", "deps": [], "bytes": 799 }
   };
-  var VERSION = "5.1.6";
+  var VERSION = "2.0.1";
 
   // packages/ffp-core/src/loader.ts
   var DEFAULT_TIMEOUT_MS = 8e3;
@@ -961,6 +957,7 @@
     for (const token of Object.keys(theme)) {
       const value = theme[token];
       if (value === void 0 || value === null || String(value) === "") continue;
+      if (!SUFFIX.test(token) && theme[`${token}Light`] && theme[`${token}Dark`]) continue;
       root.style.setProperty(tokenToVar(token), String(value));
     }
   }
@@ -968,7 +965,7 @@
     const bases = Array.from(new Set(tokens.filter((t) => SUFFIX.test(t)).map((t) => t.replace(SUFFIX, ""))));
     if (!bases.length) return "";
     const assign = (half) => bases.map((base) => `${tokenToVar(base)}: var(${tokenToVar(base)}-${half});`).join("");
-    return `${scope}{${assign("light")}}@media (prefers-color-scheme: dark){${scope}{${assign("dark")}}}[data-ffp-scheme="light"] ${scope}{${assign("light")}}[data-ffp-scheme="dark"] ${scope}{${assign("dark")}}`;
+    return `${scope}{${assign("light")}}@media (prefers-color-scheme: dark){${scope}{${assign("dark")}}}[data-ffp-scheme="light"] ${scope}{${assign("light")}}[data-ffp-scheme="dark"] ${scope}{${assign("dark")}}${scope}[data-ffp-scheme="light"]{${assign("light")}}${scope}[data-ffp-scheme="dark"]{${assign("dark")}}`;
   }
 
   // packages/ffp-core/src/license.ts
@@ -1199,7 +1196,11 @@
   var PLAIN_TEXT_MIN_LETTERS = 2;
   var WRAPPER = '[form-fields-wrapper="true"] ';
   var MESSAGE_CLASS = "form-fields-data-validation-message";
-  var PHONE_SELECTOR = '[data-form-field-pro="number-input-with-country-code"] input[type="tel"]';
+  var PHONE_IN_WIDGET = '[data-form-field-pro="number-input-with-country-code"] input[type="tel"]';
+  var PHONE_BY_CLASS = 'input.number-input-field[type="tel"]';
+  function phoneSelector(prefix) {
+    return prefix + PHONE_IN_WIDGET + ", " + prefix + PHONE_BY_CLASS;
+  }
   function typeOf2(el) {
     const own = el.type;
     if (own) return String(own).toLowerCase();
@@ -1236,7 +1237,7 @@
       wrapper.appendChild(node);
     }
   }
-  var VALIDATION_CSS = `.${MESSAGE_CLASS}{color:#FF2626;font-size:11px}`;
+  var VALIDATION_CSS = `.${MESSAGE_CLASS}{display:block;color:#FF2626;font-size:11px;margin-top:4px}`;
   function validateFieldData(field, value, pattern, errorMessage) {
     const ok = !(value.length > 0 && !pattern.test(value));
     setValidationMessage(field, ok ? "" : errorMessage);
@@ -1249,7 +1250,7 @@
     return countPlainTextLetters(value) >= PLAIN_TEXT_MIN_LETTERS;
   }
   function getEmptyErrorMessage(input) {
-    return input.getAttribute("data-empty-error-msg") || "This field is required";
+    return input.getAttribute("data-empty-error-msg") || input.getAttribute("data-invalid-error-msg") || "This field is required";
   }
   function validatePlainTextField(field, value) {
     const raw = String(value == null ? "" : value).trim();
@@ -1284,23 +1285,27 @@
       if (isFieldVisiblyHidden(f)) continue;
       if (!validatePlainTextField(f, valueOf(f))) return false;
     }
-    for (const f of Array.from(
-      root.querySelectorAll(
-        prefix + PHONE_SELECTOR + ", " + prefix + 'input.number-input-field[type="tel"]'
-      )
-    )) {
+    for (const f of Array.from(root.querySelectorAll(phoneSelector(prefix)))) {
       if (isFieldVisiblyHidden(f)) continue;
-      const raw = valueOf(f).trim();
-      if (!raw || isDialCodeOnlyPhoneValue(raw)) continue;
-      const dial = getSelectedDialCodeForPhoneInput(f);
-      const e164 = normalizePhoneToE164(raw, dial);
-      if (!/^\+\d{8,}$/.test(e164)) {
-        setValidationMessage(f, f.getAttribute("data-invalid-error-msg") || "Invalid phone number");
-        return false;
-      }
-      const formatted = formatPhoneDisplay(e164, dial);
-      if (formatted && formatted !== raw) f.value = formatted;
+      if (!validatePhoneField(f)) return false;
     }
+    return true;
+  }
+  function validatePhoneField(field) {
+    const raw = valueOf(field).trim();
+    if (!raw || isDialCodeOnlyPhoneValue(raw)) {
+      setValidationMessage(field, "");
+      return true;
+    }
+    const dial = getSelectedDialCodeForPhoneInput(field);
+    const e164 = normalizePhoneToE164(raw, dial);
+    if (!/^\+\d{8,}$/.test(e164)) {
+      setValidationMessage(field, field.getAttribute("data-invalid-error-msg") || "Invalid phone number");
+      return false;
+    }
+    const formatted = formatPhoneDisplay(e164, dial);
+    if (formatted && formatted !== raw) field.value = formatted;
+    setValidationMessage(field, "");
     return true;
   }
   function validateRequiredFields(root) {
@@ -1352,7 +1357,9 @@
         "input",
         WRAPPER + 'input[data-plain-text="form-field-pro-plain-text"]',
         (_event, field) => validatePlainTextField(field, valueOf(field))
-      )
+      ),
+      delegate(root, "input", WRAPPER + PHONE_IN_WIDGET, (_event, field) => validatePhoneField(field)),
+      delegate(root, "input", WRAPPER + PHONE_BY_CLASS, (_event, field) => validatePhoneField(field))
     ];
     return () => {
       for (const unbind of unbinds) unbind();
@@ -1486,6 +1493,63 @@
       if (enclosing) forms.add(enclosing);
     });
     return Array.from(forms);
+  }
+  function isFfpNativeForm(form) {
+    return getFfpNativeForms(form.ownerDocument).indexOf(form) !== -1;
+  }
+  function submitGuardAttribute(root = document) {
+    const value = root.documentElement.getAttribute("data-ffp-submit-guard") || root.body && root.body.getAttribute("data-ffp-submit-guard");
+    if (value === "on" || value === "off") return value;
+    return null;
+  }
+  function formFromSubmitEvent(event) {
+    const form = event.target;
+    if (!form || form.tagName !== "FORM") return null;
+    return isFfpNativeForm(form) ? form : null;
+  }
+  function formFromSubmitClick(event) {
+    const target = event.target;
+    if (!target || !target.closest) return null;
+    const control = target.closest(
+      'input[type="submit"], button[type="submit"], button:not([type]), [fa-form-submit-button]'
+    );
+    if (!control) return null;
+    const form = control.form || control.closest && control.closest("form");
+    if (!form || form.tagName !== "FORM") return null;
+    return isFfpNativeForm(form) ? form : null;
+  }
+  function installSubmitGuard(handle, options = {}) {
+    const root = options.root || document;
+    const attribute = submitGuardAttribute(root);
+    if (attribute === "off" || options.enabled !== true) return () => {
+    };
+    const take = (event, form) => {
+      event.preventDefault();
+      event.stopPropagation();
+      handle(form, event);
+    };
+    const unbindSubmit = on(
+      root,
+      "submit",
+      (event) => {
+        const form = formFromSubmitEvent(event);
+        if (form) take(event, form);
+      },
+      { capture: true }
+    );
+    const unbindClick = on(
+      root,
+      "click",
+      (event) => {
+        const form = formFromSubmitClick(event);
+        if (form) take(event, form);
+      },
+      { capture: true }
+    );
+    return () => {
+      unbindSubmit();
+      unbindClick();
+    };
   }
 
   // packages/ffp-core/src/submit.ts
@@ -1691,6 +1755,16 @@
           void submitForm(form, config);
         })
       );
+    }
+    if (root.documentElement.getAttribute("data-ffp-submit-guard-bound") !== "1") {
+      root.documentElement.setAttribute("data-ffp-submit-guard-bound", "1");
+      const unguard = installSubmitGuard((form) => {
+        void submitForm(form, config);
+      }, { enabled: true, root });
+      unbinds.push(() => {
+        root.documentElement.removeAttribute("data-ffp-submit-guard-bound");
+        unguard();
+      });
     }
     return () => {
       for (const unbind of unbinds) unbind();

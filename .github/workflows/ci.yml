@@ -68,7 +68,7 @@ jobs:
       - name: Fail if extraction produced a diff
         run: |
           if ! git diff --quiet -- packages/ffp-fields/src/phone/countries.ts; then
-            echo "countries.ts differs from src/5.1.5/form-fields-pro-cdn.js."
+            echo "countries.ts differs from src/2.0.1/countries-source.js."
             echo "It is generated - change the extractor, not the table."
             git diff -- packages/ffp-fields/src/phone/countries.ts | head -40
             exit 1
