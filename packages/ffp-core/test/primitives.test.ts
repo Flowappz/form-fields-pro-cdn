@@ -117,3 +117,80 @@ describe('kill switch', () => {
         expect(isFieldDisabled(null, 'date')).toBe(false)
     })
 })
+
+describe('scheme resolution', () => {
+    /** resetDom reinstalls the default stubs, so call this after it, never before. */
+    const osPrefersDark = (matches: boolean) => {
+        globalThis.matchMedia = ((q: string) => ({ matches, media: q })) as typeof matchMedia
+    }
+
+    const mount = (surface?: string, wrapperAttr = '') => {
+        resetDom(`<body><div id="page" ${wrapperAttr}><div id="w"></div></div></body>`)
+        const page = document.getElementById('page') as unknown as HTMLElement
+        if (surface) page.style.backgroundColor = surface
+        return document.getElementById('w') as unknown as HTMLElement
+    }
+
+    it('follows a light surface even when the OS is dark', () => {
+        // The reported bug: a light Webflow site rendered dark fields for any
+        // visitor whose OS was dark, because the CSS could only see the OS.
+        const root = mount('rgb(255, 255, 255)')
+        osPrefersDark(true)
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('light')
+    })
+
+    it('follows a dark surface', () => {
+        const root = mount('rgb(17, 24, 39)')
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('dark')
+    })
+
+    it('walks past a transparent parent to the surface that paints', () => {
+        resetDom(
+            '<body><div id="outer"><div id="inner"><div id="w"></div></div></div></body>',
+        )
+        const outer = document.getElementById('outer') as unknown as HTMLElement
+        const inner = document.getElementById('inner') as unknown as HTMLElement
+        outer.style.backgroundColor = 'rgb(17, 24, 39)'
+        inner.style.backgroundColor = 'rgba(0, 0, 0, 0)'
+        const root = document.getElementById('w') as unknown as HTMLElement
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('dark')
+    })
+
+    it('leaves an explicit site-owner choice alone', () => {
+        const root = mount('rgb(17, 24, 39)', 'data-ffp-scheme="light"')
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        // The surface is dark, but the page said light and the page wins.
+        expect(root.hasAttribute('data-ffp-scheme')).toBe(false)
+    })
+
+    it('falls back to the declared color-scheme when nothing paints a surface', () => {
+        resetDom('<body><div id="w"></div></body>')
+        osPrefersDark(false)
+        document.documentElement.style.colorScheme = 'dark'
+        const root = document.getElementById('w') as unknown as HTMLElement
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('dark')
+    })
+
+    it('falls back to the OS only when the page declares nothing', () => {
+        resetDom('<body><div id="w"></div></body>')
+        osPrefersDark(true)
+        const root = document.getElementById('w') as unknown as HTMLElement
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('dark')
+    })
+
+    it('re-resolves when the surface flips, rather than reusing its own value', () => {
+        const root = mount('rgb(255, 255, 255)')
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('light')
+
+        const page = document.getElementById('page') as unknown as HTMLElement
+        page.style.backgroundColor = 'rgb(17, 24, 39)'
+        applyTheme(root, { textColorLight: '#111', textColorDark: '#eee' })
+        expect(root.getAttribute('data-ffp-scheme')).toBe('dark')
+    })
+})

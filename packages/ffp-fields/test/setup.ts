@@ -24,6 +24,13 @@ export function resetDom(html = '<body></body>'): void {
     g.HTMLSelectElement = parsed.window.HTMLSelectElement
     g.HTMLInputElement = parsed.window.HTMLInputElement
     g.requestAnimationFrame = (fn: (t: number) => void) => setTimeout(() => fn(0), 0) as unknown as number
+    g.cancelAnimationFrame = (id: number) => clearTimeout(id as unknown as NodeJS.Timeout)
+
+    // applyTheme resolves a field's light/dark from the surface behind it, so
+    // the fields need the same globals core does. linkedom has no cascade;
+    // the element's own inline style is the closest honest computed style.
+    g.getComputedStyle = (el: Element) => (el as HTMLElement).style ?? {}
+    g.matchMedia = (query: string) => ({ matches: false, media: query })
     g.cancelAnimationFrame = (id: number) => clearTimeout(id)
     delete g.ResizeObserver
     patchSelect(parsed.window as unknown as Record<string, { prototype: object }>)

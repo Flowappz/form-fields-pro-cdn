@@ -41,6 +41,13 @@ export function resetDom(html = '<body></body>'): void {
     }) as typeof head.appendChild
 
     g.requestAnimationFrame = (fn: FrameRequestCallback) => setTimeout(() => fn(0), 0) as unknown as number
+    g.cancelAnimationFrame = (id: number) => clearTimeout(id as unknown as NodeJS.Timeout)
+
+    // linkedom has no cascade, so the closest honest stand-in for a computed
+    // style is the element's own inline style. Theme tests set
+    // `el.style.backgroundColor` to say what surface a field is sitting on.
+    g.getComputedStyle = (el: Element) => (el as HTMLElement).style ?? {}
+    g.matchMedia = (query: string) => ({ matches: false, media: query })
     g.MutationObserver = class {
         observe(): void {}
         disconnect(): void {}
